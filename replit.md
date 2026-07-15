@@ -34,11 +34,7 @@ customized.
 - The Projects ("Work") section must be left exactly as the template's
   placeholder content; the user will add their own projects manually.
 
-## Known placeholders needing real values
-- `public/resume.pdf` is a placeholder PDF — replace with the real resume.
-- GitHub/LinkedIn/Instagram URLs and the contact email throughout the site
-  (Hero, Footer, SiteHead, SCTA) use best-guess handles
-  (`gnaneswanthbingi` / `gnaneswanthbingi@gmail.com`) — confirm/replace with
-  the user's real profile links and email.
+## Known remaining item
 - `public/images/qr-code.svg` still visually encodes the original template's
-  QR code image; regenerate it if a working QR code is wanted.
+  QR code image (points to old contact info); regenerate it if a working
+  QR code is wanted. All other contact links, resume, and copy are final.

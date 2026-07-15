@@ -1,64 +1,4 @@
 ---
-import { Image } from 'astro:assets'
-
-const frames = [
-  {
-    caption: 'Generative art poster concept',
-    src: import('/src/assets/frames/art-1987.jpg'),
-  },
-  {
-    caption: 'Generative art poster concept',
-    src: import('/src/assets/frames/art-dtyw.jpg'),
-  },
-  {
-    caption: 'Generative art poster concept',
-    src: import('/src/assets/frames/art-lines.jpg'),
-  },
-  {
-    caption: 'My first FOTD on FWA  ♥ (2012)',
-    src: import('/src/assets/frames/first-fwa.jpg'),
-  },
-  {
-    caption: 'Roaaaar!',
-    src: import('/src/assets/frames/roar.jpg'),
-  },
-  {
-    caption: 'Early age (2006) desk setup ',
-    src: import('/src/assets/frames/setup-2006.jpg'),
-  },
-  {
-    caption: '2016 desk setup',
-    src: import('/src/assets/frames/setup-2016.jpg'),
-  },
-  {
-    caption: '2020 desk setup',
-    src: import('/src/assets/frames/setup-2020.jpg'),
-  },
-  {
-    caption: 'Waaark Creative Robots',
-    src: import('/src/assets/frames/waaark.png'),
-  },
-  {
-    caption: '2011 portfolio',
-    src: import('/src/assets/frames/portfolio-2011.jpg'),
-  },
-  {
-    caption: '2014 portfolio',
-    src: import('/src/assets/frames/portfolio-2014.jpg'),
-  },
-  {
-    caption: '2017 portfolio (never released)',
-    src: import('/src/assets/frames/portfolio-2017.jpg'),
-  },
-  {
-    caption: '2021 portfolio',
-    src: import('/src/assets/frames/portfolio-2021.jpg'),
-  },
-  {
-    caption: 'Legos ♥',
-    src: import('/src/assets/frames/legos.jpg'),
-  },
-]
 ---
 
 <section class="s-my-way" data-intersect>
@@ -77,27 +17,6 @@ const frames = [
   </svg>
 
   <div class="s__objects js-objects">
-    {
-      frames.map((frame, index) => (
-        <div class="a-object a-object--frame">
-          <figure class="a__inner">
-            <Image src={frame.src} alt={frame.caption} class="a__img" />
-            {/* <img
-              loading="lazy"
-              class="a__img"
-              src={frame.src}
-              alt={frame.caption}
-            /> */}
-
-            <figcaption class="a__caption" set:html={frame.caption} />
-          </figure>
-
-          <div class="a__side a__side--vertical" />
-          <div class="a__side a__side--horizontal" />
-        </div>
-      ))
-    }
-
     {
       Array(10)
         .fill(0)

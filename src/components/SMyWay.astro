@@ -114,30 +114,6 @@ const frames = [
     <div class="s__ruler js-ruler"></div>
   </div><!-- .s__objects -->
 
-  <div class="s__catcher">
-    <div class="s__catcher__distorted-wrapper">
-      <div class="s__catcher__distorted">
-        <div class="s__catcher__text s__catcher__text--distorted">
-          Remember <br />
-          not to <br />
-          steal <br />
-          this
-        </div>
-      </div><!-- .s__catcher__distorted -->
-    </div><!-- .s__catcher__distorted-wrapper -->
-
-    <div class="s__catcher__normal-wrapper">
-      <div class="s__catcher__normal">
-        <div class="s__catcher__text s__catcher__text--normal">
-          Remember <br />
-          not to <br />
-          steal <br />
-          this
-        </div>
-      </div><!-- .s__catcher__normal -->
-    </div><!-- .s__catcher__normal-wrapper -->
-  </div><!-- .s__catcher -->
-
   <svg class="s__svg js-svg">
     <path class="s__svg__circular-path js-lines-circular-path" d=""></path>
   </svg>
@@ -1266,132 +1242,6 @@ const frames = [
       }
     }
 
-    .s__catcher {
-      --amplitude: 50%;
-      --offset: 15%;
-
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      z-index: 2;
-
-      width: 100%;
-      height: calc(var(--padding) * 1.05 + var(--smiley-size) / 2);
-
-      perspective: calc(var(--distortion) * 0.85em);
-      user-select: none;
-
-      font: 700 calc(var(--padding) * 1.2) / 1 font-family(bigger);
-      line-height: 0.82;
-      text-align: center;
-      text-transform: uppercase;
-      white-space: nowrap;
-
-      @include mq(tablet) {
-        --amplitude: 75%;
-        --offset: 27.5%;
-
-        perspective: calc(var(--distortion) * 1.05em);
-        font-size: calc(var(--padding) * 0.75);
-      }
-
-      &__distorted-wrapper {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-
-        width: 100%;
-        height: calc(var(--padding) * 1.5);
-
-        overflow: hidden;
-        perspective: calc(var(--distortion) * 0.7em);
-
-        @include mq(tablet) {
-          perspective: calc(var(--distortion) * 0.85em);
-        }
-      }
-
-      &__distorted {
-        position: absolute;
-        bottom: 0;
-        left: -100%;
-
-        width: 300%;
-        height: calc(var(--padding) * 1.05 + var(--smiley-size) / 2);
-
-        transform-origin: 50% 100%;
-        transform: matrix3d(
-          1,
-          0,
-          0,
-          0,
-          0,
-          1,
-          var(--distortion),
-          0,
-          0,
-          0,
-          1,
-          0,
-          0,
-          0,
-          0,
-          1
-        );
-      }
-
-      &__normal-wrapper {
-        position: absolute;
-        top: calc(100% - 1px);
-        left: 0;
-
-        width: 100%;
-        height: calc(100% + 100vh);
-
-        overflow: hidden;
-      }
-
-      &__normal {
-        position: absolute;
-        top: 0;
-        left: -100%;
-
-        width: 300%;
-        height: 100%;
-      }
-
-      &__text {
-        position: absolute;
-        left: 0;
-
-        width: 100%;
-
-        will-change: transform;
-
-        &--distorted {
-          bottom: 0;
-
-          transform: translate3d(
-            0,
-            calc(var(--scroll-progress) * var(--amplitude) - var(--offset)),
-            0
-          );
-        }
-
-        &--normal {
-          top: 0;
-
-          transform: translate3d(
-            0,
-            calc(
-              var(--scroll-progress) * var(--amplitude) - 100% - var(--offset)
-            ),
-            0
-          );
-        }
-      }
-    }
-
     .s__svg {
       position: absolute;
       top: 0;
@@ -1417,8 +1267,7 @@ const frames = [
     }
 
     &.is-out-of-view-bottom {
-      .a-object,
-      .s__catcher {
+      .a-object {
         display: none;
       }
     }

@@ -7,15 +7,19 @@ const __dirname = dirname(__filename);
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://public.wodniack.dev',
+  site: 'https://gnaneswanthbingi.dev',
 
   scopedStyleStrategy: 'class',
 
   server: {
     host: true,
+    port: 5000,
   },
 
   vite: {
+    server: {
+      allowedHosts: true,
+    },
     resolve: {
       alias: {
         '@/': `${path.resolve(__dirname, 'src')}/`

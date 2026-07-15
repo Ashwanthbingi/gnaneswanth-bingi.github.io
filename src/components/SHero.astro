@@ -9,11 +9,11 @@ import ASeparator from './ASeparator.astro'
   <div class="s__content js-content">
     <ASeparator
       class="s__separator js-separator"
-      strings={['Ant', 'oi', 'ne', 'Wo', 'dn', 'ia', 'ck']}
+      strings={['Gna', 'nes', 'wan', 'th', 'Bin', 'gi']}
     />
 
     <h1 class="s__title">
-      <span class="s__title__word js-word">Creative</span>
+      <span class="s__title__word js-word">Backend</span>
       <img
         class="s__title__asset js-star"
         src="/images/asset-star.svg"
@@ -21,13 +21,34 @@ import ASeparator from './ASeparator.astro'
         width="48"
         height="48"
       />
-      <span class="s__title__word js-word">Developer</span>
+      <span class="s__title__word js-word">Engineer</span>
     </h1>
 
     <ASeparator
       class="s__separator js-separator"
-      strings={['Do', 'Things', 'Your', 'Way']}
+      strings={['CS', 'Student', '&', 'Builder']}
     />
+
+    <div class="s__actions">
+      <a href="/resume.pdf" class="s__resume-btn" download>
+        <span class="sup">↓</span> Download Resume
+      </a>
+
+      <ul class="s__socials">
+        <li>
+          <a href="https://github.com/gnaneswanthbingi" target="_blank" rel="noopener">GitHub</a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/gnaneswanthbingi" target="_blank" rel="noopener">LinkedIn</a>
+        </li>
+        <li>
+          <a href="https://www.instagram.com/gnaneswanthbingi" target="_blank" rel="noopener">Instagram</a>
+        </li>
+        <li>
+          <a href="mailto:gnaneswanthbingi@gmail.com">Email</a>
+        </li>
+      </ul>
+    </div><!-- .s__actions -->
   </div>
 
   <div class="s__border js-border"></div>
@@ -371,9 +392,78 @@ import ASeparator from './ASeparator.astro'
     }
 
     .s__title,
-    .s__separator {
+    .s__separator,
+    .s__actions {
       flex-grow: 0;
       flex-shrink: 0;
+    }
+
+    .s__actions {
+      @include flex(row, center, space-between);
+      flex-wrap: wrap;
+
+      gap: 1rem;
+      padding: 1.5rem 2rem;
+
+      @include mq(phone) {
+        padding: 1.25rem 1rem;
+      }
+    }
+
+    .s__resume-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+
+      padding: 0.85em 1.75em;
+
+      background: color(secondary);
+      border-radius: 999rem;
+
+      color: color(primary);
+      font: 700 14px / 1 font-family(fraktion);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      text-transform: uppercase;
+
+      transition: opacity 0.3s ease(in-out-expo);
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    .s__socials {
+      @include flex(row, center, flex-start);
+      flex-wrap: wrap;
+
+      margin: 0;
+      padding: 0;
+
+      list-style: none;
+
+      li {
+        margin: 0;
+        padding: 0 1rem;
+
+        border-left: 1px solid color(secondary);
+
+        &:first-child {
+          border-left: 0;
+        }
+      }
+
+      a {
+        color: color(secondary);
+        font: 400 14px / 1 font-family(fraktion);
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        text-transform: uppercase;
+
+        &:hover {
+          text-shadow: 0 0 1px currentcolor;
+        }
+      }
     }
 
     .s__title {

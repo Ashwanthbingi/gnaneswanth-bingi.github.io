@@ -1,0 +1,75 @@
+<section id="resume" class="s-info" data-intersect>
+  <div class="s__inner">
+    <h2 class="s__title">Resume</h2>
+
+    <p class="s__text">
+      A quick summary of my education, skills, and experience. Download the
+      full PDF for more details on my background in backend development, AI,
+      and distributed systems.
+    </p>
+
+    <a href="/resume.pdf" class="s__btn" download>
+      Download Resume
+    </a>
+  </div><!-- .s__inner -->
+</section>
+
+<style lang="scss">
+  .s-info {
+    @include flex(column, center, center);
+
+    position: relative;
+
+    padding: 6rem 2rem;
+    text-align: center;
+
+    @include mq(phone) {
+      padding: 3.5rem 1.5rem;
+    }
+
+    .s__inner {
+      @include flex(column, center, center);
+
+      max-width: 40rem;
+      gap: 1.5rem;
+    }
+
+    .s__title {
+      font: 400 4rem / 1 font-family(editorial);
+      text-transform: uppercase;
+
+      @include mq(phone) {
+        font-size: 2.5rem;
+      }
+    }
+
+    .s__text {
+      color: color(secondary);
+      font: 400 16px / 1.6 font-family(fraktion);
+      opacity: 0.8;
+    }
+
+    .s__btn {
+      display: inline-flex;
+      align-items: center;
+
+      margin-top: 0.5rem;
+      padding: 0.9em 2em;
+
+      background: color(secondary);
+      border-radius: 999rem;
+
+      color: color(primary);
+      font: 700 14px / 1 font-family(fraktion);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      text-transform: uppercase;
+
+      transition: opacity 0.3s ease(in-out-expo);
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+</style>

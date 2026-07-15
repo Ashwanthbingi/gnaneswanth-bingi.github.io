@@ -1,0 +1,19 @@
+Customize this portfolio template for my personal portfolio without changing its overall design, layout, or animations. Replace all placeholder content with my information. My name is Gnaneswanth Bingi, and I am a Computer Science undergraduate at Dayananda Sagar University with a strong interest in Software Engineering, Backend Development, Artificial Intelligence, Distributed Systems, and Cloud Technologies.
+
+Update the Hero section with my name, a professional headline, a short introduction, and a prominent Download Resume button. Include social links for GitHub, LinkedIn, Instagram, and Email.
+
+Update the About section with a professional summary describing my passion for building scalable backend systems, AI-powered applications, distributed software, and modern full-stack solutions.
+
+Update the Skills section by organizing my skills into categories such as Programming Languages, Backend, Frontend, Databases, DevOps & Tools, and AI/ML, using technologies like Java, Python, JavaScript, TypeScript, Spring Boot, FastAPI, React, Tailwind CSS, MySQL, PostgreSQL, RocksDB, Docker, Git, GitHub, Maven, gRPC, Protocol Buffers, Machine Learning, Computer Vision, YOLOv8, RAG, and OpenAI APIs.
+
+Keep the existing Projects section exactly as it is in the template because I will manually add my projects there later.
+
+Add or update a dedicated Resume section with a professional description and a button to download my latest resume.
+
+Add or update a GitHub section encouraging visitors to explore my repositories and open-source work with a button linking to my GitHub profile.
+
+Add a Contact section with links for Email, GitHub, LinkedIn, and Instagram, making it easy for recruiters and collaborators to reach me.
+
+Update the Footer with my name, copyright information, and social links.
+
+Preserve the template's existing visual style, responsiveness, typography, animations, and user experience. Only replace the placeholder content and branding with my personal information, ensuring the portfolio remains clean, modern, professional, and optimized for both desktop and mobile devices. Do not redesign the template or alter its overall aesthetic.

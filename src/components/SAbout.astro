@@ -1,23 +1,29 @@
 ---
-// Awards are nice, but they’re not the goal.
-// Focus on building quality websites, enjoying the process, and making your clients happy—that’s what really matters.
-// Some amazing sites never win anything, while mediocre ones sometimes do. Awards are a niche, not a universal measure of value.
-// Stay sharp, stay honest, and keep having fun.
+// Skill categories, mapped onto the original award-grid layout so the
+// hand-tuned CSS grid placement below keeps working unchanged.
 const awards = {
   counters: {
-    awwwards: ['SOTD x 16', 'Honors x 1'],
-    fwa: ['SOTD x 4', 'MOTD x 2'],
-    cssda: ['WOTD x 18', 'WOTM x 1'],
+    awwwards: ['Java', 'Python', 'JS / TS'],
+    fwa: ['Spring Boot', 'FastAPI', 'gRPC'],
+    cssda: ['React', 'Tailwind CSS'],
   },
   texts: {
-    webby2025: '2025 Webby Awards Winner <br/>Best Home Page',
-    commArt2017: 'Comm Arts Mag Interactive  Annual Competition Winner 2017',
-    netMag2016: 'Net Mag SOTM Summer 2016',
-    gsapOct2024: 'GSAP SOTM October 2024',
-    gsapNov2024: 'GSAP SOTM November 2024',
-    CSSDA2016: 'CSSDA Best Front-End <br/>Developer 2016',
-    CSSDA2015: 'CSSDA Best Front-End <br/>Developer 2015',
+    webby2025: 'Skills &amp; Technologies <br/>I work with',
+    commArt2017: 'Protocol Buffers · Maven · Git &amp; GitHub',
+    netMag2016: 'MySQL, PostgreSQL, RocksDB',
+    gsapOct2024: 'Docker, Git, Maven',
+    gsapNov2024: 'Machine Learning, Computer Vision',
+    CSSDA2016: 'YOLOv8, RAG &amp;<br/>OpenAI APIs',
+    CSSDA2015: 'Distributed Systems &amp;<br/>Cloud Technologies',
   },
+}
+
+// Display labels for the counter categories above (keys must stay the
+// original award ids so the hand-tuned grid CSS selectors keep matching).
+const awardLabels: Record<string, string> = {
+  awwwards: 'Languages',
+  fwa: 'Backend',
+  cssda: 'Frontend',
 }
 ---
 
@@ -28,29 +34,25 @@ const awards = {
 
       <div class="s__content">
         <p>
-         Curiosity and the drive to learn are the most valuable skills for any creative developer. That hunger to understand how things work, to find clever workarounds, and to constantly push boundaries—that’s what makes this craft so rewarding.
+          I'm a Computer Science undergraduate at Dayananda Sagar University with a strong interest in Software Engineering, Backend Development, Artificial Intelligence, Distributed Systems, and Cloud Technologies.
         </p>
 
         <p>
-          Over the years, I’ve learned more from studying other people’s code than from any course or tutorial. Digging through Codrops experiments, exploring CodePen creations, and analyzing real-world projects—that’s how I leveled up. And it’s still part of my daily routine.
+          What started as curiosity about programming has grown into a passion for building scalable backend systems, AI-powered applications, distributed software, and modern full-stack solutions. I enjoy taking on projects that push me to learn something new — whether that's backend development, AI, or distributed systems.
         </p>
 
         <p>
-          This portfolio brought me more recognition than I ever expected. What started as a quiet relaunch of my digital presence ended up winning a Webby Award. Now it’s time to give back.
+          Outside of academics, I spend a lot of time exploring modern development tools, improving my problem-solving skills, and building applications that help me become a better engineer.
         </p>
 
         <p>
-          I’m open-sourcing this site to share the knowledge behind it. If you’re a junior developer, I hope it helps you learn faster, build smarter, and gain confidence in your own journey.
-        </p>
-
-        <p>
-          If you’re tempted to copy/paste it and make it yours as-is—don’t. The community will call you out, and you’ll doom yourself to eternal mediocrity.
+          I'm always looking for opportunities to learn, collaborate, and contribute while working toward a career in software engineering.
         </p>
       </div><!-- .s__content -->
     </div><!-- .s__block -->
 
     <div class="s__block s__block--awards">
-      <h2 class="s__title">Awards</h2>
+      <h2 class="s__title">Skills</h2>
 
       <ul class="s__awards">
         {
@@ -59,7 +61,7 @@ const awards = {
               class={`s__award s__award--counter s__award--${award} js-award`}
             >
               <span class="s__award__inner">
-                <span class="s__award__name">{award}</span>
+                <span class="s__award__name">{awardLabels[award] ?? award}</span>
                 {counters.map((counter) => (
                   <span class="s__award__counter">({counter})</span>
                 ))}

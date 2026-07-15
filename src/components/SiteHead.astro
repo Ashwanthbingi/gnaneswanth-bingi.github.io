@@ -132,14 +132,6 @@ const menu = [
         </span>
       </p>
     </aside><!-- .sb-availability -->
-
-    <a
-      href="mailto:aswanthbingi@gmail.com"
-      class="sb-qr-code js-qr-code"
-      title="Contact me!"
-    >
-      <img src="/images/qr-code.svg" alt="QR Code" width="72" height="72" />
-    </a><!-- .sb-qr-code -->
   </div><!-- .site-head__container -->
 </header>
 
@@ -304,7 +296,6 @@ const menu = [
     intro() {
       const logo = this.el.querySelector('.js-logo')
       const menuItems = this.el.querySelectorAll('.js-menu-item')
-      const qrCode = this.el.querySelector('.js-qr-code')
 
       const items = [logo, ...menuItems]
 
@@ -333,19 +324,6 @@ const menu = [
           stagger: 0.1,
         },
         1.5
-      )
-
-      tl.fromTo(
-        qrCode,
-        {
-          '--bg-p': '0%',
-        },
-        {
-          '--bg-p': '100%',
-          duration: 1.5,
-          ease: 'expo.out',
-        },
-        1.75
       )
 
       tl.call(
@@ -944,38 +922,5 @@ const menu = [
       }
     }
 
-    .sb-qr-code {
-      --bg-p: 0%;
-
-      position: relative;
-
-      display: block;
-      padding: 0.75rem;
-
-      border-left: 1px solid color(secondary);
-
-      @include mq(desktop-sm) {
-        display: none;
-      }
-
-      &:before {
-        position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
-        bottom: 0.75rem;
-        left: 0.75rem;
-
-        background: linear-gradient(
-            180deg,
-            transparent,
-            transparent var(--bg-p),
-            color(secondary) var(--bg-p),
-            color(secondary)
-          )
-          top / 100% 12.5% repeat;
-
-        content: '';
-      }
-    }
   }
 </style>

@@ -14,12 +14,10 @@ export default defineConfig({
   server: {
     host: true,
     port: 5000,
+    allowedHosts: true,
   },
 
   vite: {
-    server: {
-      allowedHosts: true,
-    },
     resolve: {
       alias: {
         '@/': `${path.resolve(__dirname, 'src')}/`

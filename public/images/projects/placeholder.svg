@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1082" height="636" viewBox="0 0 1082 636">
-  <rect width="1082" height="636" fill="#e9e2da"/>
-  <rect x="16" y="16" width="1050" height="604" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-dasharray="14 10"/>
-  <text x="541" y="300" text-anchor="middle" font-family="sans-serif" font-size="34" fill="#1a1a1a" font-weight="700">ADD YOUR PROJECT IMAGE</text>
-  <text x="541" y="350" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#1a1a1a">Drop an image into /public/images/projects/</text>
-  <text x="541" y="380" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#1a1a1a">and reference it in src/components/SWork.astro</text>
-</svg>

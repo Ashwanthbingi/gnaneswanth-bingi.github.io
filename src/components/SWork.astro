@@ -6,23 +6,7 @@ import AWork from './AWork.astro'
 // - image: path to an image of the project. Drop the image file into
 //   public/images/projects/ and reference it here as '/images/projects/your-file.jpg'
 // - site: (optional) link opened when the project is clicked. Leave as '#' if you don't have one yet.
-const myProjects = [
-  {
-    title: 'Add Your Project 1',
-    image: '/images/projects/placeholder.svg',
-    site: '#',
-  },
-  {
-    title: 'Add Your Project 2',
-    image: '/images/projects/placeholder.svg',
-    site: '#',
-  },
-  {
-    title: 'Add Your Project 3',
-    image: '/images/projects/placeholder.svg',
-    site: '#',
-  },
-]
+const myProjects = []
 
 const works = myProjects.map((project) => ({
   caption: project.title,

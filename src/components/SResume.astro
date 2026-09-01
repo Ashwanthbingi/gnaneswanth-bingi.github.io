@@ -1,16 +1,23 @@
-<section id="resume" class="s-info" data-intersect>
-  <div class="s__inner">
-    <h2 class="s__title">Resume</h2>
+---
+import { withBase } from '../utils/paths'
+---
 
-    <p class="s__text">
-      A quick summary of my education, skills, and experience. Download the
-      full PDF for more details on my background in backend development, AI,
-      and distributed systems.
+<section id="resume" class="s-info" data-intersect>
+  <div class="s__inner" data-reveal-group>
+    <h2 class="s__title" data-reveal="mask">Resume</h2>
+
+    <p class="s__text" data-reveal>
+      Education, skills, and project work on one page — Java, Spring Boot,
+      Python and SQL, on a foundation of data structures, algorithms and
+      distributed systems. Download the full PDF for the detail behind the
+      REST APIs, fault-tolerant systems and machine learning.
     </p>
 
-    <a href="/resume.pdf" class="s__btn" download>
-      Download Resume
-    </a>
+    <div class="s__btn-wrap" data-reveal>
+      <a href={withBase('resume.pdf')} class="c-btn" download>
+        <span class="c-btn__label"><span class="sup">↓</span> Download Resume</span>
+      </a>
+    </div><!-- .s__btn-wrap -->
   </div><!-- .s__inner -->
 </section>
 
@@ -49,27 +56,12 @@
       opacity: 0.8;
     }
 
-    .s__btn {
-      display: inline-flex;
-      align-items: center;
-
+    .s__btn-wrap {
+      /*
+       * The reveal sits on this wrapper, not the button: the shared .c-btn uses
+       * `scale` for its press state and the reveal system animates `scale` too.
+       */
       margin-top: 0.5rem;
-      padding: 0.9em 2em;
-
-      background: color(secondary);
-      border-radius: 999rem;
-
-      color: color(primary);
-      font: 700 14px / 1 font-family(fraktion);
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      text-transform: uppercase;
-
-      transition: opacity 0.3s ease(in-out-expo);
-
-      &:hover {
-        opacity: 0.8;
-      }
     }
   }
 </style>

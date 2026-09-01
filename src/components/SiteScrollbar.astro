@@ -19,6 +19,10 @@
 
     isDragging: boolean
 
+    /** Last values written, so an unchanged frame costs nothing. */
+    lastHeight: number = -1
+    lastTop: number = -1
+
     /**
      * Contructor
      */
@@ -83,13 +87,39 @@
      * Set scrollbar
      */
     setScrollbar() {
+      /*
+       * This runs on every scroll frame, so it must not measure anything.
+       *
+       * It used to read `document.body.scrollHeight` here and then write two
+       * custom properties straight back to the same element — a forced layout
+       * followed by an invalidation, sixty times a second, for the entire life
+       * of the page. The document height is already measured once per resize
+       * and cached as `window.maxScrollTop`, and deriving it from there has the
+       * side benefit of keeping the thumb exactly consistent with the scroll
+       * progress that positions it.
+       */
+      const documentHeight = (window.maxScrollTop || 0) + window.safeHeight
+
       const scrollbarHeight =
-        (window.safeHeight / document.body.scrollHeight) * window.safeHeight
+        (window.safeHeight / documentHeight) * window.safeHeight
       const scrollbarTop =
         window.scrollProgress * (window.safeHeight - scrollbarHeight)
 
-      this.el.style.setProperty('--scrollbar-height', `${scrollbarHeight}px`)
-      this.el.style.setProperty('--scrollbar-top', `${scrollbarTop}px`)
+      // A tenth of a pixel is below what a 4px-wide thumb can show.
+      const height = Math.round(scrollbarHeight * 10) / 10
+      const top = Math.round(scrollbarTop * 10) / 10
+
+      if (height !== this.lastHeight) {
+        this.lastHeight = height
+
+        this.el.style.setProperty('--scrollbar-height', `${height}px`)
+      }
+
+      if (top !== this.lastTop) {
+        this.lastTop = top
+
+        this.el.style.setProperty('--scrollbar-top', `${top}px`)
+      }
     }
 
     /**

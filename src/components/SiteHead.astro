@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../utils/paths'
+
 const menu = [
   {
     id: 'about',
@@ -7,6 +9,10 @@ const menu = [
   {
     id: 'work',
     text: 'Work',
+  },
+  {
+    id: 'projects',
+    text: 'Projects',
   },
   {
     id: 'contact',
@@ -18,7 +24,7 @@ const menu = [
 <header class="site-head" data-intersect>
   <div class="site-head__container">
     <div class="sb-logo">
-      <a href="/">
+      <a href={withBase('')}>
         <svg
           class="js-logo"
           width="280"
@@ -138,6 +144,7 @@ const menu = [
 <script>
   import Emitter from '../utils/Emitter'
   import Ticker from '../utils/Ticker'
+  import { prefersReducedMotion } from '../utils/reveal'
 
   import { gsap } from 'gsap'
 
@@ -147,6 +154,8 @@ const menu = [
     console: HTMLElement
     contrastMask: HTMLElement
     links: NodeListOf<HTMLElement>
+    sectionObserver: IntersectionObserver
+    activeSection: string
 
     messages: string[]
     message: string
@@ -244,6 +253,7 @@ const menu = [
       this.writeDelay = 0
       this.canWrite = false
       this.isPaused = true
+      this.activeSection = ''
 
       // Init
       Ticker.nextTick(this.init, this)
@@ -254,6 +264,79 @@ const menu = [
      */
     init() {
       this.bindEvents()
+
+      this.watchSections()
+    }
+
+    /**
+     * Watch sections
+     *
+     * Marks the menu item for whichever section owns the middle of the viewport.
+     * A symmetric -45% rootMargin leaves a thin band across the centre of the
+     * screen, so at most one *top-level* section qualifies. The projects block
+     * is nested inside #work, though, so two entries can qualify at once —
+     * whichever sits later in the menu wins, which is the more specific of the
+     * two. The set is kept rather than read per-entry because the observer only
+     * reports changes: without it, the moment the nested block left the band
+     * nothing would fire and the state would stay on the child.
+     */
+    watchSections() {
+      const sections: HTMLElement[] = []
+
+      this.links.forEach((link) => {
+        const id = link.getAttribute('href')
+        const section: HTMLElement = document.querySelector(id)
+
+        if (section) sections.push(section)
+      })
+
+      if (!sections.length) return
+
+      const visible = new Set<string>()
+
+      this.sectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              visible.add(entry.target.id)
+            } else {
+              visible.delete(entry.target.id)
+            }
+          })
+
+          for (let i = sections.length - 1; i >= 0; i--) {
+            if (visible.has(sections[i].id)) {
+              this.setActiveSection(sections[i].id)
+
+              return
+            }
+          }
+        },
+        {
+          rootMargin: '-45% 0px -45% 0px',
+          threshold: 0,
+        }
+      )
+
+      sections.forEach((section) => this.sectionObserver.observe(section))
+    }
+
+    /**
+     * Set active section
+     */
+    setActiveSection(id: string) {
+      if (id === this.activeSection) return
+
+      this.activeSection = id
+
+      this.links.forEach((link) => {
+        link.parentElement.classList.toggle(
+          'is-active',
+          link.getAttribute('href') === '#' + id
+        )
+      })
+
+      Emitter.emit('sectionchange', id)
     }
 
     /**
@@ -282,6 +365,19 @@ const menu = [
      */
     onIntersect(e) {
       this.isPaused = !e.detail.isIntersecting
+
+      /*
+       * The console types random messages on a loop and never finishes, so
+       * reduced-motion visitors get one message printed in full instead — the
+       * same information, none of the perpetual movement.
+       */
+      if (prefersReducedMotion()) {
+        if (!this.isPaused && this.console.textContent.trim() === '') {
+          this.console.textContent = this.getRandomMessage()
+        }
+
+        return
+      }
 
       if (this.isPaused) {
         Emitter.off('tick', this.updateConsole, this)
@@ -576,6 +672,20 @@ const menu = [
       .sb__item {
         margin: 0;
         padding: 0;
+
+        /*
+         * Active section: hold on the same triangle the hover state blinks in,
+         * so there's one visual vocabulary for "this link matters right now".
+         */
+        &.is-active {
+          .sb__text:before {
+            opacity: 1;
+          }
+
+          a {
+            text-shadow: 0 0 1px currentcolor;
+          }
+        }
       }
 
       .sb__text {

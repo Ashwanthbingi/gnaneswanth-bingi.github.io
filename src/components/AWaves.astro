@@ -3,15 +3,36 @@ const { class: className } = Astro.props
 ---
 
 <a-waves class:list={className} data-intersect>
+  <canvas class="a__canvas js-canvas"></canvas>
   <svg class="js-svg"></svg>
 </a-waves><!-- .a-waves -->
 
 <script>
   import Emitter from '../utils/Emitter'
   import Noise from '../utils/Noise'
+  import Quality from '../utils/Quality'
+  import { prefersReducedMotion } from '../utils/reveal'
+
+  /** One decimal is all a 1px stroke can show, and short strings parse faster. */
+  const round = (value: number) => Math.round(value * 10) / 10
 
   class AWaves extends HTMLElement {
     svg: HTMLElement
+    canvas: HTMLCanvasElement
+    ctx: CanvasRenderingContext2D
+
+    /*
+     * The field is drawn twice by two different renderers over its lifetime.
+     * The intro tween needs real SVG paths — it animates `drawSVG` across them
+     * with a staggered edges-in reveal — but keeping them afterwards means
+     * rewriting ~200 `d` attributes from ~7,000 points on every single frame,
+     * which is by far the most expensive thing on the page and lands squarely
+     * on the first scroll. So the moment the intro finishes, the paths are
+     * thrown away and the identical geometry is stroked into a canvas: one
+     * path, one `stroke()`, no DOM writes, no string building, no re-parsing.
+     */
+    useCanvas: boolean
+    dpr: number
 
     bounding: {
       left: number
@@ -37,6 +58,13 @@ const { class: className } = Astro.props
     paths: any[]
     noise: any
 
+    /** Scratch coordinates written by `moved()` — see the note there. */
+    px: number
+    py: number
+
+    /** Last tick timestamp, so a rebuild can restore the wave state at once. */
+    lastTime: number
+
     isInteractive: boolean
     isPaused: boolean
 
@@ -46,6 +74,8 @@ const { class: className } = Astro.props
     connectedCallback() {
       // Elements
       this.svg = this.querySelector('.js-svg')
+      this.canvas = this.querySelector('.js-canvas')
+      this.ctx = this.canvas.getContext('2d')
 
       // Properties
       this.mouse = {
@@ -65,6 +95,26 @@ const { class: className } = Astro.props
       this.paths = []
       this.noise = new Noise(Math.random())
 
+      /*
+       * On a machine the quality monitor has already flagged from its hardware
+       * signals, skip the SVG stage entirely and start on the canvas.
+       *
+       * The staggered `drawSVG` reveal is the most expensive thing this page
+       * ever does — ~200 path elements mutated every frame for three seconds,
+       * across exactly the seconds a visitor first tries to scroll. The hero's
+       * entrance still plays (the whole field rises and fades up); the lines
+       * simply arrive already drawn instead of drawing themselves in.
+       */
+      this.useCanvas = Quality.isLow
+
+      if (this.useCanvas) {
+        this.svg.style.display = 'none'
+        this.canvas.style.display = 'block'
+      }
+
+      this.dpr = 1
+      this.lastTime = 0
+
       this.isInteractive = false
       this.isPaused = true
 
@@ -81,6 +131,8 @@ const { class: className } = Astro.props
     bindEvents() {
       Emitter.on('mousemove', this.onMouseMove, this)
       Emitter.on('resize', this.onResize, this)
+      Emitter.on('contrastchange', this.setCtxStyle, this)
+      Emitter.on('qualitychange', this.onQualityChange, this)
 
       this.addEventListener('touchmove', this.onTouchMove.bind(this))
 
@@ -95,6 +147,21 @@ const { class: className } = Astro.props
      * Resize handler
      */
     onResize() {
+      this.setSize()
+      this.setLines()
+    }
+
+    /**
+     * Quality handler
+     *
+     * The tier only ever drops, and only after the page has actually missed
+     * frames, so this fires at most once. Mid-intro it has to be deferred:
+     * the `drawSVG` tween holds references to the very path elements a rebuild
+     * would replace, and `onIntroEnd` rebuilds anyway.
+     */
+    onQualityChange() {
+      if (!this.useCanvas) return
+
       this.setSize()
       this.setLines()
     }
@@ -141,6 +208,14 @@ const { class: className } = Astro.props
     onIntersect(e) {
       this.isPaused = !e.detail.isIntersecting
 
+      /*
+       * The waves undulate on their own via perlin noise, so reduced motion
+       * gets the field held still. `setLines()` already draws once while
+       * paused, so the lines are on screen — they just don't breathe, and the
+       * pointer no longer pushes them around.
+       */
+      if (prefersReducedMotion()) return
+
       if (this.isPaused) {
         Emitter.off('tick', this.tick, this)
       } else {
@@ -150,9 +225,53 @@ const { class: className } = Astro.props
 
     /**
      * Intro end handler
+     *
+     * The staggered `drawSVG` reveal is finished with, so retire the ~200 path
+     * elements it needed and hand the field to the canvas renderer for the
+     * rest of the page's life.
      */
     onIntroEnd () {
       this.isInteractive = true
+
+      if (this.useCanvas) return
+
+      this.useCanvas = true
+
+      this.paths.forEach((path) => {
+        path.remove()
+      })
+      this.paths = []
+
+      this.svg.style.display = 'none'
+      this.canvas.style.display = 'block'
+
+      /*
+       * Rebuild rather than just redraw: if the frame monitor downgraded the
+       * tier while the intro was still running the rebuild was deferred to
+       * here, and `setLines` re-reads the spacing either way.
+       */
+      this.setSize()
+      this.setLines()
+      this.drawLines()
+    }
+
+    /**
+     * Read the stroke colour back out of the stylesheet
+     *
+     * The SVG paths inherited `stroke: color(secondary)` for free; the canvas
+     * has to be told, and told again whenever the theme is toggled.
+     */
+    setCtxStyle() {
+      if (!this.ctx) return
+
+      this.ctx.strokeStyle = getComputedStyle(this).getPropertyValue(
+        '--color-secondary'
+      )
+      this.ctx.lineWidth = 1
+
+      if (this.useCanvas && (this.isPaused || prefersReducedMotion())) {
+        this.drawLines()
+      }
     }
 
     /**
@@ -173,6 +292,26 @@ const { class: className } = Astro.props
 
       this.svg.style.width = `${this.bounding.width}px`
       this.svg.style.height = `${this.bounding.height}px`
+
+      /*
+       * Hairlines want the extra density, but this is a full-bleed surface, so
+       * the ratio is capped rather than taken at face value — and capped harder
+       * on machines that already told us they're struggling.
+       */
+      const cap = Quality.isLow ? 1.25 : 2
+      this.dpr = Math.min(window.devicePixelRatio || 1, cap)
+
+      this.canvas.width = Math.max(
+        1,
+        Math.round(this.bounding.width * this.dpr)
+      )
+      this.canvas.height = Math.max(
+        1,
+        Math.round(this.bounding.height * this.dpr)
+      )
+
+      this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
+      this.setCtxStyle()
     }
 
     /**
@@ -188,8 +327,15 @@ const { class: className } = Astro.props
       })
       this.paths = []
 
-      const xGap = 10
-      const yGap = 32
+      /*
+       * Density is the one dial that changes the cost of every frame at once:
+       * each point pays for a noise sample, the cursor spring and a segment.
+       * The dense grid is the intended look, so it stays the default and only
+       * a machine that has actually missed its frame budget gets the coarser
+       * one.
+       */
+      const xGap = Quality.isLow ? 16 : 10
+      const yGap = Quality.isLow ? 44 : 32
 
       const oWidth = width + 200
       const oHeight = height + 30
@@ -214,22 +360,31 @@ const { class: className } = Astro.props
           points.push(point)
         }
 
-        // Create path
-        const path = document.createElementNS(
-          'http://www.w3.org/2000/svg',
-          'path'
-        )
-        path.classList.add('a__line')
-        path.classList.add('js-line')
+        // Create path — only the intro renderer needs one.
+        if (!this.useCanvas) {
+          const path = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          )
+          path.classList.add('a__line')
+          path.classList.add('js-line')
 
-        this.svg.appendChild(path)
-        this.paths.push(path)
+          this.svg.appendChild(path)
+          this.paths.push(path)
+        }
 
         // Add points
         this.lines.push(points)
       }
 
-      if (this.isPaused) {
+      /*
+       * Bring the fresh points up to the current wave state before anything can
+       * see them — a rebuild otherwise flashes one frame of a perfectly flat
+       * grid, which was visible on every resize.
+       */
+      this.movePoints(this.lastTime)
+
+      if (this.isPaused || prefersReducedMotion()) {
         this.drawLines()
       }
     }
@@ -239,9 +394,19 @@ const { class: className } = Astro.props
      */
     movePoints(time) {
       const { lines, mouse, noise } = this
+      const interactive = this.isInteractive
 
-      lines.forEach((points) => {
-        points.forEach((p) => {
+      /*
+       * Indexed loops rather than nested `forEach`: this body runs thousands of
+       * times a frame, so the per-callback overhead is a real slice of the
+       * budget.
+       */
+      for (let i = 0; i < lines.length; i++) {
+        const points = lines[i]
+
+        for (let j = 0; j < points.length; j++) {
+          const p = points[j]
+
           // Wave movement
           const move =
             noise.perlin2(
@@ -252,7 +417,7 @@ const { class: className } = Astro.props
           p.wave.y = Math.sin(move) * 16
 
           // Mouse effect
-          if (this.isInteractive) {
+          if (interactive) {
             const dx = p.x - mouse.sx
             const dy = p.y - mouse.sy
             const d = Math.hypot(dx, dy)
@@ -278,53 +443,84 @@ const { class: className } = Astro.props
             p.cursor.x = Math.min(100, Math.max(-100, p.cursor.x)) // Clamp movement
             p.cursor.y = Math.min(100, Math.max(-100, p.cursor.y))
           }
-        })
-      })
+        }
+      }
     }
 
     /**
      * Get point coordinates with movement added
+     *
+     * Returns the pair through two scratch fields rather than a fresh object:
+     * this runs once per point per frame, and a few thousand short-lived
+     * objects a frame is enough garbage to show up as periodic hitching.
      */
     moved(point, withCursorForce = true) {
-      const coords = {
-        x: point.x + point.wave.x + (withCursorForce ? point.cursor.x : 0),
-        y: point.y + point.wave.y + (withCursorForce ? point.cursor.y : 0),
-      }
-
-      // Round to 2 decimals
-      coords.x = Math.round(coords.x * 10) / 10
-      coords.y = Math.round(coords.y * 10) / 10
-
-      return coords
+      this.px = point.x + point.wave.x + (withCursorForce ? point.cursor.x : 0)
+      this.py = point.y + point.wave.y + (withCursorForce ? point.cursor.y : 0)
     }
 
     /**
      * Draw lines
      */
     drawLines() {
-      const { lines, moved, paths } = this
+      if (this.useCanvas) {
+        this.drawCanvas()
+      } else {
+        this.drawSvg()
+      }
+    }
 
-      lines.forEach((points, lIndex) => {
-        let p1 = moved(points[0], false)
+    /**
+     * Draw lines — canvas renderer (used from the end of the intro onwards)
+     *
+     * Every line goes into a single path and a single `stroke()`, so the whole
+     * field costs one rasterisation with no DOM involvement at all.
+     */
+    drawCanvas() {
+      const { lines, ctx, bounding } = this
 
-        let d = `M ${p1.x} ${p1.y}`
+      ctx.clearRect(0, 0, bounding.width, bounding.height)
+      ctx.beginPath()
 
-        points.forEach((p1, pIndex) => {
-          const isLast = pIndex === points.length - 1
+      for (let lIndex = 0; lIndex < lines.length; lIndex++) {
+        const points = lines[lIndex]
+        const last = points.length - 1
 
-          p1 = moved(p1, !isLast)
+        this.moved(points[0], false)
+        ctx.moveTo(this.px, this.py)
 
-          const p2 = moved(
-            points[pIndex + 1] || points[points.length - 1],
-            !isLast
-          )
+        for (let pIndex = 0; pIndex <= last; pIndex++) {
+          this.moved(points[pIndex], pIndex !== last)
+          ctx.lineTo(this.px, this.py)
+        }
+      }
 
-          // d += `Q ${p1.x} ${p1.y} ${(p1.x + p2.x) / 2} ${(p1.y + p2.y) / 2} `
-          d += `L ${p1.x} ${p1.y}`
-        })
+      ctx.stroke()
+    }
+
+    /**
+     * Draw lines — SVG renderer (used for the intro's staggered draw-in)
+     */
+    drawSvg() {
+      const { lines, paths } = this
+
+      for (let lIndex = 0; lIndex < lines.length; lIndex++) {
+        const points = lines[lIndex]
+        const last = points.length - 1
+
+        this.moved(points[0], false)
+
+        // One decimal is all a 1px stroke can show, and shorter strings parse
+        // faster.
+        let d = `M ${round(this.px)} ${round(this.py)}`
+
+        for (let pIndex = 0; pIndex <= last; pIndex++) {
+          this.moved(points[pIndex], pIndex !== last)
+          d += `L ${round(this.px)} ${round(this.py)}`
+        }
 
         paths[lIndex].setAttribute('d', d)
-      })
+      }
     }
 
     /**
@@ -332,6 +528,8 @@ const { class: className } = Astro.props
      */
     tick(time) {
       const { mouse } = this
+
+      this.lastTime = time
 
       // Smooth mouse movement
       mouse.sx += (mouse.x - mouse.sx) * 0.1
@@ -406,6 +604,21 @@ const { class: className } = Astro.props
         stroke: color(secondary);
         stroke-width: 1px;
       }
+    }
+
+    /*
+     * Absolute so swapping the SVG out for it can't disturb the layout — the
+     * element takes its size from the flex parent either way.
+     */
+    .a__canvas {
+      display: none;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
     }
   }
 </style>

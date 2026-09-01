@@ -1,0 +1,1045 @@
+---
+import AProjectCard from './AProjectCard.astro'
+import { GITHUB_REPOS, featuredProject, gridProjects, projects } from '../data/projects'
+
+const total = String(projects.length).padStart(2, '0')
+
+// The featured project is always 01; the rest keep their order from the data
+// file, offset by one.
+const ordered = [featuredProject, ...gridProjects]
+
+/*
+ * Where each card floats inside the pinned viewport, and how it behaves there.
+ *
+ * The five are fanned across the middle band at staggered heights rather than
+ * stacked in a grid, and the arrangement is deliberately overlap-free. A card's
+ * actions sit at its bottom-left, so any card in front of another would occlude
+ * its neighbour's repository link — and raising the covered card requires
+ * hovering it, which the card in front makes impossible. Depth is carried by
+ * turn, scale, drift and the parallax rise instead, which costs nothing in reach.
+ *
+ * `ry` is the lane's resting turn inside the scene's perspective — positive turns
+ * the card's right edge away from the viewer — and the five run +3 through 0 to -3
+ * so the fan curves around one vanishing point instead of lying flat like a
+ * contact sheet. The angles look modest written down and are not: the perspective
+ * is shared, so a lane sitting 38vw off-axis has its edges thrown several times
+ * further than the same turn would move them under a perspective of its own. That
+ * is also why the fan went from four lanes at +/-5deg to five at +/-3deg — the
+ * fifth lane costs 3vw of width each, and a turn that was free at 21vw wide is
+ * not at 17.6vw.
+ *
+ * `fromZ` is how far behind the glass the card waits before it settles, so it
+ * arrives out of the same depth the letters are flying through rather than
+ * sliding up from below, and `fromX` is the sideways offset it travels in from.
+ * Both are read together, and the outer lanes' numbers look backwards until you
+ * remember the perspective is shared: a card waiting behind the glass is pulled
+ * toward the vanishing point in proportion to how far off-axis its lane sits, so
+ * lanes 0 and 4 — 38vw out — would swing far enough inward mid-flight to clip the
+ * lane beside them. They get the shallowest depth and the widest outward offset,
+ * which cancels the pull; the centre lane, where the projection barely moves
+ * anything, keeps the deep entrance. `lint-cluster.mjs` reports the tightest gap
+ * it finds between any two projected cards.
+ *
+ * `fromZ` is in `vw` like the perspective itself, so the entrance reads
+ * identically at 1100px and at 2560px.
+ *
+ * `depth` is a scale multiplier and `rise` how far the card climbs across the
+ * whole scroll window, so no two travel at the same rate and the group reads
+ * layered. `rise` is also a budget, not a free choice: a lane that passes under
+ * the framing copy has only `top - headBottom` of room to climb into, so lanes 0
+ * and 1 get the shallowest climb and the centre lane — which nothing sits above —
+ * gets the deepest. The lanes are 17.6vw wide with 2vw between them;
+ * `lint-cluster.mjs` projects every rotated, drifting, risen edge through the
+ * perspective at forty-one points in the window to prove none of that closes a
+ * gap, crosses the framing copy, or pushes a card off the screen.
+ *
+ * `dx`/`dy`/`dz`/`dr` are the idle hover: a slow three-axis float, deliberately
+ * under a degree and a half so it reads as suspension rather than as wobble. The
+ * vertical share is the generous one and the horizontal share is not, because two
+ * neighbours drifting at unrelated phases can be at opposite ends of their travel
+ * at the same moment — so every horizontal millimetre here is spent twice out of
+ * the 2vw between them, while `dy` costs nothing at all.
+ */
+const SLOTS = [
+  { i: 0, depth: 0.96, ry: '3deg', rise: '-1.5lvh', fromZ: '-9vw', fromX: '-4rem', fromY: '5rem', dx: '0.18rem', dy: '0.7rem', dz: '0.22rem', dr: '1.1deg' },
+  { i: 1, depth: 1, ry: '1.5deg', rise: '-2lvh', fromZ: '-16vw', fromX: '-1rem', fromY: '4rem', dx: '-0.16rem', dy: '0.85rem', dz: '-0.26rem', dr: '-0.95deg' },
+  { i: 2, depth: 1.02, ry: '0deg', rise: '-5.5lvh', fromZ: '-20vw', fromX: '0rem', fromY: '5.5rem', dx: '0.2rem', dy: '0.6rem', dz: '0.2rem', dr: '-1.15deg' },
+  { i: 3, depth: 0.99, ry: '-1.5deg', rise: '-4.5lvh', fromZ: '-16vw', fromX: '1rem', fromY: '4.5rem', dx: '-0.18rem', dy: '0.8rem', dz: '-0.24rem', dr: '0.9deg' },
+  { i: 4, depth: 0.97, ry: '-3deg', rise: '-3lvh', fromZ: '-9vw', fromX: '4rem', fromY: '5rem', dx: '0.15rem', dy: '0.75rem', dz: '0.26rem', dr: '-1.05deg' },
+]
+
+const slotStyle = (index: number) => {
+  const slot = SLOTS[index % SLOTS.length]
+
+  return [
+    `--i: ${slot.i}`,
+    `--depth: ${slot.depth}`,
+    `--ry: ${slot.ry}`,
+    `--rise: ${slot.rise}`,
+    `--from-x: ${slot.fromX}`,
+    `--from-y: ${slot.fromY}`,
+    `--from-z: ${slot.fromZ}`,
+    `--dx: ${slot.dx}`,
+    `--dy: ${slot.dy}`,
+    `--dz: ${slot.dz}`,
+    `--dr: ${slot.dr}`,
+  ].join('; ')
+}
+---
+
+<section id="projects" class="s-projects js-projects" data-intersect>
+  <span class="s__rule" data-reveal="rule" aria-hidden="true"></span>
+
+  <div class="s__stage">
+    <header class="s__head" data-reveal-group>
+      <p class="s__eyebrow" data-reveal>
+        <span class="s__eyebrow__mark" aria-hidden="true"></span>
+        Selected work
+      </p>
+
+      <h2 class="s__title" data-reveal>
+        Things I built<br />
+        <em>end to end</em>
+      </h2>
+
+      <p class="s__lead" data-reveal>
+        Consensus and fault tolerance, optimization under hard constraints,
+        safety layers for autonomous agents, and medical image reconstruction —
+        plus the site you're reading. Each one links straight to the code.
+      </p>
+    </header><!-- .s__head -->
+
+    <div class="s__slots js-cluster">
+      {
+        ordered.map((project, index) => (
+          <div class={`s__slot s__slot--${index}`} style={slotStyle(index)}>
+            <AProjectCard
+              project={project}
+              index={String(index + 1).padStart(2, '0')}
+              total={total}
+              featured={index === 0}
+              cluster
+            />
+          </div>
+        ))
+      }
+    </div><!-- .s__slots -->
+
+    <footer class="s__foot" data-reveal>
+      <a class="s__foot__link" href={GITHUB_REPOS} target="_blank" rel="noopener">
+        <span>All repositories</span>
+        <svg class="s__foot__icon" viewBox="0 0 12 12" aria-hidden="true">
+          <path
+            d="M2.5 9.5 L9.5 2.5 M4.5 2.5 H9.5 V7.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"></path>
+        </svg>
+      </a>
+    </footer><!-- .s__foot -->
+  </div><!-- .s__stage -->
+</section>
+
+<script>
+  import Emitter from '../utils/Emitter'
+
+  /**
+   * Pointer response for the project cards.
+   *
+   * Two jobs, one rAF. Per card: a 3D tilt from two unitless custom properties.
+   * Across the cluster: a single parallax offset for the whole group, so the cards
+   * lean together toward the pointer while their own depths scale how far each one
+   * appears to move.
+   *
+   * Every write is coalesced into one frame, so a pointer sweep across the
+   * cluster costs one style flush regardless of how many cards it crosses. The
+   * cards render flat and centred if this never runs.
+   */
+  const CLAMP = 1
+
+  class ProjectTilt {
+    root: HTMLElement
+    cluster: HTMLElement
+    cards: HTMLElement[]
+    pending: Map<HTMLElement, [number, number]>
+    clusterPending: [number, number] | null
+    frame: number
+    attached: boolean
+    reducedMotion: MediaQueryList
+    finePointer: MediaQueryList
+
+    constructor() {
+      this.root = document.querySelector('.js-projects')
+      this.cluster = document.querySelector('.js-cluster')
+      this.cards = Array.from(
+        document.querySelectorAll<HTMLElement>('.js-project-card')
+      )
+
+      if (!this.cards.length) return
+
+      this.pending = new Map()
+      this.clusterPending = null
+      this.frame = 0
+      this.attached = false
+
+      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+      this.finePointer = window.matchMedia('(hover: hover) and (pointer: fine)')
+
+      this.onMove = this.onMove.bind(this)
+      this.onEnter = this.onEnter.bind(this)
+      this.onLeave = this.onLeave.bind(this)
+      this.flush = this.flush.bind(this)
+      this.sync = this.sync.bind(this)
+
+      this.reducedMotion.addEventListener('change', this.sync)
+      this.finePointer.addEventListener('change', this.sync)
+
+      this.sync()
+    }
+
+    /** Attach or detach depending on the current media-query state. */
+    sync() {
+      const shouldRun = this.finePointer.matches && !this.reducedMotion.matches
+
+      if (shouldRun && !this.attached) this.attach()
+      else if (!shouldRun && this.attached) this.detach()
+    }
+
+    attach() {
+      this.attached = true
+
+      this.cards.forEach((card) => {
+        card.addEventListener('pointerenter', this.onEnter)
+        card.addEventListener('pointermove', this.onMove)
+        card.addEventListener('pointerleave', this.onLeave)
+      })
+
+      /*
+       * The site already runs one pointer listener and broadcasts it, so the
+       * cluster parallax subscribes to that rather than adding a second.
+       */
+      if (this.cluster) Emitter.on('mousemove', this.onClusterMove, this)
+    }
+
+    detach() {
+      this.attached = false
+
+      if (this.frame) {
+        cancelAnimationFrame(this.frame)
+        this.frame = 0
+      }
+
+      this.pending.clear()
+      this.clusterPending = null
+
+      if (this.cluster) {
+        Emitter.off('mousemove', this.onClusterMove, this)
+
+        this.cluster.style.setProperty('--px', '0')
+        this.cluster.style.setProperty('--py', '0')
+      }
+
+      this.cards.forEach((card) => {
+        card.removeEventListener('pointerenter', this.onEnter)
+        card.removeEventListener('pointermove', this.onMove)
+        card.removeEventListener('pointerleave', this.onLeave)
+
+        this.reset(card)
+      })
+    }
+
+    onEnter(event: PointerEvent) {
+      ;(event.currentTarget as HTMLElement).classList.add('is-hovered')
+    }
+
+    onMove(event: PointerEvent) {
+      const card = event.currentTarget as HTMLElement
+      const rect = card.getBoundingClientRect()
+
+      if (!rect.width || !rect.height) return
+
+      // Normalise the pointer to -1..1 across the card.
+      const x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+      const y = ((event.clientY - rect.top) / rect.height) * 2 - 1
+
+      this.pending.set(card, [
+        Math.max(-CLAMP, Math.min(CLAMP, x)),
+        Math.max(-CLAMP, Math.min(CLAMP, y)),
+      ])
+
+      // Read in the event, write in the frame — never interleaved.
+      if (!this.frame) this.frame = requestAnimationFrame(this.flush)
+    }
+
+    /**
+     * Whole-cluster parallax, in viewport coordinates.
+     *
+     * Skipped unless the cluster is the thing on screen — otherwise every pointer
+     * move anywhere on the page would be writing custom properties into a layer
+     * nobody can see.
+     */
+    onClusterMove(x: number, y: number) {
+      if (!this.root || !this.root.classList.contains('is-cluster')) return
+
+      this.clusterPending = [
+        (x / window.innerWidth) * 2 - 1,
+        (y / window.innerHeight) * 2 - 1,
+      ]
+
+      if (!this.frame) this.frame = requestAnimationFrame(this.flush)
+    }
+
+    flush() {
+      this.frame = 0
+
+      this.pending.forEach(([x, y], card) => {
+        card.style.setProperty('--tilt-x', x.toFixed(3))
+        card.style.setProperty('--tilt-y', y.toFixed(3))
+      })
+
+      this.pending.clear()
+
+      if (this.clusterPending) {
+        const [x, y] = this.clusterPending
+
+        this.cluster.style.setProperty('--px', x.toFixed(3))
+        this.cluster.style.setProperty('--py', y.toFixed(3))
+
+        this.clusterPending = null
+      }
+    }
+
+    reset(card: HTMLElement) {
+      card.style.setProperty('--tilt-x', '0')
+      card.style.setProperty('--tilt-y', '0')
+    }
+  }
+
+  new ProjectTilt()
+</script>
+
+<style lang="scss">
+  $paper: #fff0eb;
+
+  /*
+   * Two presentations of one block.
+   *
+   * The base layer is an ordinary document-flow showcase: header, cards, link.
+   * That's what mobile gets, and what a desktop browser gets if the scene's
+   * script never runs — so the fallback is a readable page rather than an empty
+   * one.
+   *
+   * On top of that, `mq(desktop)` + `.is-cluster-js` turns the block into a fixed
+   * layer floating inside the Work scene's pinned viewport. `is-cluster-js` is
+   * added by SWork, which is the only thing that can know whether the pinned
+   * scene is actually driving anything.
+   */
+  .s-projects {
+    position: relative;
+    z-index: 2;
+
+    padding: 7rem 0 9rem;
+
+    background: color(primary);
+
+    @include mq(desktop-sm) {
+      padding: 5.5rem 0 7rem;
+    }
+
+    @include mq(phone) {
+      padding: 3.5rem 0 4.5rem;
+    }
+
+    /*
+     * In flow this block opens on a hairline that draws itself across the full
+     * bleed — the seam between the cinematic title card above and the cards
+     * below, instead of a hard edge. The pinned cluster has the scene's own mask
+     * for a frame and doesn't need it.
+     */
+    .s__rule {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      display: block;
+
+      width: 100%;
+      height: 1px;
+
+      background: color(secondary);
+      opacity: 0.35;
+      transform-origin: 0 50%;
+    }
+
+    .s__stage {
+      width: 100%;
+      max-width: 84rem;
+      margin: 0 auto;
+      padding: 0 4rem;
+
+      @include mq(desktop-sm) {
+        padding: 0 2.5rem;
+      }
+
+      @include mq(phone) {
+        padding: 0 1.25rem;
+      }
+    }
+
+    /* ── Header ──────────────────────────────────────────────────────────── */
+
+    .s__head {
+      max-width: 46rem;
+      margin-bottom: 4rem;
+
+      @include mq(phone) {
+        margin-bottom: 2.5rem;
+      }
+    }
+
+    .s__eyebrow {
+      @include flex(row, center, flex-start);
+
+      gap: 0.75rem;
+      margin: 0 0 1.5rem;
+
+      color: color(secondary);
+      font: 700 11px / 1 font-family(fraktion);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+
+      &__mark {
+        width: 2rem;
+        height: 1px;
+
+        background: currentcolor;
+      }
+    }
+
+    .s__title {
+      margin: 0 0 1.5rem;
+
+      color: color(secondary);
+      font: 400 clamp(2.5rem, 6vw, 4.5rem) / 0.95 font-family(editorial);
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+
+      em {
+        font-style: italic;
+        /* The italic cut carries the emphasis; no colour shift needed. */
+        opacity: 0.55;
+      }
+    }
+
+    .s__lead {
+      max-width: 34rem;
+      margin: 0;
+
+      color: color(secondary);
+      font: 400 16px / 1.6 font-family(fraktion);
+      opacity: 0.75;
+
+      @include mq(phone) {
+        font-size: 14px;
+      }
+    }
+
+    /* ── Cards in flow ───────────────────────────────────────────────────── */
+
+    .s__slots {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+
+      @include mq(tablet-sm) {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+      }
+    }
+
+    .s__slot {
+      /* The perspective lives on the slot so the card's own transform stays a
+         pure rotation. */
+      perspective: 1400px;
+    }
+
+    /* ── Footer link ─────────────────────────────────────────────────────── */
+
+    .s__foot {
+      @include flex(row, center, flex-start);
+
+      margin-top: 3rem;
+
+      @include mq(phone) {
+        margin-top: 2rem;
+      }
+
+      &__link {
+        @include flex(row, center, center);
+
+        gap: 0.625em;
+        padding: 1em 2em;
+
+        background: color(secondary);
+
+        color: $paper;
+        font: 700 11px / 1 font-family(fraktion);
+        letter-spacing: 0.18em;
+        text-decoration: none;
+        text-transform: uppercase;
+
+        transition:
+          background-color var(--hover-duration, 0.45s) ease,
+          border-color var(--hover-duration, 0.45s) ease,
+          color var(--hover-duration, 0.45s) ease,
+          transform var(--press-duration, 0.12s) ease;
+
+        &:hover,
+        &:focus-visible {
+          background: $paper;
+
+          color: color(secondary);
+
+          .s__foot__icon {
+            transform: translate3d(2px, -2px, 0);
+          }
+        }
+
+        &:focus-visible {
+          outline: 2px solid color(secondary);
+          outline-offset: 3px;
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+
+      &__icon {
+        display: block;
+
+        width: 0.75em;
+        height: 0.75em;
+
+        overflow: visible;
+
+        transition: transform 0.35s var(--hover-ease, ease);
+      }
+    }
+
+    /* ══ Pinned cluster ═══════════════════════════════════════════════════ */
+
+    @include mq(desktop) {
+      &.is-cluster-js {
+        /*
+         * The block itself is a zero-content anchor: a clip region for the fixed
+         * stage, and the thing `#projects` actually scrolls to. `--scene-lvh` and
+         * `--cluster-lvh` are inherited from the scene, so the two acts can never
+         * disagree about where the section ends.
+         *
+         * `--landing-lvh` is where a deep link should come to rest: far enough in
+         * that the fan has finished arriving and well clear of the closing
+         * stretch. With five cards the last one settles at `--cluster` 0.558 —
+         * about 168lvh into the section — so 135 would have dropped a deep link
+         * mid-entrance, with the fifth card still in flight. It is *not* where the
+         * cluster begins — the cards start appearing during the fly-through, a
+         * whole act earlier — which is why the clip below has to reach back past
+         * the section's own top edge.
+         */
+        --landing-lvh: 180;
+
+        position: absolute;
+        top: calc(var(--landing-lvh) * 1lvh);
+        left: 0;
+
+        width: 100%;
+        height: calc(
+          (var(--scene-lvh, 250) + var(--cluster-lvh, 170) - var(--landing-lvh)) *
+            1lvh
+        );
+
+        padding: 0;
+
+        background: none;
+        /*
+         * This is what unpins the stage, and it's the same mechanism the scene
+         * above uses on `.s__outer`. A clip path clips fixed descendants without
+         * becoming their containing block, so the stage below stays genuinely
+         * viewport-fixed while only ever painting where this region overlaps the
+         * viewport. Scrolling out of the section therefore slides the cluster
+         * away exactly as it slides the scene away — no scroll-linked fade to
+         * keep in sync, and no chance of a fixed layer stranded over the
+         * sections that follow.
+         *
+         * Only the bottom edge does that work, hence the negative top inset, and
+         * it has to be generous: the region starts at `--landing-lvh` for the
+         * deep link's sake, but the first card fades up a quarter of a viewport
+         * *above* the section's top, so the clip is pulled back far enough to
+         * clear both (180 − 220 = 40lvh of headroom above the section). The top
+         * edge is therefore never the gate; `visibility`, keyed on `.is-cluster`,
+         * is the honest one for that end.
+         */
+        clip-path: inset(-220lvh -1rem 0 -1rem);
+        pointer-events: none;
+
+        .s__rule {
+          display: none;
+        }
+
+        /*
+         * Fixed, so it floats inside the pinned viewport instead of scrolling
+         * past below it. Hidden rather than merely transparent: a full-viewport
+         * layer of links that can't be seen must also not be reachable by Tab.
+         */
+        .s__stage {
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 5;
+
+          width: 100%;
+          height: 100lvh;
+          max-width: none;
+          margin: 0;
+          /* Everything inside is absolutely placed against this box, so the flow
+             layout's padding would be inert here. The slots carry their own
+             viewport-relative insets instead. */
+          padding: 0;
+
+          overflow: hidden;
+          /*
+           * The entrance, and then a constant 1 for the long middle of the
+           * scroll. Holding it flat lets the compositor drop the opacity layer
+           * instead of repainting a full-viewport group of shadowed cards every
+           * frame — the per-card stagger below is what carries the arrival.
+           *
+           * It cannot start at 0. This layer is lettered for ink, and the ink
+           * only exists once the scene's aperture has opened over the paper: the
+           * mask grows on `power4.in` across the first 0.185 of `--cluster`, so a
+           * fade from zero would put paper-coloured framing copy on a paper
+           * background for most of it. 0.185 is where the aperture finishes and
+           * the first cover starts flying — the same instant the first card
+           * begins to settle — so the frame arrives with it.
+           *
+           * The second term is the capsule shutting again over the last stretch,
+           * for the same reason in reverse.
+           */
+          opacity: min(
+            clamp(0, calc((var(--cluster, 0) - 0.185) * 16.6667), 1),
+            calc(1 - var(--close, 0))
+          );
+          visibility: hidden;
+
+          pointer-events: none;
+        }
+
+        &.is-cluster .s__stage {
+          visibility: visible;
+        }
+
+        /* ── Framing copy ─────────────────────────────────────────────── */
+
+        /*
+         * Act two plays inside the capsule rather than after it, so what's behind
+         * this copy is the scene's ink and the letter field sweeping across it.
+         * The flow layout's dark-on-paper framing would simply not be there.
+         */
+        .s__eyebrow,
+        .s__title {
+          color: $paper;
+        }
+
+        .s__head {
+          position: absolute;
+          top: 4lvh;
+          left: 4vw;
+
+          /*
+           * Stops well short of the second lane, so the only card it sits above
+           * is the lowest one in the fan — and the lanes climb as the window
+           * scrolls, so the margin has to survive that too.
+           */
+          max-width: 20vw;
+          margin: 0;
+
+          pointer-events: auto;
+        }
+
+        .s__eyebrow {
+          margin-bottom: 1rem;
+        }
+
+        .s__title {
+          margin: 0;
+
+          font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+        }
+
+        /* The scene is doing the talking here; the lead is flow-only copy. */
+        .s__lead {
+          display: none;
+        }
+
+        /*
+         * Top band, not the bottom corner. Every card's detail panel opens
+         * downward, so the lower third of the viewport has to stay clear — a
+         * link parked at the bottom right would sit exactly where the rightmost
+         * card expands into. Up here it pairs with the framing copy across the
+         * same row and the whole lower half belongs to the cards.
+         */
+        .s__foot {
+          position: absolute;
+          top: 4lvh;
+          right: 4vw;
+
+          margin: 0;
+
+          pointer-events: auto;
+        }
+
+        /*
+         * A ghost pill instead of the flow layout's solid ink one, for the same
+         * reason the copy above flips: filled ink on the capsule's ink is a
+         * rectangle of nothing. It still fills with paper on hover, so the
+         * interaction reads identically in both presentations.
+         */
+        .s__foot__link {
+          padding: 0.9em 1.75em;
+
+          background: none;
+          border: 1px solid rgba($paper, 0.3);
+
+          /*
+           * Restated, not inherited. `.s-projects.is-cluster-js .s__foot__link`
+           * is three classes, which exactly ties the base rule's
+           * `.s-projects .s__foot__link:hover` — a pseudo-class counts the same
+           * as a class — so source order decides, and this block is later. An
+           * unqualified `background` here would leave the pill inert instead of
+           * filling. The border joins the fill so the edge doesn't outline it.
+           */
+          &:hover,
+          &:focus-visible {
+            background: $paper;
+            border-color: $paper;
+          }
+
+          &:focus-visible {
+            outline-color: $paper;
+          }
+        }
+
+        /* ── The cluster ──────────────────────────────────────────────── */
+
+        .s__slots {
+          /*
+           * A fit correction, not motion: see the short-viewport rules at the
+           * end of this block. It rides in the same `translate` as the pointer
+           * parallax because an element has only one of those.
+           */
+          --lift: 0px;
+
+          position: absolute;
+          inset: 0;
+
+          display: block;
+          gap: 0;
+
+          /*
+           * The volume the cards live in.
+           *
+           * The perspective sits here rather than on each slot so all five share
+           * one vanishing point: the fan then curves around a single viewer, the
+           * way the letter field behind it does, and a card arriving out of depth
+           * swings outward from the centre instead of growing in place. Slots
+           * carry their own `perspective` too, but that one is for the pointer
+           * tilt of the card inside — nested, and deliberately so, because a
+           * flattened slot can never intersect its neighbour's plane.
+           *
+           * In `vw`, not `rem`: every distance being projected — lane offsets,
+           * card widths, the entrance depth — is a fraction of the viewport, so a
+           * fixed focal length would make the fan gentle at 1100px and grotesque
+           * at 2560px. Tying it to the same unit holds the projection identical at
+           * every width, which is also what lets one set of angles be verified
+           * once.
+           *
+           * 68vw, not 60: a longer focal length flattens the projection, and with
+           * five lanes the outermost sits 39vw off-axis where every degree of turn
+           * and every millimetre of entrance depth is thrown outward in proportion
+           * to that distance. The shorter lens was what four lanes could afford.
+           *
+           * The origin is dropped to the cards' own band. The group's box is the
+           * whole viewport, so leaving it centred would put the vanishing point up
+           * in the framing copy and read as looking down on the fan.
+           */
+          perspective: 68vw;
+          perspective-origin: 50% 40%;
+
+          /*
+           * One transitioned element for the whole group. The pointer offset
+           * eases here; the scroll-driven parallax lives on each slot and is
+           * deliberately not transitioned, because a lag against the scrollbar
+           * reads as jank rather than as weight.
+           *
+           * Kept to a dozen pixels because it is a fixed length competing with
+           * viewport-relative lane margins: at 1100px it is already most of the
+           * clearance the outermost card has.
+           */
+          translate: calc(var(--px, 0) * 12px)
+            calc(var(--py, 0) * 10px + var(--lift));
+          rotate: calc(var(--px, 0) * 0.5deg);
+
+          transition:
+            translate 0.6s ease(out-quad),
+            rotate 0.6s ease(out-quad);
+        }
+
+        .s__slot {
+          /*
+           * The arrival, one card at a time, in step with the scene behind it.
+           *
+           * Act one flies the five covers through the aperture one after another,
+           * and the covers are the same five projects as these cards in the same
+           * order — so card N settles exactly while cover N is on screen. In
+           * `--cluster` terms each cover occupies a window of 0.123 starting at
+           * 0.185 and staggered by 0.062, which is what these three constants are:
+           * the offset waits for the aperture, the stagger matches the covers', and
+           * the rate is 1/0.125. The upshot is that a card is what its cover leaves
+           * behind, rather than five cards appearing together once the scene has
+           * finished — which is what this looked like before, and read as the
+           * projects arriving at the end.
+           *
+           * These numbers are derived from act one's GSAP timeline, not chosen:
+           * `lint-timeline.mjs` recomputes them from the tween positions and fails
+           * if the two drift apart.
+           */
+          --settle: clamp(
+            0,
+            calc((var(--cluster, 0) - 0.185 - var(--i) * 0.062) * 8),
+            1
+          );
+
+          position: absolute;
+
+          opacity: var(--settle);
+
+          /*
+           * Three transform layers that never touch each other: `translate`,
+           * `rotate` and `scale` here carry the settle, the lane's turn and the
+           * scroll parallax, the drift keyframes below own `transform` on this
+           * same element, and the card inside owns its own `transform` for the
+           * pointer tilt.
+           */
+          translate:
+            calc((1 - var(--settle)) * var(--from-x))
+            calc(
+              (1 - var(--settle)) * var(--from-y) + var(--cluster, 0) *
+                var(--rise)
+            )
+            calc((1 - var(--settle)) * var(--from-z));
+          /*
+           * The lane's turn, opening as the card settles and then swinging a
+           * couple of degrees further across the rest of the window — the letter
+           * field behind it is still sweeping, and a fan that froze the instant it
+           * arrived would stop belonging to it. Held at 40% of the angle before
+           * `--spread` starts so an arriving card is already in perspective rather
+           * than snapping into it.
+           *
+           * The swing is uniform, so by the end of the window it has biased every
+           * lane the same way — which lands entirely on the right-hand pair, whose
+           * resting turns are already negative. Two degrees rather than three is
+           * what keeps that end of the fan from closing its own gaps.
+           */
+          rotate: y
+            calc(
+              var(--ry) * (0.4 + var(--spread, 0) * 0.6) +
+                (var(--cluster, 0) - 0.5) * -2deg
+            );
+          scale: calc(var(--depth) * (0.9 + var(--settle) * 0.1));
+
+          animation: slot-drift calc(11s + var(--i) * 2.5s) ease-in-out
+            calc(var(--i) * -2.3s) infinite alternate;
+          /* Nothing animates while the cluster is off screen. */
+          animation-play-state: paused;
+
+          /*
+           * The only transitioned property on this element, and it exists for the
+           * hover alone: the card being read turns square to the viewer so its
+           * copy — and the panel that opens under it — are flat on. The
+           * scroll-driven terms in the same value move by hundredths of a degree
+           * per frame, so the ease costs them nothing you could see, which is not
+           * true of `translate` and is why that one is left raw.
+           */
+          transition: rotate 0.55s ease(out-quad);
+
+          pointer-events: auto;
+
+          /*
+           * Five lanes across the middle band, each at a different height so the
+           * row reads as a drifting fan rather than a shelf. Three constraints
+           * hold the numbers down: every card's detail panel opens downward out
+           * of flow, so the clear band below the lowest lane is what it opens
+           * into; the lanes climb as the window scrolls, so a lane that shares a
+           * column with the framing copy has to still clear it once risen — which
+           * is why the two leftmost climb least; and the whole fan has to survive
+           * a 650px-tall laptop viewport, where the group is scaled to 0.85.
+           *
+           * The budget is `2m + 5w + 4g = 100`: margins 2vw, lanes 17.6vw,
+           * gutters 2vw. The gutter is the number this fan is actually built
+           * around — the turn, the entrance depth and two neighbours drifting at
+           * unrelated phases all spend out of it, and at 1081px it is 21.6px
+           * before the group's 0.85 short-viewport scale takes its cut.
+           * `lint-cluster.mjs` measures the projected edges, not these numbers.
+           */
+          &--0 {
+            top: 23lvh;
+            left: 2vw;
+
+            width: 17.6vw;
+          }
+
+          &--1 {
+            top: 23lvh;
+            left: 21.6vw;
+
+            width: 17.6vw;
+          }
+
+          &--2 {
+            top: 21lvh;
+            left: 41.2vw;
+
+            width: 17.6vw;
+          }
+
+          &--3 {
+            top: 22lvh;
+            left: 60.8vw;
+
+            width: 17.6vw;
+          }
+
+          &--4 {
+            top: 23lvh;
+            left: 80.4vw;
+
+            width: 17.6vw;
+          }
+
+          /*
+           * The card being read comes forward over its neighbours and squares up
+           * to the viewer — the one moment in the cluster where legibility beats
+           * the composition.
+           */
+          &:hover,
+          &:focus-within {
+            z-index: 8;
+
+            rotate: y 0deg;
+          }
+        }
+
+        &.is-cluster .s__slot {
+          animation-play-state: running;
+
+          will-change: translate, rotate, transform;
+        }
+
+        /*
+         * Shorter viewports: the cards keep their intrinsic height while the
+         * anchors are all in `lvh`, so past a point the only honest fix is to
+         * make the whole cluster a little smaller and slide it up into the space
+         * the top band isn't using. Scaling alone wouldn't do it — the group's
+         * centre is above the cards, so shrinking pulls their tops down almost
+         * as much as it pulls their bottoms up. The lift is the other half, and
+         * it lands outside the scale: CSS composes `translate` after `scale`, so
+         * these two numbers are independent rather than multiplied.
+         *
+         * Three steps rather than two, because what has to fit under the top
+         * band is the card *plus* its open highlights panel — around 560px of
+         * content at a 1100px-wide window — and the old pair left the last tier
+         * doing all of the work at once.
+         */
+        @media (max-height: 860px) {
+          .s__slots {
+            --lift: -2lvh;
+
+            scale: 0.95;
+          }
+        }
+
+        @media (max-height: 780px) {
+          .s__slots {
+            --lift: -4lvh;
+
+            scale: 0.9;
+          }
+        }
+
+        @media (max-height: 700px) {
+          .s__slots {
+            --lift: -6lvh;
+
+            scale: 0.85;
+          }
+        }
+      }
+    }
+  }
+
+  /*
+   * The idle hover. A settled cluster is never completely still: each card drifts
+   * laterally, bobs a few pixels toward and away from the glass, and tips on a
+   * mostly-horizontal axis, so it reads as suspended in the scene's volume rather
+   * than pinned to it. The depth term is what makes it three-dimensional — an
+   * off-centre card moving in Z also slides sideways through the shared vanishing
+   * point, which is a parallax no amount of 2D drift can fake.
+   *
+   * It animates `transform` because the slot's `translate`, `rotate` and `scale`
+   * are already spoken for by the scroll — individual properties compose, a second
+   * `transform` would not. Being last in the composition order, this plays out in
+   * the card's own turned space, which is exactly where a float belongs.
+   */
+  @keyframes slot-drift {
+    from {
+      transform: translate3d(
+          calc(var(--dx) * -1),
+          calc(var(--dy) * -1),
+          calc(var(--dz) * -1)
+        )
+        rotate3d(1, 0.4, 0.25, calc(var(--dr) * -1));
+    }
+
+    to {
+      transform: translate3d(var(--dx), var(--dy), var(--dz))
+        rotate3d(1, 0.4, 0.25, var(--dr));
+    }
+  }
+
+  /*
+   * These have to match the cluster rules' specificity to cancel them — the
+   * originals live under `.s-projects.is-cluster-js`, so a plain `.s-projects`
+   * descendant selector would lose. Layout is left alone on purpose: the
+   * short-viewport `scale` and `--lift` on `.s__slots` are fit decisions, not
+   * motion, and removing them would push cards off the screen. Hence the lift is
+   * kept while the pointer offset is dropped.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .s-projects.is-cluster-js .s__slots {
+      translate: 0 var(--lift, 0px);
+      rotate: none;
+
+      transition: none;
+    }
+
+    .s-projects.is-cluster-js .s__slot {
+      /* Settled, placed, and completely still. */
+      --settle: 1;
+
+      translate: none;
+      rotate: none;
+      animation: none;
+
+      transition: none;
+    }
+  }
+</style>

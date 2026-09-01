@@ -41,6 +41,7 @@
 <script>
   import Emitter from '../utils/Emitter'
   import Ticker from '../utils/Ticker'
+  import { prefersReducedMotion } from '../utils/reveal'
 
   class Section {
     el: HTMLElement
@@ -96,6 +97,7 @@
     lastTouch: number
 
     isPaused: boolean
+    isTicking: boolean
 
     /**
      * Constructor
@@ -144,6 +146,7 @@
       }
 
       this.isPaused = true
+      this.isTicking = false
 
       // Init
       if (document.readyState === 'complete') {
@@ -164,6 +167,17 @@
       this.bindEvents()
 
       this.firstObjects()
+
+      /*
+       * Establish the initial visibility here instead of waiting on the global
+       * observer. The observer only reports *changes*, and on a reload that
+       * restores the page mid-document its first callback can already have been
+       * delivered before the listener above existed — which would leave this
+       * section frozen with no way back. The class is set by that same
+       * observer, so reading it costs nothing and answers exactly the right
+       * question.
+       */
+      if (this.el.classList.contains('is-in-view')) this.setVisible(true)
     }
 
     /**
@@ -173,7 +187,6 @@
       Emitter.on('mousemove', this.onMouseMove, this)
       Emitter.on('resize', this.onResize, this)
       Emitter.on('scroll', this.onScroll, this)
-      Emitter.on('tick', this.tick, this)
 
       this.objects.forEach((object) => {
         object.el.addEventListener('mousedown', this.objectDragStart.bind(this))
@@ -199,14 +212,70 @@
      * Intersect handler
      */
     onIntersect(e) {
-      this.isPaused = !e.detail.isIntersecting
-      this.canThrow = e.detail.isIntersecting
+      this.setVisible(e.detail.isIntersecting)
+    }
 
-      if (!this.isPaused) {
-        this.thrownObjects.forEach((object) => {
-          object.isWaiting = false
-        })
+    /**
+     * Visibility
+     *
+     * The shared tick is subscribed and unsubscribed with visibility rather
+     * than left running for the life of the page. Everything it does — a custom
+     * property write on the section, a transform write per thrown object — is
+     * only ever seen while this section is on screen, so off-screen it was
+     * paying for frames in the other four sections and nothing else.
+     */
+    setVisible(isVisible) {
+      this.isPaused = !isVisible
+
+      /*
+       * This section's tick also drives the scroll-linked layout, so it keeps
+       * running under reduced motion — it only moves when the user scrolls.
+       * What does stop is the timer that keeps flinging new objects in, which
+       * is unprompted motion. Dragging still works.
+       */
+      this.canThrow = isVisible && !prefersReducedMotion()
+
+      if (!isVisible) {
+        this.stopTick()
+
+        return
       }
+
+      this.thrownObjects.forEach((object) => {
+        object.isWaiting = false
+      })
+
+      this.startTick()
+    }
+
+    /**
+     * Subscribe to the shared tick, snapping the smoothed values first.
+     *
+     * `scroll.sp` and `mouse.sx/sy` chase their targets by 10% a frame, and
+     * while unsubscribed they stop chasing. Re-entering without snapping would
+     * therefore play a visible catch-up slide across the section's whole
+     * layout — the one thing pausing must not cost.
+     */
+    startTick() {
+      if (this.isTicking) return
+
+      this.isTicking = true
+
+      const { mouse, scroll } = this
+
+      mouse.sx = mouse.x
+      mouse.sy = mouse.y
+      scroll.sp = scroll.p
+
+      Emitter.on('tick', this.tick, this)
+    }
+
+    stopTick() {
+      if (!this.isTicking) return
+
+      this.isTicking = false
+
+      Emitter.off('tick', this.tick, this)
     }
 
     /**

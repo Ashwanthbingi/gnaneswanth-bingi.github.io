@@ -44,6 +44,7 @@ const binaries = strings.map((string) => {
 
 <script>
   import Emitter from '../utils/Emitter'
+  import { prefersReducedMotion } from '../utils/reveal'
 
   class ASeparator extends HTMLElement {
     chars: NodeListOf<HTMLElement>
@@ -80,6 +81,14 @@ const binaries = strings.map((string) => {
      */
     onIntersect(e) {
       this.isPaused = !e.detail.isIntersecting
+
+      /*
+       * The tick flips glyphs at random forever — blinking content, which is
+       * exactly what reduced motion is asking us to stop. The chars are
+       * server-rendered with the real binary of the strings, so simply never
+       * subscribing leaves a correct, readable, perfectly still separator.
+       */
+      if (prefersReducedMotion()) return
 
       if (this.isPaused) {
         Emitter.off('tick', this.tick, this)

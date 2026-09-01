@@ -1,0 +1,761 @@
+---
+import type { Project } from '../data/projects'
+import { hasRepo, repoUrl } from '../data/projects'
+import { withBase } from '../utils/paths'
+
+interface Props {
+  project: Project
+  /** 1-based position, already zero-padded by the caller. */
+  index: string
+  total: string
+  featured?: boolean
+  /**
+   * Rendered as one of the cards floating inside the pinned Work scene, rather
+   * than as a block in document flow. Changes the density, not the content.
+   */
+  cluster?: boolean
+}
+
+const {
+  project,
+  index,
+  total,
+  featured = false,
+  cluster = false,
+} = Astro.props as Props
+
+const repo = repoUrl(project)
+// When we don't have a verified repo URL we link to the repositories listing
+// rather than guessing a slug that would 404, so the label softens too.
+const repoLabel = hasRepo(project) ? 'Repository' : 'GitHub'
+const discipline = project.categories[0]
+
+/*
+ * The deeper copy. In flow it only ever belonged to the featured card, because
+ * the grid cards had no room for it. A cluster card earns it back: the region
+ * folds away until the card is the one being read, so the space costs nothing
+ * until it's wanted.
+ */
+const detailed = featured || cluster
+---
+
+<article
+  class:list={[
+    'a-project',
+    { 'a-project--featured': featured, 'a-project--cluster': cluster },
+    'js-project-card',
+  ]}
+  data-reveal={featured || cluster ? undefined : 'up'}
+>
+  <div class="a__cover">
+    <img
+      src={withBase(project.image)}
+      alt=""
+      class="a__cover__img"
+      width="1082"
+      height="636"
+      loading="lazy"
+      decoding="async"
+    />
+
+    <div class="a__cover__sheen" aria-hidden="true"></div>
+  </div><!-- .a__cover -->
+
+  <div class="a__body">
+    <div class="a__meta">
+      <span class="a__meta__discipline">{discipline}</span>
+      <span class="a__meta__rule" aria-hidden="true"></span>
+      <span class="a__meta__count">{index}/{total}</span>
+    </div><!-- .a__meta -->
+
+    <h3 class="a__title">
+      <a href={repo} target="_blank" rel="noopener">
+        {project.title}
+      </a>
+    </h3>
+
+    <p class="a__problem">{project.problem}</p>
+
+    {
+      detailed && (
+        /*
+         * Two elements, not one: `grid-template-rows: 0fr → 1fr` is the only
+         * height collapse that animates from intrinsic content, and it needs a
+         * single overflow-hidden child to measure against. Deliberately holds
+         * nothing focusable — a collapsed region must never swallow a tab stop.
+         */
+        <div class="a__detail">
+          <div class="a__detail__inner">
+            <p class="a__description">{project.description}</p>
+
+            <ul class="a__highlights">
+              {project.highlights.map((highlight) => (
+                <li class="a__highlights__item">{highlight}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )
+    }
+
+    <ul class="a__tech" aria-label="Technologies used">
+      {project.technologies.map((tech) => <li class="a__tech__item">{tech}</li>)}
+    </ul>
+
+    <div class="a__actions">
+      <a class="a__btn a__btn--solid" href={repo} target="_blank" rel="noopener">
+        <span>{repoLabel}</span>
+        <svg class="a__btn__icon" viewBox="0 0 12 12" aria-hidden="true">
+          <path d="M2.5 9.5 L9.5 2.5 M4.5 2.5 H9.5 V7.5" fill="none" stroke="currentColor" stroke-width="1.4"></path>
+        </svg>
+      </a>
+
+      {
+        project.live && (
+          <a class="a__btn" href={project.live} target="_blank" rel="noopener">
+            <span>Live</span>
+            <svg class="a__btn__icon" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M2.5 9.5 L9.5 2.5 M4.5 2.5 H9.5 V7.5" fill="none" stroke="currentColor" stroke-width="1.4" />
+            </svg>
+          </a>
+        )
+      }
+    </div><!-- .a__actions -->
+  </div><!-- .a__body -->
+</article>
+
+<style lang="scss">
+  /*
+   * `secondary` and `white` are the same hex in both themes, so literal rgba
+   * values are safe here for hairlines and dimmed text. (The color() helper's
+   * alpha argument doesn't support this project's nested colour maps.)
+   */
+  $paper: #fff0eb;
+
+  .a-project {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    background: color(secondary);
+    border: 1px solid rgba($paper, 0.14);
+
+    /*
+     * The tilt is driven by two unitless custom properties set from JS. They
+     * default to 0 so the card renders flat with no script.
+     */
+    --tilt-x: 0;
+    --tilt-y: 0;
+
+    transform: rotateX(calc(var(--tilt-y) * -5deg))
+      rotateY(calc(var(--tilt-x) * 5deg));
+    transform-style: preserve-3d;
+
+    /*
+     * The card is both a reveal target and the owner of its own tilt, and
+     * `transition` is a single property — so the reveal's opacity/translate are
+     * listed here explicitly rather than left to win a cascade tie with
+     * site/_motion.scss.
+     */
+    transition:
+      transform 0.6s var(--hover-ease, ease),
+      border-color var(--hover-duration, 0.45s) ease,
+      opacity var(--reveal-duration, 0.9s) var(--reveal-ease, ease)
+        var(--reveal-delay, 0ms),
+      translate var(--reveal-duration, 0.9s) var(--reveal-ease, ease)
+        var(--reveal-delay, 0ms);
+
+    &.is-hovered {
+      /* Follow the pointer closely while hovered, glide back on leave. */
+      border-color: rgba($paper, 0.36);
+      transform: rotateX(calc(var(--tilt-y) * -5deg))
+        rotateY(calc(var(--tilt-x) * 5deg)) translate3d(0, -4px, 0);
+      transition: transform 0.12s ease-out, border-color 0.3s ease;
+
+      will-change: transform;
+    }
+
+    &:focus-within {
+      border-color: rgba($paper, 0.36);
+    }
+
+    /* ── Cover ───────────────────────────────────────────────────────────── */
+
+    .a__cover {
+      position: relative;
+
+      overflow: hidden;
+      aspect-ratio: 1082 / 636;
+
+      border-bottom: 1px solid rgba($paper, 0.14);
+
+      &__img {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        transform: translate3d(
+            calc(var(--tilt-x) * -6px),
+            calc(var(--tilt-y) * -6px),
+            0
+          )
+          scale(1.06);
+
+        transition: transform 0.6s var(--hover-ease, ease);
+      }
+
+      /* Pointer-tracked specular highlight — the only lighting cue. */
+      &__sheen {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        background: radial-gradient(
+          circle at calc(50% + var(--tilt-x) * 45%)
+            calc(50% + var(--tilt-y) * 45%),
+          rgba($paper, 0.12),
+          transparent 55%
+        );
+        opacity: 0;
+
+        transition: opacity var(--hover-duration, 0.45s) ease;
+        pointer-events: none;
+      }
+    }
+
+    &.is-hovered .a__cover {
+      &__img {
+        transition: transform 0.12s ease-out;
+      }
+
+      &__sheen {
+        opacity: 1;
+      }
+    }
+
+    /* ── Body ────────────────────────────────────────────────────────────── */
+
+    .a__body {
+      @include flex(column, stretch, flex-start);
+
+      flex: 1;
+      gap: 1rem;
+      padding: 1.75rem;
+
+      @include mq(phone) {
+        padding: 1.25rem;
+        gap: 0.875rem;
+      }
+    }
+
+    .a__meta {
+      @include flex(row, center, flex-start);
+
+      gap: 0.75rem;
+
+      color: color(primary);
+      font: 700 11px / 1 font-family(fraktion);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+
+      &__rule {
+        flex: 1;
+
+        height: 1px;
+
+        background: currentcolor;
+        opacity: 0.3;
+      }
+
+      &__count {
+        color: $paper;
+        opacity: 0.5;
+      }
+    }
+
+    .a__title {
+      margin: 0;
+
+      font: 400 1.75rem / 1.05 font-family(editorial);
+      letter-spacing: -0.02em;
+
+      @include mq(phone) {
+        font-size: 1.5rem;
+      }
+
+      a {
+        color: $paper;
+        text-decoration: none;
+
+        transition: color var(--hover-duration, 0.45s) ease;
+
+        &:hover,
+        &:focus-visible {
+          color: color(primary);
+        }
+
+        &:focus-visible {
+          outline: 2px solid color(primary);
+          outline-offset: 4px;
+        }
+      }
+    }
+
+    .a__problem {
+      margin: 0;
+
+      color: rgba($paper, 0.82);
+      font: 400 15px / 1.5 font-family(fraktion);
+      letter-spacing: -0.01em;
+
+      @include mq(phone) {
+        font-size: 14px;
+      }
+    }
+
+    /*
+     * In flow this is an inert wrapper — the copy is simply there, and the grid
+     * has one auto row. The pinned cluster is what it exists for: see the
+     * `--cluster` variant, where it becomes the collapsible region.
+     */
+    .a__detail {
+      display: grid;
+
+      &__inner {
+        @include flex(column, stretch, flex-start);
+
+        gap: 1rem;
+        min-height: 0;
+
+        overflow: hidden;
+      }
+    }
+
+    .a__description {
+      margin: 0;
+
+      color: rgba($paper, 0.62);
+      font: 400 15px / 1.6 font-family(editorial);
+    }
+
+    .a__highlights {
+      margin: 0.25rem 0 0;
+      padding: 0;
+
+      list-style: none;
+
+      &__item {
+        position: relative;
+
+        padding-left: 1.5rem;
+
+        color: rgba($paper, 0.78);
+        font: 400 13px / 1.5 font-family(fraktion);
+
+        &:not(:first-child) {
+          margin-top: 0.5rem;
+        }
+
+        &:before {
+          position: absolute;
+          top: 0.55em;
+          left: 0;
+
+          width: 0.625rem;
+          height: 1px;
+
+          background: color(primary);
+
+          content: '';
+        }
+      }
+    }
+
+    .a__tech {
+      @include flex(row, center, flex-start);
+
+      flex-wrap: wrap;
+      margin: 0.25rem 0 0;
+      padding: 0;
+      gap: 0.375rem;
+
+      list-style: none;
+
+      &__item {
+        padding: 0.4em 0.7em;
+
+        border: 1px solid rgba($paper, 0.22);
+
+        color: rgba($paper, 0.72);
+        font: 700 10px / 1 font-family(fraktion);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+    }
+
+    .a__actions {
+      @include flex(row, center, flex-start);
+
+      flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .a__btn {
+      @include flex(row, center, center);
+
+      gap: 0.5em;
+      padding: 0.75em 1.25em;
+
+      border: 1px solid rgba($paper, 0.28);
+
+      color: $paper;
+      font: 700 11px / 1 font-family(fraktion);
+      letter-spacing: 0.14em;
+      text-decoration: none;
+      text-transform: uppercase;
+
+      transition:
+        background-color var(--hover-duration, 0.45s) ease,
+        border-color var(--hover-duration, 0.45s) ease,
+        color var(--hover-duration, 0.45s) ease,
+        transform var(--press-duration, 0.12s) ease;
+
+      &__icon {
+        display: block;
+
+        width: 0.75em;
+        height: 0.75em;
+
+        overflow: visible;
+
+        transition: transform 0.35s var(--hover-ease, ease);
+      }
+
+      &:hover,
+      &:focus-visible {
+        background: $paper;
+        border-color: $paper;
+
+        color: color(secondary);
+
+        .a__btn__icon {
+          transform: translate3d(2px, -2px, 0);
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid color(primary);
+        outline-offset: 3px;
+      }
+
+      &:active {
+        transform: scale(0.97);
+        transition-duration: var(--press-duration, 0.12s);
+      }
+
+      &--solid {
+        background: color(primary);
+        border-color: color(primary);
+
+        color: color(secondary);
+
+        &:hover,
+        &:focus-visible {
+          background: $paper;
+          border-color: $paper;
+        }
+      }
+    }
+
+    /* ── Featured variant ────────────────────────────────────────────────── */
+
+    &--featured {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: stretch;
+
+      @include mq(desktop-xs) {
+        grid-template-columns: 1fr;
+      }
+
+      .a__cover {
+        border-right: 1px solid rgba($paper, 0.14);
+        border-bottom: none;
+
+        @include mq(desktop-xs) {
+          border-right: none;
+          border-bottom: 1px solid rgba($paper, 0.14);
+        }
+      }
+
+      .a__body {
+        padding: 2.5rem;
+
+        @include mq(phone) {
+          padding: 1.5rem;
+        }
+      }
+
+      .a__title {
+        font-size: 2.75rem;
+
+        @include mq(desktop-sm) {
+          font-size: 2.25rem;
+        }
+
+        @include mq(phone) {
+          font-size: 1.75rem;
+        }
+      }
+
+      .a__problem {
+        font-size: 1.0625rem;
+        font-weight: 700;
+      }
+    }
+
+    /* ── Pinned-cluster variant ──────────────────────────────────────────── */
+
+    /*
+     * A floating card is read from further away and has to fit a slot about a
+     * fifth of the viewport wide, so it trades the flow layout's generosity
+     * for density: a shorter cover, tighter type, and the deeper copy folded
+     * away until this is the card being looked at.
+     *
+     * Gated on `is-cluster-js` — the class SWork adds only when it is genuinely
+     * driving the pinned scene — because the very same markup renders in flow
+     * without script, and folding copy behind hover there would just lose it.
+     * `:global` because that class belongs to the projects block, not to this
+     * component, so Astro must not scope it.
+     */
+    &--cluster {
+      @include mq(desktop) {
+        :global(.is-cluster-js) & {
+          /* Beats `--featured`'s grid: every card in the cluster is one column. */
+          display: flex;
+
+          border-color: rgba($paper, 0.2);
+          /* A dark card on the scene's dark capsule needs an edge to sit on. */
+          box-shadow: 0 1.5rem 3rem rgba(#000, 0.45);
+
+          .a__cover {
+            /*
+             * A band rather than a picture. Five cards have to fan across one
+             * viewport and still leave the expanding one somewhere to grow, so
+             * the cover gives up the height the copy needs.
+             */
+            aspect-ratio: 16 / 5;
+
+            border-right: none;
+            border-bottom: 1px solid rgba($paper, 0.14);
+          }
+
+          .a__body {
+            gap: 0.5rem;
+            padding: 1rem 1.125rem 1.125rem;
+          }
+
+          /*
+           * Fluid, because the lane is fluid. Five lanes share one viewport, so
+           * this card is 195px wide at 1080 and 460px wide at 2560 — a fixed
+           * 21px title sets two comfortable lines at the top of that range and
+           * four cramped ones at the bottom, and four lines of title is what
+           * pushes an open card's panel out of the pinned viewport on a laptop.
+           * The `vw` middle term tracks the lane; the floor and ceiling are the
+           * smallest size still worth reading and the size the design wants.
+           *
+           * Line-heights are ratios on the base rule, so they follow for free.
+           */
+          .a__title {
+            font-size: clamp(1rem, 1.45vw, 1.3125rem);
+          }
+
+          /* Two lines of context, so a closed card still says what it is. */
+          .a__problem {
+            display: -webkit-box;
+
+            overflow: hidden;
+
+            font-size: clamp(0.6875rem, 0.9vw, 0.8125rem);
+
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+          }
+
+          /*
+           * The prose description is flow-only copy. Four highlights are what a
+           * card being scanned from across a viewport can actually deliver, and
+           * a 300-character paragraph in a 250px column is ten lines that nobody
+           * reads standing up.
+           */
+          .a__description {
+            display: none;
+          }
+
+          .a__highlights {
+            margin-top: 0;
+
+            &__item {
+              font-size: clamp(0.6875rem, 0.85vw, 0.8125rem);
+            }
+          }
+
+          /*
+           * The detail opens as a panel hanging off the bottom of the card rather
+           * than growing inside it. That's the whole reason the fan fits: the
+           * lanes are placed against the card's closed height, and an out-of-flow
+           * panel can't push that around no matter how much copy it holds. It
+           * overlaps whatever is beneath it, which is safe because the card is
+           * lifted to the top of the stack for exactly as long as it's open.
+           */
+          .a__detail {
+            position: absolute;
+            /* Bleeds a pixel each side so its border continues the card's. */
+            top: 100%;
+            right: -1px;
+            left: -1px;
+            z-index: 2;
+
+            grid-template-rows: 0fr;
+
+            background: color(secondary);
+            border: 1px solid rgba($paper, 0.2);
+            border-top: none;
+            box-shadow: 0 1.5rem 3rem rgba(#000, 0.45);
+            opacity: 0;
+
+            transition:
+              grid-template-rows 0.5s ease(out-quad),
+              opacity 0.35s ease;
+
+            &__inner {
+              gap: 0.5rem;
+              padding: 0.875rem 1.125rem 1.125rem;
+            }
+          }
+
+          /*
+           * A run of text, not a row of chips. Bordered chips can't wrap tighter
+           * than one per row when the lane is 195px wide, so eight technologies
+           * became five rows of boxes — 47px of the card's height spent on
+           * decoration. As an inline middot list the same eight names cost two
+           * lines, nothing is hidden behind a "+3 more", and the boxes come
+           * straight back in flow where the card is 460px wide.
+           */
+          .a__tech {
+            display: block;
+
+            /* Strut for the first line box; the items carry the same ratio. */
+            line-height: 1.7;
+
+            &__item {
+              display: inline;
+
+              padding: 0;
+
+              border: none;
+
+              font-size: clamp(0.5rem, 0.62vw, 0.5625rem);
+              line-height: 1.7;
+              /*
+               * Both halves matter. `normal` re-enables the wrap the base rule
+               * turns off — a run has to break somewhere — and the trailing
+               * space in the separator below is the only place it can: the
+               * template renders the items adjacent with no whitespace between
+               * them, so without it the whole run is one unbreakable word.
+               * Putting the space *after* the middot also keeps the separator
+               * with the name it follows instead of orphaning it onto the next
+               * line.
+               */
+              white-space: normal;
+
+              &:not(:last-child):after {
+                padding-left: 0.35em;
+
+                color: color(primary);
+
+                content: '· ';
+              }
+            }
+          }
+
+          .a__actions {
+            padding-top: 0.5rem;
+          }
+
+          .a__btn {
+            gap: 0.4em;
+            padding: 0.6em 1em;
+
+            font-size: 10px;
+          }
+
+          /*
+           * Pointer hover, the JS-tracked hover state, and keyboard focus all
+           * open the same region, so nothing here needs a mouse. The actions
+           * stay outside it and visible at all times.
+           */
+          &:hover,
+          &.is-hovered,
+          &:focus-within {
+            .a__detail {
+              grid-template-rows: 1fr;
+
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Flatten the interaction on touch: nothing here depends on hover. */
+  @media (hover: none), (pointer: coarse) {
+    .a-project {
+      transform: none;
+
+      .a__cover__img {
+        transform: scale(1.02);
+      }
+
+      .a__cover__sheen {
+        display: none;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .a-project,
+    .a-project.is-hovered {
+      transform: none;
+
+      .a__cover__img {
+        transform: scale(1.02);
+      }
+
+      .a__cover__sheen {
+        display: none;
+      }
+    }
+
+    /*
+     * The cluster card's detail still opens on hover and focus — that's a state
+     * change, not motion, and it's the only way to read the copy. It just stops
+     * sliding open. Matches the variant's own specificity so it can win the tie
+     * on source order.
+     */
+    :global(.is-cluster-js) .a-project--cluster .a__detail {
+      transition: none;
+    }
+  }
+</style>

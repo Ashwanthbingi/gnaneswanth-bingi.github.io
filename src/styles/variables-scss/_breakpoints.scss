@@ -9,6 +9,12 @@ $theme-breakpoints: (
   desktop-md: 'only screen and (max-width: 1530px)',
   desktop-sm: 'only screen and (max-width: 1280px)',
   desktop-xs: 'only screen and (max-width: 1080px)',
+  /* Exact complement of `desktop-xs`, for the few places that must be
+     desktop-first inverted — the pinned Work cluster is built on top of a mobile
+     flow layout, not the other way round. A four-card fan needs real width, so
+     everything at or below `desktop-xs` gets the flow layout instead. Keep the
+     two in sync. */
+  desktop: 'only screen and (min-width: 1081px)',
   tablet: 'only screen and (max-width: 987px)',
   tablet-portrait: 'only screen and (max-width: 987px) and (orientation: portrait)',
   tablet-landscape: 'only screen and (max-width: 987px) and (orientation: landscape)',

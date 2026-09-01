@@ -9,6 +9,8 @@
 /* Global classes */
 @use 'site/base';
 @use 'site/text';
+@use 'site/motion';
+@use 'site/button';
 
 /* Utility classes */
 @use 'utilities/visibility';
@@ -16,6 +18,8 @@
 /* Import */
 @import '../../node_modules/modern-normalize/modern-normalize.css';
 
-@import '/fonts/bigger-display.css';
-@import '/fonts/editorial-new.css';
-@import '/fonts/fraktion-mono.css';
+/*
+ * The font stylesheets live in public/ and are linked from the document head
+ * via withBase(), because a root-absolute @import here resolves to the domain
+ * root and 404s under the GitHub Pages sub-path deployment.
+ */

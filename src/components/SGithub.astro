@@ -1,21 +1,23 @@
 <section id="github" class="s-info s-info--secondary" data-intersect>
-  <div class="s__inner">
-    <h2 class="s__title">GitHub</h2>
+  <div class="s__inner" data-reveal-group>
+    <h2 class="s__title" data-reveal="mask">GitHub</h2>
 
-    <p class="s__text">
+    <p class="s__text" data-reveal>
       I build and share most of my backend, AI, and distributed-systems
       projects in the open. Take a look at my repositories and feel free to
       star, fork, or contribute.
     </p>
 
-    <a
-      href="https://github.com/Ashwanthbingi"
-      target="_blank"
-      rel="noopener"
-      class="s__btn"
-    >
-      Visit My GitHub
-    </a>
+    <div class="s__btn-wrap" data-reveal>
+      <a
+        href="https://github.com/Ashwanthbingi"
+        target="_blank"
+        rel="noopener"
+        class="c-btn c-btn--invert"
+      >
+        <span class="c-btn__label">Visit My GitHub</span>
+      </a>
+    </div><!-- .s__btn-wrap -->
   </div><!-- .s__inner -->
 </section>
 
@@ -53,35 +55,17 @@
       opacity: 0.8;
     }
 
-    .s__btn {
-      display: inline-flex;
-      align-items: center;
-
+    .s__btn-wrap {
+      /*
+       * The reveal sits on this wrapper, not the button: the shared .c-btn uses
+       * `scale` for its press state and the reveal system animates `scale` too.
+       */
       margin-top: 0.5rem;
-      padding: 0.9em 2em;
-
-      border-radius: 999rem;
-
-      font: 700 14px / 1 font-family(fraktion);
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      text-transform: uppercase;
-
-      transition: opacity 0.3s ease(in-out-expo);
-
-      &:hover {
-        opacity: 0.8;
-      }
     }
 
     &--secondary {
       background: color(secondary);
       color: color(primary);
-
-      .s__btn {
-        background: color(primary);
-        color: color(secondary);
-      }
     }
   }
 </style>

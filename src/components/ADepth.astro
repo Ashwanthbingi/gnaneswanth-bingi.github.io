@@ -1,0 +1,526 @@
+---
+const { class: className } = Astro.props
+---
+
+<a-depth class:list={['a-depth', className]} data-intersect aria-hidden="true">
+  <canvas class="a__canvas js-canvas"></canvas>
+</a-depth><!-- .a-depth -->
+
+<script>
+  import Emitter from '../utils/Emitter'
+  import Quality from '../utils/Quality'
+
+  /**
+   * Ambient depth field.
+   *
+   * A single fragment shader projects two mirrored ground planes to produce a
+   * real perspective grid receding to a horizon, fogged by distance. It sits
+   * behind the hero waves so the wave lines read as a near layer floating in
+   * front of a far one.
+   *
+   * Written directly against WebGL2 — no 3D library. One draw call of one
+   * triangle per frame, zero vertex buffers (the triangle comes from
+   * gl_VertexID), and it renders from the site's shared ticker rather than
+   * adding an animation loop of its own. Missing WebGL2, a lost context or
+   * reduced-motion all degrade to the flat background the hero always had.
+   *
+   * The horizon is centred inside whatever vertical space sits *above* the hero
+   * content block, and the grid fades out before reaching it, so it can never
+   * interfere with the headline.
+   */
+
+  const VERT = `#version 300 es
+  void main() {
+    // Fullscreen triangle straight from the vertex index — no buffers.
+    vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+    gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+  }`
+
+  const FRAG = `#version 300 es
+  precision highp float;
+
+  uniform vec2 uResolution;
+  uniform vec2 uPointer;
+  uniform vec3 uPrimary;
+  uniform vec3 uSecondary;
+  uniform float uTime;
+  uniform float uScroll;
+  /* Fraction of the element height that stays free of content, from the top. */
+  uniform float uSafeTop;
+
+  out vec4 fragColor;
+
+  /* Antialiased line at every integer crossing of v. */
+  float gridLine(float v, float width) {
+    float f = fract(v);
+    float d = min(f, 1.0 - f);
+    return 1.0 - smoothstep(0.0, width, d);
+  }
+
+  void main() {
+    // uv.y is -0.5 at the bottom, +0.5 at the top.
+    vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;
+
+    // Pointer parallax, deliberately small.
+    uv += uPointer * 0.02;
+
+    // Centre the horizon in the free area above the content block.
+    float span = max(uSafeTop * 0.5, 0.1);
+    float yc = uv.y - (0.5 - span);
+
+    // Mirror around the horizon so a floor and a ceiling both recede.
+    float dist = max(abs(yc), 0.0006);
+    float depth = 0.17 / dist;
+
+    // Travel forward over time and with scroll.
+    vec2 plane = vec2(uv.x * depth, depth + uTime * 0.26 + uScroll * 2.5);
+
+    // Slow lateral drift so it never looks like a static texture.
+    plane.x += sin(plane.y * 0.5 + uTime * 0.32) * 0.08;
+
+    vec2 fw = fwidth(plane) * 1.3;
+    float grid = max(
+      gridLine(plane.x, fw.x),
+      gridLine(plane.y, fw.y)
+    );
+
+    // Normalised distance from the horizon: 0 at the horizon, 1 at the top
+    // edge and 1 where the content begins.
+    float n = abs(yc) / span;
+
+    float fog = exp(-depth * 0.13);
+    float horizonFade = smoothstep(0.0, 0.10, n);
+    float edgeFade = 1.0 - smoothstep(0.70, 1.0, n);
+
+    float amount = grid * fog * horizonFade * edgeFade * 0.42;
+
+    fragColor = vec4(mix(uPrimary, uSecondary, amount), 1.0);
+  }`
+
+  /** Parse a CSS hex custom property into 0..1 RGB. */
+  function readColor(name: string): number[] {
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue(name)
+      .trim()
+
+    const hex = raw.replace('#', '')
+
+    if (hex.length !== 3 && hex.length !== 6) return [0, 0, 0]
+
+    const full =
+      hex.length === 3
+        ? hex
+            .split('')
+            .map((c) => c + c)
+            .join('')
+        : hex
+
+    return [
+      parseInt(full.slice(0, 2), 16) / 255,
+      parseInt(full.slice(2, 4), 16) / 255,
+      parseInt(full.slice(4, 6), 16) / 255,
+    ]
+  }
+
+  const UNIFORMS = [
+    'uResolution',
+    'uPointer',
+    'uPrimary',
+    'uSecondary',
+    'uTime',
+    'uScroll',
+    'uSafeTop',
+  ]
+
+  class ADepth extends HTMLElement {
+    canvas: HTMLCanvasElement
+    gl: WebGL2RenderingContext | null
+    program: WebGLProgram | null
+    uniforms: Record<string, WebGLUniformLocation | null>
+
+    isPaused: boolean = true
+    isReady: boolean = false
+    /*
+     * `isVisible` is what the observer last reported; `hasStarted` is whether
+     * the deferred first frame has happened yet. They are separate because the
+     * observer's first callback lands *before* `load` on a cold open, and it
+     * must not be allowed to start the shader early — it only records the
+     * state that `start()` will act on.
+     */
+    hasStarted: boolean = false
+    isVisible: boolean = true
+    viewHeight: number = 0
+    lastTime: number = 0
+    scroll: number = 0
+
+    reducedMotion: MediaQueryList
+    onMotionChange: () => void
+
+    pointer = { x: 0, y: 0, tx: 0, ty: 0 }
+
+    /**
+     * Init
+     */
+    connectedCallback() {
+      this.canvas = this.querySelector('.js-canvas')
+
+      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+      // No context, no shader, no problem — the hero keeps its flat background.
+      if (!this.initGL()) return
+
+      this.onResize()
+      this.markReady()
+
+      // The site's global observer dispatches this on every [data-intersect].
+      this.addEventListener('intersect', this.onIntersect.bind(this), {
+        passive: true,
+      })
+
+      Emitter.on('resize', this.onResize, this)
+      Emitter.on('updateViewport', this.onResize, this)
+      // A downgrade only changes the resolution, so a resize is the whole fix.
+      Emitter.on('qualitychange', this.onResize, this)
+      Emitter.on('contrastchange', this.onContrastChange, this)
+      Emitter.on('scroll', this.onScroll, this)
+      Emitter.on('mousemove', this.onMouseMove, this)
+
+      this.canvas.addEventListener(
+        'webglcontextlost',
+        this.onContextLost.bind(this)
+      )
+      this.canvas.addEventListener(
+        'webglcontextrestored',
+        this.onContextRestored.bind(this)
+      )
+
+      this.onMotionChange = this.onReducedMotionChange.bind(this)
+      this.reducedMotion.addEventListener('change', this.onMotionChange)
+
+      /*
+       * `onResize()` above already put one correct frame on screen, so the
+       * depth field is visible immediately — what waits is the animation.
+       *
+       * It waits for `load` because everything expensive about opening this
+       * page happens before that event: HTML and CSS parsing, font and image
+       * decoding, the hero's line field building 213 paths, and the loader
+       * timeline. Adding a full-viewport fragment shader to that contest buys
+       * nothing a visitor can see (the motion here is a slow drift) and costs
+       * exactly the frames where a dropped one is most obvious.
+       *
+       * Starting here rather than from the intersection observer is
+       * deliberate: this element is fixed and full-screen, so the observer
+       * reports it visible once and then never fires again. Waiting on a
+       * callback that has probably already been delivered would leave the
+       * shader frozen forever.
+       */
+      if (document.readyState === 'complete') {
+        this.start()
+      } else {
+        window.addEventListener('load', this.start.bind(this), { once: true })
+      }
+    }
+
+    disconnectedCallback() {
+      Emitter.off('tick', this.tick, this)
+      Emitter.off('resize', this.onResize, this)
+      Emitter.off('updateViewport', this.onResize, this)
+      Emitter.off('qualitychange', this.onResize, this)
+      Emitter.off('contrastchange', this.onContrastChange, this)
+      Emitter.off('scroll', this.onScroll, this)
+      Emitter.off('mousemove', this.onMouseMove, this)
+
+      if (this.onMotionChange) {
+        this.reducedMotion.removeEventListener('change', this.onMotionChange)
+      }
+    }
+
+    /**
+     * Create the context, compile the program, cache uniform locations.
+     * Returns false on any failure.
+     */
+    initGL(): boolean {
+      const gl = this.canvas.getContext('webgl2', {
+        alpha: false,
+        antialias: false,
+        depth: false,
+        stencil: false,
+        powerPreference: 'low-power',
+      }) as WebGL2RenderingContext | null
+
+      if (!gl) return false
+
+      const program = this.createProgram(gl, VERT, FRAG)
+      if (!program) return false
+
+      this.gl = gl
+      this.program = program
+      gl.useProgram(program)
+
+      this.uniforms = {}
+      UNIFORMS.forEach((name) => {
+        this.uniforms[name] = gl.getUniformLocation(program, name)
+      })
+
+      this.onContrastChange()
+
+      return true
+    }
+
+    createProgram(
+      gl: WebGL2RenderingContext,
+      vertSource: string,
+      fragSource: string
+    ): WebGLProgram | null {
+      const vert = this.compile(gl, gl.VERTEX_SHADER, vertSource)
+      const frag = this.compile(gl, gl.FRAGMENT_SHADER, fragSource)
+
+      if (!vert || !frag) return null
+
+      const program = gl.createProgram()
+      gl.attachShader(program, vert)
+      gl.attachShader(program, frag)
+      gl.linkProgram(program)
+
+      // The shaders are no longer needed once the program is linked.
+      gl.deleteShader(vert)
+      gl.deleteShader(frag)
+
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        gl.deleteProgram(program)
+        return null
+      }
+
+      return program
+    }
+
+    compile(
+      gl: WebGL2RenderingContext,
+      type: number,
+      source: string
+    ): WebGLShader | null {
+      const shader = gl.createShader(type)
+      gl.shaderSource(shader, source)
+      gl.compileShader(shader)
+
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader)
+        return null
+      }
+
+      return shader
+    }
+
+    markReady() {
+      if (this.isReady) return
+
+      this.isReady = true
+      this.classList.add('is-ready')
+    }
+
+    /**
+     * Measure how much of the element height is free of foreground content, so
+     * the grid can be kept entirely clear of the headline.
+     */
+    safeTop(height: number): number {
+      const content = this.parentElement?.querySelector<HTMLElement>(
+        '.js-content'
+      )
+
+      if (!content || !height) return 1
+
+      const ratio = content.offsetTop / height
+
+      return Math.min(1, Math.max(0.35, ratio))
+    }
+
+    /**
+     * Resize
+     */
+    onResize() {
+      const { gl, canvas } = this
+      if (!gl) return
+
+      const width = this.clientWidth || window.innerWidth
+      const height = this.clientHeight || window.innerHeight
+
+      // Cached so the scroll handler never has to measure — see `onScroll`.
+      this.viewHeight = height
+
+      /*
+       * Cap the device pixel ratio: this is a full-width fragment shader and
+       * native ratios above ~1.5 cost real time for no visible gain. Cost here
+       * is pixels, not geometry, so on a machine the frame monitor has flagged
+       * the honest lever is to render fewer of them — 1 device pixel per CSS
+       * pixel still looks correct, it just loses a little edge smoothness on
+       * the far grid lines.
+       */
+      const cap = Quality.isLow ? 1 : width < 768 ? 1.25 : 1.5
+      const dpr = Math.min(window.devicePixelRatio || 1, cap)
+
+      canvas.width = Math.max(1, Math.round(width * dpr))
+      canvas.height = Math.max(1, Math.round(height * dpr))
+
+      gl.viewport(0, 0, canvas.width, canvas.height)
+      gl.uniform2f(this.uniforms.uResolution, canvas.width, canvas.height)
+      gl.uniform1f(this.uniforms.uSafeTop, this.safeTop(height))
+
+      // Keep a correct frame on screen even while paused.
+      this.render(this.lastTime)
+    }
+
+    /**
+     * Theme change — re-read the palette from the CSS custom properties.
+     */
+    onContrastChange() {
+      const { gl } = this
+      if (!gl) return
+
+      gl.uniform3fv(this.uniforms.uPrimary, readColor('--color-primary'))
+      gl.uniform3fv(this.uniforms.uSecondary, readColor('--color-secondary'))
+
+      if (this.isPaused) this.render(this.lastTime)
+    }
+
+    onScroll(scrollY: number) {
+      /*
+       * `this.clientHeight` used to be read here. Lenis emits a scroll event
+       * every frame while it is easing, so that was a forced layout per frame
+       * for a number that only changes on resize.
+       */
+      const height = this.viewHeight || window.innerHeight
+
+      this.scroll = Math.min(1, Math.max(0, scrollY / Math.max(1, height)))
+    }
+
+    onMouseMove(x: number, y: number) {
+      if (this.reducedMotion.matches) return
+
+      this.pointer.tx = (x / window.innerWidth) * 2 - 1
+      this.pointer.ty = (y / window.innerHeight) * 2 - 1
+    }
+
+    /** The deferred first frame — see the end of `connectedCallback`. */
+    start() {
+      this.hasStarted = true
+
+      this.setPaused(!this.isVisible)
+    }
+
+    onIntersect(event: CustomEvent) {
+      this.isVisible = event.detail.isIntersecting
+
+      if (!this.hasStarted) return
+
+      this.setPaused(!this.isVisible)
+    }
+
+    onContextLost(event: Event) {
+      // Preventing the default is what allows a restore to happen at all.
+      event.preventDefault()
+
+      this.setPaused(true)
+      this.gl = null
+      this.program = null
+    }
+
+    onContextRestored() {
+      if (!this.initGL()) return
+
+      this.onResize()
+
+      /*
+       * Not `setPaused(this.isPaused)` — that would read back the `true`
+       * `onContextLost` had just written and leave the field frozen for good
+       * after a driver reset. The paused state is derived from what the
+       * observer last reported, and stays paused until the deferred start has
+       * actually run.
+       */
+      this.setPaused(!this.hasStarted || !this.isVisible)
+    }
+
+    onReducedMotionChange() {
+      if (this.reducedMotion.matches) {
+        Emitter.off('tick', this.tick, this)
+        this.render(this.lastTime)
+      } else {
+        this.setPaused(this.isPaused)
+      }
+    }
+
+    setPaused(paused: boolean) {
+      this.isPaused = paused
+
+      if (paused || !this.gl) {
+        Emitter.off('tick', this.tick, this)
+        return
+      }
+
+      // Reduced motion still gets the depth — just held perfectly still.
+      if (this.reducedMotion.matches) {
+        this.render(this.lastTime)
+        return
+      }
+
+      Emitter.on('tick', this.tick, this)
+    }
+
+    /**
+     * Tick — `time` arrives in milliseconds from the shared Ticker.
+     */
+    tick(time: number) {
+      // Ease the pointer so the parallax never snaps.
+      this.pointer.x += (this.pointer.tx - this.pointer.x) * 0.05
+      this.pointer.y += (this.pointer.ty - this.pointer.y) * 0.05
+
+      this.render(time / 1000)
+    }
+
+    render(time: number) {
+      const { gl } = this
+      if (!gl || !this.program) return
+
+      this.lastTime = time
+
+      gl.uniform1f(this.uniforms.uTime, time)
+      gl.uniform1f(this.uniforms.uScroll, this.scroll)
+      gl.uniform2f(this.uniforms.uPointer, this.pointer.x, this.pointer.y)
+
+      gl.drawArrays(gl.TRIANGLES, 0, 3)
+    }
+  }
+
+  customElements.define('a-depth', ADepth)
+</script>
+
+<style lang="scss">
+  .a-depth {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+    /* Hidden until the first frame lands, so an opaque canvas can't flash. */
+    opacity: 0;
+
+    transition: opacity 1.2s ease(out-quad);
+    pointer-events: none;
+
+    &.is-ready {
+      opacity: 1;
+    }
+
+    .a__canvas {
+      display: block;
+
+      width: 100%;
+      height: 100%;
+    }
+  }
+</style>

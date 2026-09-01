@@ -1,6 +1,10 @@
-<footer class="site-foot">
-  <div class="site-foot__logo">
-    <a href="/">
+---
+import { withBase } from '../utils/paths'
+---
+
+<footer class="site-foot" data-reveal-group>
+  <div class="site-foot__logo" data-reveal="scale">
+    <a href={withBase('')}>
       <svg
         width="280"
         height="280"
@@ -25,21 +29,21 @@
     </a>
   </div><!-- .site-foot__logo -->
 
-  <div class="site-foot__info">
+  <div class="site-foot__info" data-reveal>
     <p class="site-foot__name">Gnaneswanth Bingi</p>
   </div><!-- .site-foot__info -->
 
   <ul class="site-foot__socials">
-    <li>
+    <li data-reveal>
       <a href="https://github.com/Ashwanthbingi" target="_blank" rel="noopener">GitHub</a>
     </li>
-    <li>
+    <li data-reveal>
       <a href="https://www.linkedin.com/in/bingi-gnaneswanth-30565b354/" target="_blank" rel="noopener">LinkedIn</a>
     </li>
-    <li>
+    <li data-reveal>
       <a href="https://www.instagram.com/ashwanth_bingi/" target="_blank" rel="noopener">Instagram</a>
     </li>
-    <li>
+    <li data-reveal>
       <a href="mailto:aswanthbingi@gmail.com">Email</a>
     </li>
   </ul><!-- .site-foot__socials -->

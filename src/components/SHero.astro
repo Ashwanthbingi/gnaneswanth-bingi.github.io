@@ -1,9 +1,13 @@
 ---
+import ADepth from './ADepth.astro'
 import AWaves from './AWaves.astro'
 import ASeparator from './ASeparator.astro'
+import { withBase } from '../utils/paths'
 ---
 
 <div class="s-hero" data-intersect>
+  <ADepth class="s__depth" />
+
   <AWaves class="s__waves" />
 
   <div class="s__content js-content">
@@ -16,7 +20,7 @@ import ASeparator from './ASeparator.astro'
       <span class="s__title__word js-word">Software</span>
       <img
         class="s__title__asset js-star"
-        src="/images/asset-star.svg"
+        src={withBase('images/asset-star.svg')}
         alt=""
         width="48"
         height="48"
@@ -30,8 +34,8 @@ import ASeparator from './ASeparator.astro'
     />
 
     <div class="s__actions">
-      <a href="/resume.pdf" class="s__resume-btn" download>
-        <span class="sup">↓</span> Download Resume
+      <a href={withBase('resume.pdf')} class="c-btn s__resume-btn" download>
+        <span class="c-btn__label"><span class="sup">↓</span> Download Resume</span>
       </a>
 
       <ul class="s__socials">
@@ -57,6 +61,7 @@ import ASeparator from './ASeparator.astro'
 <script>
   import Emitter from '../utils/Emitter'
   import Ticker from '../utils/Ticker'
+  import { prefersReducedMotion } from '../utils/reveal'
 
   import { gsap } from 'gsap'
   import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
@@ -112,6 +117,14 @@ import ASeparator from './ASeparator.astro'
         passive: true,
       })
 
+      /*
+       * The only thing this section's tick does is randomly fling a headline
+       * character out and back. Under reduced motion the CSS transition is
+       * already collapsed to 1ms, which would turn the effect into a hard jump
+       * — worse than no effect at all — so the loop never starts.
+       */
+      if (prefersReducedMotion()) return
+
       Emitter.on('tick', this.tick, this)
     }
 
@@ -120,6 +133,8 @@ import ASeparator from './ASeparator.astro'
      */
     onIntersect(e) {
       this.isPaused = !e.detail.isIntersecting
+
+      if (prefersReducedMotion()) return
 
       if (this.isPaused) {
         Emitter.off('tick', this.tick, this)
@@ -149,27 +164,44 @@ import ASeparator from './ASeparator.astro'
 
       const tl = gsap.timeline()
 
-      tl.fromTo(
-        lines,
-        {
-          drawSVG: '100% 100%',
-        },
-        {
-          drawSVG: '0% 100%',
-          duration: 3,
-          ease: 'expo.out',
-          stagger: {
-            amount: 0.5,
-            from: 'edges',
-            ease: 'power3.inOut',
+      /*
+       * `a-waves` starts straight on its canvas renderer on low-tier hardware,
+       * where there are no path elements to draw and this stage is skipped. The
+       * field still rises with the rest of the hero — it just arrives drawn.
+       */
+      if (lines.length) {
+        tl.fromTo(
+          lines,
+          {
+            drawSVG: '100% 100%',
           },
-        },
-        0.5
-      )
+          {
+            drawSVG: '0% 100%',
+            duration: 3,
+            ease: 'expo.out',
+            stagger: {
+              amount: 0.5,
+              from: 'edges',
+              ease: 'power3.inOut',
+            },
+          },
+          0.5
+        )
+      }
 
-      tl.call(() => {
-        waves.dispatchEvent(new CustomEvent('introend'))
-      }, null, '-=1')
+      /*
+       * Absolute 3 rather than `-=1`, so the handover time can't depend on
+       * whether the tween above was added. `expo.out` has every line ~99% drawn
+       * by this point, which is what makes swapping the SVG for the canvas
+       * invisible.
+       */
+      tl.call(
+        () => {
+          waves.dispatchEvent(new CustomEvent('introend'))
+        },
+        null,
+        3
+      )
 
       tl.set(
         this.el,
@@ -347,7 +379,18 @@ import ASeparator from './ASeparator.astro'
       min-height: calc(100svh - 4.5rem - 1px);
     }
 
+    /*
+     * Layer order inside the hero: the shader depth field sits furthest back,
+     * the wave lines read as a near layer in front of it, content on top.
+     */
+    .s__depth {
+      z-index: 0;
+    }
+
     .s__waves {
+      position: relative;
+      z-index: 1;
+
       width: 100%;
       height: 100%;
 
@@ -373,6 +416,7 @@ import ASeparator from './ASeparator.astro'
 
     .s__content {
       position: relative;
+      z-index: 1;
 
       overflow: hidden;
       transform-origin: 50% 100%;
@@ -411,26 +455,9 @@ import ASeparator from './ASeparator.astro'
     }
 
     .s__resume-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5em;
-
-      padding: 0.85em 1.75em;
-
-      background: color(secondary);
-      border-radius: 999rem;
-
-      color: color(primary);
-      font: 700 14px / 1 font-family(fraktion);
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      text-transform: uppercase;
-
-      transition: opacity 0.3s ease(in-out-expo);
-
-      &:hover {
-        opacity: 0.8;
-      }
+      /* Shape and interaction come from the shared .c-btn in site/_button.scss. */
+      flex-grow: 0;
+      flex-shrink: 0;
     }
 
     .s__socials {

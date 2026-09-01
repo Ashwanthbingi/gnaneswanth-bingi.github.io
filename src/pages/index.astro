@@ -1,6 +1,7 @@
 ---
 import SiteHead from '../components/SiteHead.astro'
 import SiteFoot from '../components/SiteFoot.astro'
+import SiteMenu from '../components/SiteMenu.astro'
 import SiteScrollbar from '../components/SiteScrollbar.astro'
 import SHero from '../components/SHero.astro'
 import SAbout from '../components/SAbout.astro'
@@ -11,6 +12,7 @@ import SGithub from '../components/SGithub.astro'
 import SCTA from '../components/SCTA.astro'
 import SContactLinks from '../components/SContactLinks.astro'
 import ASeparator from '../components/ASeparator.astro'
+import { withBase } from '../utils/paths'
 
 import '../styles/global.scss'
 ---
@@ -30,15 +32,15 @@ import '../styles/global.scss'
     <link
       rel="icon"
       type="image/png"
-      href="/icons/favicon-48x48.png"
+      href={withBase('icons/favicon-48x48.png')}
       sizes="48x48"
     />
-    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
-    <link rel="shortcut icon" href="/icons/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={withBase('icons/favicon.svg')} />
+    <link rel="shortcut icon" href={withBase('icons/favicon.ico')} />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="/icons/apple-touch-icon.png"
+      href={withBase('icons/apple-touch-icon.png')}
     />
     <meta name="apple-mobile-web-app-title" content="Gnaneswanth Bingi Portfolio" />
 
@@ -54,39 +56,65 @@ import '../styles/global.scss'
 
     <link
       rel="preload"
-      href="/fonts/PPEditorialNew-Regular.woff2"
+      href={withBase('fonts/PPEditorialNew-Regular.woff2')}
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="/fonts/PPEditorialNew-Ultralight.woff2"
+      href={withBase('fonts/PPEditorialNew-Ultralight.woff2')}
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="/fonts/PPFraktionMono-Regular.woff2"
+      href={withBase('fonts/PPFraktionMono-Regular.woff2')}
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="/fonts/PPFraktionMono-Bold.woff2"
+      href={withBase('fonts/PPFraktionMono-Bold.woff2')}
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
     <link
       rel="preload"
-      href="/fonts/Bigger-Display.woff2"
+      href={withBase('fonts/Bigger-Display.woff2')}
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
+
+    <link rel="stylesheet" href={withBase('fonts/bigger-display.css')} />
+    <link rel="stylesheet" href={withBase('fonts/editorial-new.css')} />
+    <link rel="stylesheet" href={withBase('fonts/fraktion-mono.css')} />
+
+    <script is:inline>
+      /*
+       * Set the motion flag before first paint so [data-reveal] elements can
+       * start hidden without ever flashing. Gated on the reduced-motion query,
+       * and backed by a failsafe: if the bundle never boots, the flag is
+       * dropped after 4s so no section can be left permanently invisible.
+       */
+      ;(function () {
+        var root = document.documentElement
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+        root.classList.add('js-motion')
+
+        root.dataset.revealFailsafe = String(
+          setTimeout(function () {
+            root.classList.remove('js-motion')
+          }, 4000)
+        )
+      })()
+    </script>
   </head>
 
   <body>
@@ -99,6 +127,7 @@ import '../styles/global.scss'
 
       <ASeparator style="secondary" />
 
+      <!-- The projects showcase lives inside <SWork /> as its second half. -->
       <SWork />
 
       <ASeparator style="secondary" />
@@ -146,12 +175,15 @@ import '../styles/global.scss'
     <div class="site-mount js-mount"></div>
     <div class="site-contrast-mask js-contrast-mask"></div>
 
+    <SiteMenu />
+
     <SiteScrollbar />
   </body>
 
   <script>
     import Emitter from '../utils/Emitter'
     import Ticker from '../utils/Ticker'
+    import { initReveal, flushReveals, prefersReducedMotion } from '../utils/reveal'
 
     import Lenis from 'lenis'
 
@@ -182,6 +214,7 @@ import '../styles/global.scss'
       isScrolling: boolean = false
 
       lenis: any
+      lenisRaf: any
 
       /**
        * Constructor
@@ -221,6 +254,8 @@ import '../styles/global.scss'
         this.initLenis()
 
         Ticker.init()
+
+        this.initMotion()
 
         this.onResize()
         Ticker.nextTick(this.intro, this)
@@ -291,21 +326,143 @@ import '../styles/global.scss'
       }
 
       /**
+       * Init the shared scroll-reveal system
+       *
+       * The inline head script adds `.js-motion` before first paint so
+       * [data-reveal] elements can start hidden without ever flashing, and it
+       * arms a 4s failsafe that strips the flag again in case this bundle never
+       * boots. It has booted, so disarm the failsafe and take over.
+       */
+      initMotion() {
+        const root = document.documentElement
+
+        if (root.dataset.revealFailsafe) {
+          clearTimeout(Number(root.dataset.revealFailsafe))
+          delete root.dataset.revealFailsafe
+        }
+
+        initReveal()
+
+        /*
+         * Every GSAP timeline on the site — the loader, the hero reveal, the
+         * contrast wipe — is built inside its own component, so there is no one
+         * place to shorten them. Collapsing the global timeline is the single
+         * lever that reaches all of them: the end states still land, they just
+         * land at once instead of over five seconds.
+         */
+        if (prefersReducedMotion()) {
+          gsap.globalTimeline.timeScale(100)
+        }
+
+        // If reduced motion is switched on mid-session, show everything rather
+        // than leaving sections stuck in their hidden state.
+        const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+        query.addEventListener('change', () => {
+          if (!query.matches) return
+
+          root.classList.remove('js-motion')
+          gsap.globalTimeline.timeScale(100)
+          this.disableSmoothScroll()
+          flushReveals()
+        })
+      }
+
+      /**
        * Init lenis
        */
       initLenis() {
+        /*
+         * Smooth scroll is itself a motion effect, so reduced-motion visitors
+         * get the browser's native scrolling instead.
+         */
+        if (prefersReducedMotion()) {
+          window.lenis = this.nativeScroll()
+          this.lenis = window.lenis
+
+          return
+        }
+
         const lenis = new Lenis()
 
         lenis.on('scroll', ScrollTrigger.update)
 
-        gsap.ticker.add((time) => {
-          lenis.raf(time * 1000)
-        })
+        // Kept as a field so the downgrade path below can take it off again.
+        this.lenisRaf = (time: number) => lenis.raf(time * 1000)
+
+        gsap.ticker.add(this.lenisRaf)
 
         gsap.ticker.lagSmoothing(0)
 
         window.lenis = lenis
         this.lenis = lenis
+
+        /*
+         * If the frame monitor decides this machine can't hold the budget, give
+         * the scroll back to the browser. Interpolated scrolling lives on the
+         * main thread, so every frame the page drops is a frame the scroll
+         * position doesn't move — the effect meant to feel smooth is the one
+         * that most visibly isn't. Native scrolling is handled by the
+         * compositor and stays smooth no matter how busy the main thread gets,
+         * and it only happens on hardware that has already proven it needs the
+         * help.
+         */
+        Emitter.on('qualitychange', this.disableSmoothScroll, this, true)
+      }
+
+      /**
+       * A stand-in for Lenis that maps its two used methods onto native
+       * scrolling, so no caller has to branch on whether smooth scroll is on.
+       */
+      nativeScroll() {
+        return {
+          raf: () => {},
+          on: () => {},
+          stop: () => {},
+          start: () => {},
+          destroy: () => {},
+          scrollTo: (target: any) => {
+            /*
+             * A JS `behavior` argument wins over the CSS `scroll-behavior: auto
+             * !important` that reduced motion sets, so the preference has to be
+             * honoured here rather than left to the stylesheet.
+             */
+            const behavior: ScrollBehavior = prefersReducedMotion()
+              ? 'auto'
+              : 'smooth'
+
+            if (typeof target === 'number') {
+              window.scrollTo({ top: target, behavior })
+
+              return
+            }
+
+            const el =
+              typeof target === 'string' ? document.querySelector(target) : target
+
+            el?.scrollIntoView({ block: 'start', behavior })
+          },
+        }
+      }
+
+      /**
+       * Hand the scroll back to the browser, mid-session, without a jump: Lenis
+       * writes real scroll positions, so tearing it down leaves the page exactly
+       * where it was. ScrollTrigger has its own native scroll listener, and only
+       * needs telling that the driver changed.
+       */
+      disableSmoothScroll() {
+        if (!this.lenis?.destroy || !this.lenisRaf) return
+
+        gsap.ticker.remove(this.lenisRaf)
+        this.lenisRaf = null
+
+        this.lenis.destroy()
+
+        window.lenis = this.nativeScroll()
+        this.lenis = window.lenis
+
+        ScrollTrigger.refresh()
       }
 
       /**
@@ -517,8 +674,15 @@ import '../styles/global.scss'
             })
           },
           null,
-          5
-          // 0
+          /*
+           * The last thing on this timeline is the border draw, which starts at
+           * 1 and runs for 3 — so everything is finished at 4. This used to sit
+           * at 5, holding `is-scroll-blocked` on the document for a full second
+           * after the loader had visibly stopped moving. A visitor who tries to
+           * scroll in that second gets no response at all, which reads as the
+           * page being broken rather than as an intro still playing.
+           */
+          4.05
         )
       }
     }
@@ -527,7 +691,9 @@ import '../styles/global.scss'
 
     // Site init on DOM ready
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', site.init, { once: true })
+      document.addEventListener('DOMContentLoaded', () => site.init(), {
+        once: true,
+      })
     } else {
       site.init()
     }

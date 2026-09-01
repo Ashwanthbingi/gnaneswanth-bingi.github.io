@@ -1,38 +1,21 @@
 ---
 import AWork from './AWork.astro'
+import SProjects from './SProjects.astro'
+import { projects, repoUrl } from '../data/projects'
+import { withBase } from '../utils/paths'
 
-// Add your own projects here! For each one, set:
-// - title: the project name shown in the caption
-// - image: path to an image of the project. Drop the image file into
-//   public/images/projects/ and reference it here as '/images/projects/your-file.jpg'
-// - site: (optional) link opened when the project is clicked. Leave as '#' if you don't have one yet.
-const myProjects = [
-  {
-    title: 'Add Your Project 1',
-    image: '/images/projects/placeholder.svg',
-    site: '#',
-  },
-  {
-    title: 'Add Your Project 2',
-    image: '/images/projects/placeholder.svg',
-    site: '#',
-  },
-  {
-    title: 'Add Your Project 3',
-    image: '/images/projects/placeholder.svg',
-    site: '#',
-  },
-]
-
-const works = myProjects.map((project) => ({
+// Projects live in a single place: src/data/projects.ts.
+// The flying scene below and the project grid nested inside this section both
+// read from it, so a project only ever needs editing once.
+const works = projects.map((project) => ({
   caption: project.title,
-  site: project.site || '#',
-  src: project.image,
+  site: project.live ?? repoUrl(project),
+  src: withBase(project.image),
 }))
 ---
 
 <section id="work" class="s-work" data-intersect>
-  <div class="s__outer">
+  <div class="s__outer js-outer">
     <div class="s__inner js-container">
       <h2 class="s__title">
         <span class="s__title__inner js-title">
@@ -73,6 +56,15 @@ const works = myProjects.map((project) => ({
 
     <div class="s__ruler js-ruler"></div>
   </div><!-- .s__outer -->
+
+  <!--
+    The projects showcase is the second half of this section rather than a
+    section of its own: the cinematic scene above is the title card, and the
+    cards below are what it was announcing. It keeps its own `#projects` id so
+    the header menu, the mobile panel and any existing deep link still land on
+    it.
+  -->
+  <SProjects />
 </section>
 
 <script>
@@ -84,14 +76,34 @@ const works = myProjects.map((project) => ({
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
   gsap.registerPlugin(ScrollTrigger, SlowMo)
 
+  /**
+   * Where in `--cluster` the project stage becomes real: the moment the scene's
+   * aperture has finished opening, the first cover starts flying and the first
+   * card starts to settle.
+   *
+   * Before this point the stage is fully transparent, and a transparent
+   * full-viewport layer of links is worse than useless — it would swallow clicks
+   * meant for the scene and hand Tab a destination nobody can see. So this is what
+   * gates `.is-cluster`, which gates `visibility`.
+   *
+   * It has to match the stage's own fade in SProjects.astro, and there is no way
+   * to state it once: CSS can't branch on a custom property's value and JS
+   * shouldn't read computed styles per frame. `lint-timeline.mjs` asserts the two
+   * are equal.
+   */
+  const CLUSTER_ENTRANCE = 0.185
+
   class Section {
     el: HTMLElement
+    outer: HTMLElement
     container: HTMLElement
     ruler: HTMLElement
     scene: HTMLElement
     canvas: HTMLCanvasElement
     ctx: CanvasRenderingContext2D
     title: HTMLElement
+    /** The projects block's root — act two of this same section. */
+    projects: HTMLElement
 
     mask: {
       width: number
@@ -111,6 +123,22 @@ const works = myProjects.map((project) => ({
       width: number
       height: number
     }
+
+    /*
+     * The scene's own box in document coordinates, cached on resize.
+     *
+     * This used to come from two `ScrollTrigger.positionInViewport()` calls per
+     * frame, each of which reads a bounding rect — two forced layouts a frame,
+     * interleaved with the custom-property write below, which is the textbook
+     * recipe for layout thrash. The document position of a static box only
+     * changes when the page reflows, so measure it then and derive everything
+     * else from `scrollY`.
+     */
+    sceneBounds: {
+      top: number
+      height: number
+    }
+
     letters: any[]
     works: any[]
     points: any[]
@@ -124,6 +152,26 @@ const works = myProjects.map((project) => ({
     }
     scrollProgress: number
     smoothScrollProgress: number
+    lastScrollProgress: number
+
+    /** Scroll length of act one — the flying covers — in pixels. */
+    actOneScroll: number
+    /** False below `tablet`, where the cluster runs as normal flow instead. */
+    hasCluster: boolean
+    /** Act two's 0..1 progress, and the last value written for it. */
+    lastCluster: number
+    isClusterActive: boolean
+    /**
+     * How much further the letter field has swept during act two.
+     *
+     * Added to `animationProgress` rather than written into it, so act one's tween
+     * stays the sole owner of that number and scrolling back up hands the field
+     * straight back to GSAP.
+     */
+    clusterSweep: number
+    /** Guards the field's ~30 property writes against an unchanged frame. */
+    lastLetterProgress: number
+
     state: 0
     speed: number
     isPaused: boolean
@@ -134,12 +182,14 @@ const works = myProjects.map((project) => ({
     constructor() {
       // Elements
       this.el = document.querySelector('.s-work')
+      this.outer = this.el.querySelector('.js-outer')
       this.container = this.el.querySelector('.js-container')
       this.ruler = this.el.querySelector('.js-ruler')
       this.scene = this.container.querySelector('.js-scene')
       this.canvas = this.container.querySelector('.js-canvas')
       this.ctx = this.canvas.getContext('2d')
       this.title = this.container.querySelector('.js-title')
+      this.projects = this.el.querySelector('.js-projects')
 
       // Properties
       this.mask = {
@@ -175,8 +225,18 @@ const works = myProjects.map((project) => ({
 
       this.points = []
 
+      this.sceneBounds = { top: 0, height: 0 }
+
       this.scrollProgress = 0
       this.smoothScrollProgress = 0
+      this.lastScrollProgress = null
+
+      this.actOneScroll = 0
+      this.hasCluster = false
+      this.lastCluster = null
+      this.isClusterActive = false
+      this.clusterSweep = 0
+      this.lastLetterProgress = null
       this.last = {
         animationProgress: 0,
         pointsProgress: 0,
@@ -196,12 +256,26 @@ const works = myProjects.map((project) => ({
      * Init
      */
     init() {
+      /*
+       * Arming the cluster is the first thing that happens, because it changes
+       * the section's height: `--cluster-lvh` is zero until this class lands, so
+       * a visitor without script never scrolls through 170lvh of empty page
+       * waiting for a layer that will never appear. Everything below measures,
+       * so it has to be true before any of it runs.
+       */
+      if (this.projects) this.el.classList.add('is-cluster-armed')
+
       this.setCtxStyle()
       this.setSize()
       this.setMask()
       this.setPoints()
       this.setLetters()
       this.setWorks()
+      /*
+       * Before `setTimeline`, not after: act one's scroll length is now derived
+       * from the measured geometry, and the trigger reads it as it's built.
+       */
+      this.measureScene()
       this.setTimeline()
 
       this.bindEvents()
@@ -230,7 +304,65 @@ const works = myProjects.map((project) => ({
         this.setPoints()
         this.setLetters()
         this.setWorks()
+      }
+
+      /*
+       * A height-only change (mobile browser chrome collapsing, say) still
+       * moves this section down the document, so the cached geometry has to be
+       * refreshed on every resize, not only on the ones that rebuild the scene.
+       *
+       * It also has to happen before the timeline is rebuilt, which is why this
+       * sits between the two halves: act one's length comes from the split this
+       * computes, and a stale value would mistime the whole fly-through.
+       */
+      this.measureScene()
+
+      if (widthChanged) {
         this.setTimeline()
+      }
+    }
+
+    /**
+     * Cache the scene's document position
+     */
+    measureScene() {
+      const bounding = this.outer.getBoundingClientRect()
+
+      this.sceneBounds.top = bounding.top + window.scrollY
+      this.sceneBounds.height = bounding.height
+
+      /*
+       * Split the measured height back into its two acts. `--cluster-lvh` is a
+       * breakpoint decision made in CSS, so it's read here rather than guessed —
+       * once per resize, alongside the rect above, never per frame. Zero means
+       * this viewport doesn't pin the cluster at all and act one owns everything.
+       */
+      const sceneLvh = this.works.length * 50
+      const clusterLvh =
+        parseFloat(
+          getComputedStyle(this.el).getPropertyValue('--cluster-lvh')
+        ) || 0
+
+      this.hasCluster = clusterLvh > 0
+      this.actOneScroll =
+        this.sceneBounds.height * (sceneLvh / (sceneLvh + clusterLvh))
+
+      /*
+       * Hiding the cluster is something JS opts into, never the default: without
+       * this class the stage stays visible and fully settled, so a scripting
+       * failure degrades to a plain readable block rather than an empty screen.
+       */
+      if (this.projects) {
+        this.projects.classList.toggle('is-cluster-js', this.hasCluster)
+
+        if (!this.hasCluster) {
+          this.projects.classList.remove('is-cluster')
+
+          this.isClusterActive = false
+          this.lastCluster = null
+
+          this.el.style.removeProperty('--cluster')
+        }
       }
     }
 
@@ -242,6 +374,21 @@ const works = myProjects.map((project) => ({
 
       if (this.isPaused) {
         Emitter.off('tick', this.tick, this)
+
+        /*
+         * The cluster stage is a fixed, full-viewport layer, and the tick that
+         * would have stood it down has just stopped running. Clipping already
+         * hides it, but a clipped element is still focusable — so leaving the
+         * class on would put a screenful of invisible project links in the tab
+         * order for the rest of the page. Intersection ending is the exact,
+         * race-free signal for this, which is why it's handled here rather than
+         * as one more threshold inside `moveCluster`.
+         */
+        if (this.isClusterActive) {
+          this.isClusterActive = false
+
+          this.projects.classList.remove('is-cluster')
+        }
       } else {
         Emitter.on('tick', this.tick, this)
       }
@@ -264,7 +411,12 @@ const works = myProjects.map((project) => ({
      * Set size
      */
     setSize() {
-      this.el.style.setProperty('--height', this.works.length * 50 + 'lvh')
+      /*
+       * Only act one's share is written from here. The section's total height is
+       * composed in CSS from this plus `--cluster-lvh`, so the breakpoint that
+       * drops the cluster out of the pinned scene stays in the stylesheet.
+       */
+      this.el.style.setProperty('--scene-lvh', String(this.works.length * 50))
 
       const bounding = this.container.getBoundingClientRect()
 
@@ -317,6 +469,17 @@ const works = myProjects.map((project) => ({
       let size = (corners.tr.x - corners.tl.x) / 2
 
       mask.maxScale = window.safeWidth / size
+
+      /*
+       * The reciprocal of the open scale, published for CSS.
+       *
+       * With the cluster armed, act one no longer closes the aperture at its own
+       * end — act two happens inside the open one — so the closing beat is driven
+       * from `--close` instead. GSAP leaves its own `transform` parked at
+       * `maxScale`, and the individual `scale` property multiplies on top of that,
+       * so this is the factor that takes it back to exactly 1.
+       */
+      this.el.style.setProperty('--mask-close', String(1 / mask.maxScale))
 
       let dInner = `M ${corners.tl.x} ${corners.tl.y + size} A ${size} ${size} 0 0 1 ${corners.tr.x} ${corners.tr.y + size} L ${corners.br.x} ${corners.br.y - size} A ${size} ${size} 0 0 1 ${corners.bl.x} ${corners.bl.y - size} Z`
       const linesClip = `${dOuter} ${dInner}`
@@ -446,6 +609,9 @@ const works = myProjects.map((project) => ({
           letter.ghosts.push(ghost)
         }
       })
+
+      // Fresh ghosts have no `--progress` yet, so the next frame has to write.
+      this.lastLetterProgress = null
     }
 
     /**
@@ -469,7 +635,7 @@ const works = myProjects.map((project) => ({
      * Set timeline
      */
     setTimeline() {
-      const { el, container, works, scene, mask } = this
+      const { outer, container, works, scene, mask } = this
 
       const worksEl = works.map((work) => work.el)
 
@@ -481,9 +647,22 @@ const works = myProjects.map((project) => ({
 
       tl = gsap.timeline({
         scrollTrigger: {
-          trigger: el,
+          /*
+           * The scene, not the whole section: the projects cluster now lives
+           * inside `#work` too, and triggering off the section would stretch
+           * this timeline across it.
+           */
+          trigger: outer,
           start: 'top 25%',
-          end: 'bottom 75%',
+          /*
+           * Act one is bounded to its own share of the scroll length instead of
+           * running to `bottom 75%`. The section grew to buy the cluster its
+           * scroll room, and without this the fly-through would simply have been
+           * stretched over the extra distance — the covers would drift past at
+           * roughly half speed. `actOneScroll` is the pre-cluster height, so this
+           * reproduces the original span exactly.
+           */
+          end: () => '+=' + Math.max(1, this.actOneScroll),
           scrub: 1,
         },
         onUpdate: () => {
@@ -586,48 +765,74 @@ const works = myProjects.map((project) => ({
         0.75
       )
 
-      tl.fromTo(
-        this,
-        {
-          state: 1,
-        },
-        {
-          state: 0,
-          duration: 0.75,
-          ease: 'power4.inOut',
-          immediateRender: false,
-        },
-        '-=1'
-      )
+      /*
+       * Act one's closing beats all start together, a second before the end.
+       *
+       * Pinned to a number rather than left as `'-=1'` because the group below is
+       * no longer fixed in size: `'-=1'` resolves against the timeline's duration
+       * at the moment of insertion, so omitting a member would silently retime
+       * whatever followed it.
+       */
+      const closing = tl.duration() - 1
 
-      tl.fromTo(
-        mask.el,
-        {
-          scale: mask.maxScale,
-        },
-        {
-          scale: 1,
-          duration: 0.75,
-          ease: 'power4.inOut',
-          immediateRender: false,
-        },
-        '-=1'
-      )
+      /*
+       * The capsule closing is only act one's finale when act one is the whole
+       * section. With the cluster armed, act two plays inside that same open
+       * aperture — the letters stay spread and the cards fly in over them — so
+       * these three beats move to the end of act two, driven from `--close` in
+       * CSS. Closing here and reopening a moment later would be a shrug the size
+       * of the viewport, and it would also leave the cluster's dark cards sitting
+       * on paper.
+       */
+      if (!this.hasCluster) {
+        tl.fromTo(
+          this,
+          {
+            state: 1,
+          },
+          {
+            state: 0,
+            duration: 0.75,
+            ease: 'power4.inOut',
+            immediateRender: false,
+          },
+          closing
+        )
 
-      tl.fromTo(
-        scene,
-        {
-          scale: 1,
-        },
-        {
-          scale: 0.75,
-          duration: 0.75,
-          ease: 'power3.inOut',
-          immediateRender: false,
-        },
-        '-=1'
-      )
+        tl.fromTo(
+          mask.el,
+          {
+            scale: mask.maxScale,
+          },
+          {
+            scale: 1,
+            duration: 0.75,
+            ease: 'power4.inOut',
+            immediateRender: false,
+          },
+          closing
+        )
 
+        tl.fromTo(
+          scene,
+          {
+            scale: 1,
+          },
+          {
+            scale: 0.75,
+            duration: 0.75,
+            ease: 'power3.inOut',
+            immediateRender: false,
+          },
+          closing
+        )
+      }
+
+      /*
+       * These two stay put either way. The container's 1rem side inset is the
+       * frame act two is read inside rather than part of the capsule's close, and
+       * the dot field settling is what the letters travel over.
+       */
       tl.fromTo(
         container,
         {
@@ -639,7 +844,7 @@ const works = myProjects.map((project) => ({
           ease: 'power3.inOut',
           immediateRender: false,
         },
-        '-=1'
+        closing
       )
 
       tl.fromTo(
@@ -652,7 +857,7 @@ const works = myProjects.map((project) => ({
           duration: 1,
           ease: 'power4.inOut',
         },
-        '-=1'
+        closing
       )
     }
 
@@ -660,15 +865,29 @@ const works = myProjects.map((project) => ({
      * Move letters
      */
     moveLetters() {
-      const { speed, letters, animationProgress } = this
+      const { speed, letters } = this
 
-      letters.forEach((letter, i) => {
+      // Act one's tween plus whatever act two has added on top of it.
+      const base = this.animationProgress + this.clusterSweep
+
+      /*
+       * Thirty-odd custom-property writes a frame is worth skipping outright when
+       * none of them would change: act one parks `animationProgress` at its end
+       * value, and act two only advances the field while the page is scrolling.
+       * Rounding to the nearest unit still resolves finer than a pixel of scroll.
+       */
+      const rounded = Math.round(base)
+
+      if (rounded === this.lastLetterProgress) return
+
+      this.lastLetterProgress = rounded
+
+      letters.forEach((letter) => {
         const letterSpeed = speed * letter.freq
+
         letter.ghosts.forEach((ghost, index) => {
           let progress =
-            (((animationProgress % letterSpeed) / letterSpeed +
-              index / letter.total) %
-              1) /
+            (((base % letterSpeed) / letterSpeed + index / letter.total) % 1) /
               0.7 -
             0.15
 
@@ -764,32 +983,122 @@ const works = myProjects.map((project) => ({
      * Tick
      */
     tick() {
-      // Calculate scroll progress
+      const { sceneBounds } = this
+
+      /*
+       * Read the scroll position first and write styles afterwards, so a frame
+       * never asks the browser to lay out again halfway through.
+       */
+      const scrollY = window.scrollY
+      const viewport = window.safeHeight || window.innerHeight
+
+      const top = (sceneBounds.top - scrollY) / viewport
+      const bottom = (sceneBounds.top + sceneBounds.height - scrollY) / viewport
+
       this.scrollProgress =
-        Math.max(
-          Math.min(1, ScrollTrigger.positionInViewport(this.el, 'top')),
-          0
-        ) *
-          -1 +
-        (1 -
-          Math.max(
-            Math.min(1, ScrollTrigger.positionInViewport(this.el, 'bottom')),
-            0
-          ))
+        Math.max(Math.min(1, top), 0) * -1 + (1 - Math.max(Math.min(1, bottom), 0))
+
       this.smoothScrollProgress +=
         (this.scrollProgress - this.smoothScrollProgress) * 0.1
 
-      this.el.style.setProperty(
-        '--scroll-progress',
-        String(this.scrollProgress)
-      )
+      // Three decimals is finer than a pixel here, and skipping the write keeps
+      // idle frames out of style recalculation entirely.
+      const rounded = Math.round(this.scrollProgress * 1000) / 1000
+
+      if (rounded !== this.lastScrollProgress) {
+        this.lastScrollProgress = rounded
+
+        this.el.style.setProperty('--scroll-progress', String(rounded))
+      }
 
       // Movement
       this.movePoints()
+      /*
+       * Act two before the letters, not after: `moveCluster` is what extends the
+       * field's sweep, and reading that a frame late would leave the letters
+       * trailing the cards they're supposed to be travelling with.
+       */
+      this.moveCluster(scrollY, viewport)
       this.moveLetters()
 
       // Draw
       this.drawPoints()
+    }
+
+    /**
+     * Act two — the project cluster.
+     *
+     * Nothing is measured here. The cluster's scroll window is the whole pinned
+     * section: it opens the moment act one's first frame plays and closes as the
+     * pinned viewport starts to leave, all derived from the geometry cached on
+     * resize.
+     *
+     * It used to start where act one ended, which bunched all four cards into the
+     * scroll right after the fly-through — they read as arriving together, at the
+     * end. The cards and the flying covers are the same four projects in the same
+     * order, so the window now spans both acts and each card settles in step with
+     * its own cover: cover N sweeps through, card N is what it leaves behind.
+     */
+    moveCluster(scrollY: number, viewport: number) {
+      if (!this.hasCluster || !this.projects) return
+
+      const { sceneBounds } = this
+
+      /*
+       * `start: 'top 25%'` puts act one's first frame a quarter of a viewport
+       * before the section's top reaches it, so that offset carries through here
+       * — the two acts now share an origin as well as a viewport.
+       */
+      const start = sceneBounds.top - viewport * 0.25
+      const end = sceneBounds.top + sceneBounds.height - viewport
+      const span = Math.max(1, end - start)
+
+      const cluster = Math.max(0, Math.min(1, (scrollY - start) / span))
+
+      const rounded = Math.round(cluster * 1000) / 1000
+
+      if (rounded !== this.lastCluster) {
+        this.lastCluster = rounded
+
+        this.el.style.setProperty('--cluster', String(rounded))
+      }
+
+      /*
+       * The letter field keeps moving after act one hands over, because the cards
+       * are meant to be travelling with it rather than parked in front of a frozen
+       * backdrop. Act one leaves `animationProgress` at its end value, so the
+       * extra distance is carried separately and simply added on in `moveLetters`.
+       *
+       * It has to be measured from act one's end rather than from `--cluster`,
+       * which now starts a whole act earlier — adding this across the fly-through
+       * would quietly double the speed the covers were timed against. The fifth of
+       * a viewport is the overlap, so the sweep picks up while the last cover is
+       * still leaving.
+       */
+      const actTwo = (this.actOneScroll - viewport * 0.2) / span
+      const swept = Math.max(0, (cluster - actTwo) / Math.max(0.001, 1 - actTwo))
+
+      /*
+       * An eighth of a cycle across act two, so the field crawls rather than
+       * churns. Ghosts wrap at `--progress` outside 0..1, which is where this
+       * geometry has already carried them past the viewport edge, so the wrap is
+       * never something you can watch happen.
+       */
+      this.clusterSweep = swept * this.speed * 0.12
+
+      /*
+       * The stage is a fixed, full-viewport layer, so it has to be taken out of
+       * the tab order and off the hit-testing path for as long as it isn't
+       * actually on screen — which is now most of act one, since `--cluster`
+       * starts a whole act before the cards do.
+       */
+      const isActive = cluster > CLUSTER_ENTRANCE
+
+      if (isActive !== this.isClusterActive) {
+        this.isClusterActive = isActive
+
+        this.projects.classList.toggle('is-cluster', isActive)
+      }
     }
   }
 
@@ -798,12 +1107,72 @@ const works = myProjects.map((project) => ({
 
 <style lang="scss">
   .s-work {
-    --height: 100lvh;
+    /*
+     * The section's scroll length is two acts sharing one pinned viewport.
+     *
+     * Act one is the flying covers: `--scene-lvh` is written from JS as
+     * `works.length * 50`, exactly as it always was. Act two is the project
+     * cluster, which needs its own scroll room to settle into and then dwell in
+     * — that's `--cluster-lvh`. Composing the two here rather than in JS keeps
+     * the breakpoint in one place.
+     *
+     * The cluster's room starts at zero and is only granted once JS has armed
+     * the scene, because the cluster is what fills it. Without script the
+     * projects stay in document flow, and buying 170lvh of scroll for a pinned
+     * layer that will never appear would just be a long empty gap. At or below
+     * `desktop-xs` the cluster runs as flow regardless — a five-card fan needs
+     * width — so it gets nothing there either.
+     *
+     * The 250 is the pre-script value for today's five works; JS overwrites it
+     * from the real count on arm, so adding a project only needs the data file.
+     */
+    --scene-lvh: 250;
+    --cluster-lvh: 0;
+    --height: calc((var(--scene-lvh) + var(--cluster-lvh)) * 1lvh);
+
+    &.is-cluster-armed {
+      --cluster-lvh: 170;
+
+      @include mq(desktop-xs) {
+        --cluster-lvh: 0;
+      }
+    }
+
+    /*
+     * The cluster's 0..1 progress across the whole pinned section — both acts, not
+     * just the second one: the cards start arriving during the fly-through, so the
+     * number that places them has to cover it.
+     *
+     * Written here from the tick and inherited by the projects block. Declared on
+     * this element rather than on the block itself so the inline write can
+     * override it, since an element's own declaration always beats an inherited
+     * value. Nothing below `desktop` ever reads it — the cluster is flow layout
+     * there — so the 0 is the whole no-cluster story.
+     */
+    --cluster: 0;
+
+    /*
+     * Two shapes of the section, both derived from `--cluster` so there is only
+     * ever one number coming out of JS.
+     *
+     * `--spread` is the fan opening. It finishes right about where the fly-through
+     * does (`--cluster: 0.69` against act one's 0.68), so the last card turns into
+     * the fan as the last cover leaves and the rest of the section is spent simply
+     * reading them. `--close` is the capsule shutting again over the final stretch
+     * — act one's old finale, relocated to the end of the section it now actually
+     * ends. Both are inert at `--cluster: 0`.
+     *
+     * The two rates look unrelated but they're the same distance measured against
+     * different windows: `--cluster` now spans both acts, so a beat that used to
+     * sit at 0.85 of act two alone sits at 0.94 of the pair. If the split between
+     * `--scene-lvh` and `--cluster-lvh` ever changes, both numbers move —
+     * `lint-timeline.mjs` is what re-derives them.
+     */
+    --spread: clamp(0, calc(var(--cluster) * 1.45), 1);
+    --close: clamp(0, calc((var(--cluster) - 0.94) * 16.6667), 1);
 
     position: relative;
     z-index: 2;
-
-    height: var(--height);
 
     background: color(primary);
 
@@ -840,6 +1209,17 @@ const works = myProjects.map((project) => ({
 
       width: 100%;
       height: 100%;
+
+      /*
+       * The aperture's close, when the cluster has taken it off act one's hands.
+       *
+       * GSAP owns this element's `transform` and leaves it parked wide open at
+       * `maxScale`; the individual `scale` property multiplies on top, and
+       * `--mask-close` is the reciprocal measured in `setMask`. So this is 1 — a
+       * no-op — for the whole of act one and for every viewport that runs the
+       * projects in flow, and only bites over act two's last stretch.
+       */
+      scale: calc(1 + var(--close) * (var(--mask-close, 1) - 1));
 
       will-change: scale, transform;
 
@@ -970,9 +1350,19 @@ const works = myProjects.map((project) => ({
 
       perspective: 40rem;
 
-      will-change: transform;
+      /* The other half of the relocated close — see `.s__mask` above. */
+      scale: calc(1 - var(--close) * 0.25);
+
+      will-change: scale, transform;
 
       :global(.s__scene__letter) {
+        /*
+         * How far open the field is. `--state` is act one's, written inline from
+         * the timeline; with the cluster armed it stays at 1 across act two so the
+         * letters keep their spread behind the cards, and this is what finally
+         * folds them back as the capsule shuts.
+         */
+        --field: calc(var(--state) * (1 - var(--close)));
         --head: calc((var(--progress) - 0.5) * -2);
         --ahead: calc(var(--head) * var(--head));
 
@@ -982,10 +1372,10 @@ const works = myProjects.map((project) => ({
 
         display: block;
 
-        transform: rotateY(calc(var(--head) * -10deg * var(--state)))
+        transform: rotateY(calc(var(--head) * -10deg * var(--field)))
           translate3d(
-            calc(var(--head) * 50vw * var(--state)),
-            calc(var(--iy) * 50% * var(--ahead) * var(--state)),
+            calc(var(--head) * 50vw * var(--field)),
+            calc(var(--iy) * 50% * var(--ahead) * var(--field)),
             0
           );
 
@@ -1000,12 +1390,12 @@ const works = myProjects.map((project) => ({
 
           color: color(shadow);
 
-          opacity: min(calc( var(--state) * 2 ), 1);
+          opacity: min(calc( var(--field) * 2 ), 1);
           transform: scale(
               1.05, 1.02
             )
             translate3d(
-              calc(var(--head) * 0.1rem * var(--state) * var(--state)),
+              calc(var(--head) * 0.1rem * var(--field) * var(--field)),
               0,
               0
             );

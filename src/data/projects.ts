@@ -6,20 +6,9 @@
  * is the scroll order: cover N flies through the scene as card N settles into
  * the cluster, so reordering here reorders both at once.
  *
- * The two engineering entries are transcribed from the CV in `public/resume.pdf`
- * — the numbers, action counts and estimator names are his, not paraphrase.
- *
- * ─────────────────────────────────────────────────────────────────────────────
- *  TODO — PASTE YOUR REAL REPO URLS HERE
- *  `github: null` is deliberate: the card falls back to your repositories page
- *  rather than linking to a guessed URL that would 404. Replace each `null`
- *  below with the exact repo URL and the buttons wire up automatically.
- *
- *  Please also confirm the `technologies` arrays. Everything listed appears in
- *  your CV, but the CV names a language per *skill* rather than per project, so
- *  the implementation language on the two newest entries is inferred (marked
- *  inline). Trim anything a project doesn't actually use.
- * ─────────────────────────────────────────────────────────────────────────────
+ * Existing details come from the portfolio and CV. New project details come
+ * from local source checkouts. Repository URLs were supplied by the owner or
+ * read from the checkouts' Git remotes.
  */
 
 export const GITHUB_USER = 'Ashwanthbingi'
@@ -37,7 +26,7 @@ export interface Project {
   /** URL-safe id, also used for the cover filename and DOM ids. */
   slug: string
   title: string
-  /** One-line problem statement. The most important line on the card. */
+  /** Short summary, displayed in two lines on the card. */
   problem: string
   /** 2–3 sentences of supporting detail. */
   description: string
@@ -45,14 +34,12 @@ export interface Project {
   highlights: string[]
   technologies: string[]
   categories: ProjectCategory[]
-  /** Exact repo URL. `null` -> falls back to the repositories page. */
-  github: string | null
+  /** Exact repository URL; every selected project links directly to its code. */
+  github: string
   /** Live deployment, or `null` to hide the demo button. */
   live: string | null
   /**
-   * Cover art, relative to /public. The committed .svg diagrams are
-   * fallbacks — drop a screenshot in public/images/projects/ and point
-   * this at it (e.g. 'images/projects/aegis-lite.png').
+   * Project-specific SVG technical illustration, relative to /public.
    */
   image: string
   /** Exactly one project should be featured. */
@@ -71,7 +58,7 @@ export const projects: Project[] = [
      */
     title: 'Fault-Tolerant Key-Value Store',
     problem:
-      'A distributed store that cannot agree on its own history is worse than a single node — it loses data confidently.',
+      'Raft consensus keeps a distributed store consistent through node failures.',
     description:
       'An implementation of the Raft consensus algorithm: leader election, log replication, quorum-based commits and automatic failover, so the cluster keeps serving strongly consistent reads and writes while nodes die under it. State survives on RocksDB with crash recovery and snapshotting, nodes talk over gRPC, and a React dashboard reads 25+ Prometheus metrics live.',
     highlights: [
@@ -91,7 +78,7 @@ export const projects: Project[] = [
       'Grafana',
     ],
     categories: ['Systems', 'Full Stack'],
-    github: null, // TODO: paste exact repo URL
+    github: `${GITHUB_PROFILE}/raft-harmony`,
     live: null,
     image: 'images/projects/raft-key-value-store.svg',
     featured: true,
@@ -100,7 +87,7 @@ export const projects: Project[] = [
     slug: 'payment-recovery-bandits',
     title: 'Budget-Constrained Payment Recovery',
     problem:
-      'Every failed payment is worth chasing — but the recovery budget runs out long before the queue does.',
+      'Contextual bandits allocate a fixed budget across failed-payment recovery actions.',
     description:
       'A LinUCB contextual bandit that picks one of six recovery actions per failed transaction from transaction, failure-reason and customer-behaviour context, reframing one-off retry rules as budget-constrained portfolio allocation. Primal-dual pacing learns a shadow price that spends a shared ₹300/day budget on the highest-value failures.',
     highlights: [
@@ -117,36 +104,16 @@ export const projects: Project[] = [
       'Policy Optimization',
     ],
     categories: ['AI / ML', 'Research'],
-    github: null, // TODO: paste exact repo URL
+    github: `${GITHUB_PROFILE}/Recovery-portfolio-optimizer`,
     live: null,
     image: 'images/projects/payment-recovery-bandits.svg',
-    featured: false,
-  },
-  {
-    slug: 'aegis-lite',
-    title: 'AEGIS-Lite',
-    problem:
-      'An autonomous agent calls tools with real side effects and nothing sits between intent and consequence.',
-    description:
-      'A security middleware layer for AI agents. Every tool call is risk-evaluated before execution, memory is isolated per task so context cannot leak across boundaries, and stateful rollback lets a run be rewound to a known-good checkpoint after an unsafe action.',
-    highlights: [
-      'Tool-call risk evaluation ahead of execution',
-      'Stateful rollback to known-good checkpoints',
-      'Per-task memory isolation',
-      'Sandboxed execution boundary for untrusted actions',
-    ],
-    technologies: ['Python', 'LLM Tooling', 'Sandboxing'],
-    categories: ['Systems', 'Research'],
-    github: null, // TODO: paste exact repo URL
-    live: null,
-    image: 'images/projects/aegis-lite.svg',
     featured: false,
   },
   {
     slug: 'chest-xray-super-resolution',
     title: 'Chest X-Ray Super-Resolution',
     problem:
-      'Diagnosis depends on fine anatomical detail that low-resolution chest radiographs simply do not carry.',
+      'Reconstructing chest X-rays with attention to downstream diagnostic quality.',
     description:
       'A deep-learning pipeline that reconstructs high-resolution chest radiographs from low-resolution inputs using a SwinIR transformer backbone. Trained with a VGG-based perceptual loss so outputs are optimised for diagnostic legibility rather than pixel-wise error alone, then evaluated on downstream diagnostic quality.',
     highlights: [
@@ -157,7 +124,7 @@ export const projects: Project[] = [
     ],
     technologies: ['Python', 'PyTorch', 'SwinIR', 'OpenCV', 'NumPy'],
     categories: ['Computer Vision', 'Research', 'AI / ML'],
-    github: null, // TODO: paste exact repo URL
+    github: `${GITHUB_PROFILE}/Beyond-Perceptual-Quality-Task-Driven-Super-Resolution-for-Diagnostically-Reliable-Chest-X-ray-`,
     live: null,
     image: 'images/projects/chest-xray-super-resolution.svg',
     featured: false,
@@ -166,7 +133,7 @@ export const projects: Project[] = [
     slug: 'portfolio',
     title: 'This Portfolio',
     problem:
-      'A developer portfolio should demonstrate engineering ability, not just describe it.',
+      'An Astro portfolio with a custom WebGL backdrop and scroll-driven motion.',
     description:
       'Statically generated with Astro and animated with GSAP over a Lenis smooth-scroll pipeline. Motion runs on a single shared ticker and IntersectionObserver, the hero sits on a hand-written WebGL2 shader with no 3D library, and every effect degrades cleanly under prefers-reduced-motion.',
     highlights: [
@@ -182,6 +149,86 @@ export const projects: Project[] = [
     image: 'images/projects/portfolio.svg',
     featured: false,
   },
+  {
+    slug: 'contextedge',
+    title: 'ContextEdge',
+    problem:
+      'On-device models detect behavioral drift across everyday computing contexts.',
+    description:
+      'A local behavioral monitoring pipeline that learns separate profiles for activities such as coding and browsing. Isolation Forest and a GRU autoencoder feed persistent drift detection, with observations and model adaptation surfaced in a Streamlit dashboard.',
+    highlights: [
+      'Activity-specific behavioral profiles',
+      'Isolation Forest and GRU anomaly models',
+      'ONNX Runtime inference on the device',
+      'ADWIN and Page-Hinkley drift detection',
+    ],
+    technologies: ['Python', 'PyTorch', 'ONNX Runtime', 'scikit-learn', 'Streamlit'],
+    categories: ['AI / ML', 'Systems'],
+    github: `${GITHUB_PROFILE}/ContextEdge-Privacy-Preserving-Context-Aware-Behavioral-Drift-Detection-`,
+    live: null,
+    image: 'images/projects/contextedge.svg',
+    featured: false,
+  },
+  {
+    slug: 'verifier-induced-reasoning-corruption',
+    title: 'Verifier-Induced Reasoning Corruption',
+    problem:
+      'A research pipeline studying how misleading feedback changes correct LLM answers.',
+    description:
+      'A paired experiment framework for comparing false-negative correctness feedback with a no-feedback control. Shared initial responses, isolated continuations, exact numeric scoring and append-only records support reproducible analysis without assuming a research outcome.',
+    highlights: [
+      'Paired control and misleading-feedback branches',
+      'Exact numeric answer scoring for GSM8K',
+      'Append-only JSONL experiment records',
+      'Paired statistics and bootstrap intervals',
+    ],
+    technologies: ['Python', 'GSM8K', 'JSONL', 'unittest'],
+    categories: ['Research', 'AI / ML'],
+    github: `${GITHUB_PROFILE}/verifier-induced-reasoning-corruption`,
+    live: null,
+    image: 'images/projects/verifier-induced-reasoning-corruption.svg',
+    featured: false,
+  },
+  {
+    slug: 'career-twin',
+    title: 'Career Twin',
+    problem:
+      'Resume and repository insights connect a skill profile to relevant career paths.',
+    description:
+      'A career platform with a Java Spring Boot backend, React interface and Python retrieval service. Resume parsing, GitHub analysis and skill matching build a digital profile used for career recommendations.',
+    highlights: [
+      'PDF resume parsing and skill extraction',
+      'GitHub profile and repository analysis',
+      'Skill-based career matching',
+      'FastAPI retrieval service with ChromaDB',
+    ],
+    technologies: ['Java', 'Spring Boot', 'React', 'Python', 'FastAPI', 'MySQL'],
+    categories: ['Full Stack', 'AI / ML'],
+    github: `${GITHUB_PROFILE}/Career-Twin`,
+    live: null,
+    image: 'images/projects/career-twin.svg',
+    featured: false,
+  },
+  {
+    slug: 'system-call-simulation',
+    title: 'System Call Simulation',
+    problem:
+      'A discrete-event model traces user requests through a simulated kernel queue.',
+    description:
+      'A Python simulation of two user processes submitting system calls to a shared kernel. SimPy models request handling and service delays, while Matplotlib plots queue length over simulated time.',
+    highlights: [
+      'Two processes sharing a kernel request queue',
+      'Time, sleep, file and device call simulation',
+      'Response events and simulated error codes',
+      'Queue-length visualization with Matplotlib',
+    ],
+    technologies: ['Python', 'SimPy', 'Matplotlib'],
+    categories: ['Systems'],
+    github: `${GITHUB_PROFILE}/system-call-simulation`,
+    live: null,
+    image: 'images/projects/system-call-simulation.svg',
+    featured: false,
+  },
 ]
 
 /** The single featured project, with a safe fallback to the first entry. */
@@ -193,15 +240,7 @@ export const gridProjects: Project[] = projects.filter(
   (project) => project !== featuredProject
 )
 
-/**
- * Resolve a project's repo link. Never returns a guessed URL — an unset
- * `github` falls back to the repositories listing.
- */
+/** Repository destination shared by cards and flying covers. */
 export function repoUrl(project: Project): string {
-  return project.github ?? GITHUB_REPOS
-}
-
-/** True when we have a verified repo URL for this project. */
-export function hasRepo(project: Project): boolean {
-  return project.github !== null
+  return project.github
 }

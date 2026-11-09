@@ -1,6 +1,6 @@
 ---
 import type { Project } from '../data/projects'
-import { hasRepo, repoUrl } from '../data/projects'
+import { repoUrl } from '../data/projects'
 import { withBase } from '../utils/paths'
 
 interface Props {
@@ -25,9 +25,6 @@ const {
 } = Astro.props as Props
 
 const repo = repoUrl(project)
-// When we don't have a verified repo URL we link to the repositories listing
-// rather than guessing a slug that would 404, so the label softens too.
-const repoLabel = hasRepo(project) ? 'Repository' : 'GitHub'
 const discipline = project.categories[0]
 
 /*
@@ -103,8 +100,8 @@ const detailed = featured || cluster
     </ul>
 
     <div class="a__actions">
-      <a class="a__btn a__btn--solid" href={repo} target="_blank" rel="noopener">
-        <span>{repoLabel}</span>
+      <a class="a__btn a__btn--solid" href={repo} target="_blank" rel="noopener" aria-label={`View ${project.title} repository on GitHub`}>
+        <span>Repository</span>
         <svg class="a__btn__icon" viewBox="0 0 12 12" aria-hidden="true">
           <path d="M2.5 9.5 L9.5 2.5 M4.5 2.5 H9.5 V7.5" fill="none" stroke="currentColor" stroke-width="1.4"></path>
         </svg>
@@ -137,6 +134,7 @@ const detailed = featured || cluster
 
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     background: color(secondary);
     border: 1px solid rgba($paper, 0.14);
@@ -309,6 +307,11 @@ const detailed = featured || cluster
     }
 
     .a__problem {
+      display: -webkit-box;
+      min-height: 3em;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       margin: 0;
 
       color: rgba($paper, 0.82);
@@ -578,6 +581,7 @@ const detailed = featured || cluster
            */
           .a__title {
             font-size: clamp(1rem, 1.45vw, 1.3125rem);
+            min-height: 3.15em;
           }
 
           /* Two lines of context, so a closed card still says what it is. */
@@ -654,6 +658,7 @@ const detailed = featured || cluster
            */
           .a__tech {
             display: block;
+            min-height: 3.4em;
 
             /* Strut for the first line box; the items carry the same ratio. */
             line-height: 1.7;

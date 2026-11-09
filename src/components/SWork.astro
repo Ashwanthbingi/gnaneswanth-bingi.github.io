@@ -14,7 +14,7 @@ const works = projects.map((project) => ({
 }))
 ---
 
-<section id="work" class="s-work" data-intersect>
+<section id="work" class="s-work" style={`--scene-lvh: ${works.length * 50}`} data-intersect>
   <div class="s__outer js-outer">
     <div class="s__inner js-container">
       <h2 class="s__title">
@@ -76,21 +76,8 @@ const works = projects.map((project) => ({
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
   gsap.registerPlugin(ScrollTrigger, SlowMo)
 
-  /**
-   * Where in `--cluster` the project stage becomes real: the moment the scene's
-   * aperture has finished opening, the first cover starts flying and the first
-   * card starts to settle.
-   *
-   * Before this point the stage is fully transparent, and a transparent
-   * full-viewport layer of links is worse than useless — it would swallow clicks
-   * meant for the scene and hand Tab a destination nobody can see. So this is what
-   * gates `.is-cluster`, which gates `visibility`.
-   *
-   * It has to match the stage's own fade in SProjects.astro, and there is no way
-   * to state it once: CSS can't branch on a custom property's value and JS
-   * shouldn't read computed styles per frame. `lint-timeline.mjs` asserts the two
-   * are equal.
-   */
+  // First-paint fallback. setTimeline derives the actual entrance and shares
+  // it with CSS so hidden project links become reachable with the aperture.
   const CLUSTER_ENTRANCE = 0.185
 
   class Section {
@@ -161,6 +148,7 @@ const works = projects.map((project) => ({
     /** Act two's 0..1 progress, and the last value written for it. */
     lastCluster: number
     isClusterActive: boolean
+    clusterEntrance: number
     /**
      * How much further the letter field has swept during act two.
      *
@@ -235,6 +223,7 @@ const works = projects.map((project) => ({
       this.hasCluster = false
       this.lastCluster = null
       this.isClusterActive = false
+      this.clusterEntrance = CLUSTER_ENTRANCE
       this.clusterSweep = 0
       this.lastLetterProgress = null
       this.last = {
@@ -315,9 +304,10 @@ const works = projects.map((project) => ({
        * sits between the two halves: act one's length comes from the split this
        * computes, and a stale value would mistime the whole fly-through.
        */
+      const previouslyHadCluster = this.hasCluster
       this.measureScene()
 
-      if (widthChanged) {
+      if (widthChanged || previouslyHadCluster !== this.hasCluster) {
         this.setTimeline()
       }
     }
@@ -859,6 +849,21 @@ const works = projects.map((project) => ({
         },
         closing
       )
+
+      this.tl = tl
+
+      if (this.hasCluster && this.projects) {
+        // Convert GSAP time to the normalized scroll space shared with CSS.
+        const span = Math.max(1, this.sceneBounds.height - window.innerHeight * 0.75)
+        const unit = this.actOneScroll / (tl.duration() * span)
+        this.clusterEntrance = 0.75 * unit
+        this.el.style.setProperty('--cluster-entrance', String(this.clusterEntrance))
+        this.el.style.setProperty('--card-stagger', String(0.25 * unit))
+        this.el.style.setProperty('--card-settle-rate', String(1 / (0.5 * unit)))
+        const lastSettle = (0.75 + (works.length - 1) * 0.25 + 0.5) * unit
+        const landing = (lastSettle * span / window.innerHeight - 0.25) * 100 + 12
+        this.projects.style.setProperty('--landing-lvh', String(landing))
+      }
     }
 
     /**
@@ -1092,7 +1097,7 @@ const works = projects.map((project) => ({
        * actually on screen — which is now most of act one, since `--cluster`
        * starts a whole act before the cards do.
        */
-      const isActive = cluster > CLUSTER_ENTRANCE
+      const isActive = cluster > this.clusterEntrance
 
       if (isActive !== this.isClusterActive) {
         this.isClusterActive = isActive
@@ -1123,20 +1128,10 @@ const works = projects.map((project) => ({
      * `desktop-xs` the cluster runs as flow regardless — a five-card fan needs
      * width — so it gets nothing there either.
      *
-     * The 250 is the pre-script value for today's five works; JS overwrites it
-     * from the real count on arm, so adding a project only needs the data file.
+     * Markup supplies --scene-lvh from the project count before script runs.
      */
-    --scene-lvh: 250;
     --cluster-lvh: 0;
     --height: calc((var(--scene-lvh) + var(--cluster-lvh)) * 1lvh);
-
-    &.is-cluster-armed {
-      --cluster-lvh: 170;
-
-      @include mq(desktop-xs) {
-        --cluster-lvh: 0;
-      }
-    }
 
     /*
      * The cluster's 0..1 progress across the whole pinned section — both acts, not
@@ -1175,6 +1170,18 @@ const works = projects.map((project) => ({
     z-index: 2;
 
     background: color(primary);
+
+    &.is-cluster-armed {
+      --cluster-lvh: 170;
+
+      @include mq(desktop-xs) {
+        --cluster-lvh: 0;
+      }
+
+      @media (max-height: 600px) {
+        --cluster-lvh: 0;
+      }
+    }
 
     &:before {
       position: absolute;

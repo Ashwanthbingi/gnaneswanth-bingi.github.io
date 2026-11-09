@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1082 636" width="1082" height="636" role="img" aria-labelledby="title desc">
+  <title id="title">VERIFIER FEEDBACK</title>
+  <desc id="desc">Paired experimental design: one initial answer branches into a no-verdict control and a false-negative treatment, then both answers are scored.</desc>
+  <defs>
+    <pattern id="grid" width="41.6" height="42.4" patternUnits="userSpaceOnUse"><path d="M41.6 0H0V42.4" fill="none" stroke="#fff2ed" stroke-width="1" opacity="0.06"/></pattern>
+  </defs>
+  <rect width="1082" height="636" fill="#160000"/>
+  <rect width="1082" height="636" fill="url(#grid)"/>
+  <path d="M28 54V28H54 M1028 28H1054V54 M28 582V608H54 M1028 608H1054V582" fill="none" stroke="#fff2ed" stroke-width="2" opacity="0.55"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" letter-spacing="2">
+    <text x="52" y="66" fill="#fff2ed" font-size="21" text-anchor="start" opacity="0.7">VERIFIER FEEDBACK</text>
+    <rect x="70" y="270" width="230" height="96" fill="#160000" stroke="#fff2ed" stroke-width="2" opacity="0.65"/><text x="185" y="311" fill="#fff2ed" font-size="21" text-anchor="middle" opacity="0.8">INITIAL</text><text x="185" y="341" fill="#fff2ed" font-size="21" text-anchor="middle" opacity="0.8">ANSWER</text><path d="M300 318H365V219H427 M365 318V417H427" fill="none" stroke="#f40c3f" stroke-width="2" opacity="0.9"/><circle cx="365" cy="318" r="5" fill="#f40c3f"/><rect x="427" y="162" width="290" height="114" fill="#160000" stroke="#fff2ed" stroke-width="2" opacity="0.65"/><rect x="427" y="360" width="290" height="114" fill="#160000" stroke="#f40c3f" stroke-width="2" opacity="0.9"/><text x="572" y="195" fill="#fff2ed" font-size="15" text-anchor="middle" opacity="0.5">CONTROL</text><text x="572" y="233" fill="#fff2ed" font-size="23" text-anchor="middle" opacity="0.8">NO VERDICT</text><text x="572" y="393" fill="#f40c3f" font-size="15" text-anchor="middle" opacity="0.8">TREATMENT</text><text x="572" y="431" fill="#f40c3f" font-size="21" text-anchor="middle" opacity="1">FALSE NEGATIVE</text><path d="M717 219H772V318H818 M717 417H772V318" fill="none" stroke="#fff2ed" stroke-width="2" opacity="0.6"/><rect x="818" y="260" width="204" height="116" fill="#160000" stroke="#fff2ed" stroke-width="2" opacity="0.65"/><text x="920" y="306" fill="#fff2ed" font-size="21" text-anchor="middle" opacity="0.8">PAIRED</text><text x="920" y="340" fill="#fff2ed" font-size="21" text-anchor="middle" opacity="0.8">SCORING</text><text x="572" y="319" fill="#fff2ed" font-size="14" text-anchor="middle" opacity="0.4">ISOLATED CONTINUATIONS</text>
+    <text x="1030" y="592" fill="#f40c3f" font-size="21" text-anchor="end" opacity="1">CONTROL / TREATMENT</text>
+  </g>
+</svg>

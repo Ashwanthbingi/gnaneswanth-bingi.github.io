@@ -8,58 +8,7 @@ const total = String(projects.length).padStart(2, '0')
 // file, offset by one.
 const ordered = [featuredProject, ...gridProjects]
 
-/*
- * Where each card floats inside the pinned viewport, and how it behaves there.
- *
- * The five are fanned across the middle band at staggered heights rather than
- * stacked in a grid, and the arrangement is deliberately overlap-free. A card's
- * actions sit at its bottom-left, so any card in front of another would occlude
- * its neighbour's repository link — and raising the covered card requires
- * hovering it, which the card in front makes impossible. Depth is carried by
- * turn, scale, drift and the parallax rise instead, which costs nothing in reach.
- *
- * `ry` is the lane's resting turn inside the scene's perspective — positive turns
- * the card's right edge away from the viewer — and the five run +3 through 0 to -3
- * so the fan curves around one vanishing point instead of lying flat like a
- * contact sheet. The angles look modest written down and are not: the perspective
- * is shared, so a lane sitting 38vw off-axis has its edges thrown several times
- * further than the same turn would move them under a perspective of its own. That
- * is also why the fan went from four lanes at +/-5deg to five at +/-3deg — the
- * fifth lane costs 3vw of width each, and a turn that was free at 21vw wide is
- * not at 17.6vw.
- *
- * `fromZ` is how far behind the glass the card waits before it settles, so it
- * arrives out of the same depth the letters are flying through rather than
- * sliding up from below, and `fromX` is the sideways offset it travels in from.
- * Both are read together, and the outer lanes' numbers look backwards until you
- * remember the perspective is shared: a card waiting behind the glass is pulled
- * toward the vanishing point in proportion to how far off-axis its lane sits, so
- * lanes 0 and 4 — 38vw out — would swing far enough inward mid-flight to clip the
- * lane beside them. They get the shallowest depth and the widest outward offset,
- * which cancels the pull; the centre lane, where the projection barely moves
- * anything, keeps the deep entrance. `lint-cluster.mjs` reports the tightest gap
- * it finds between any two projected cards.
- *
- * `fromZ` is in `vw` like the perspective itself, so the entrance reads
- * identically at 1100px and at 2560px.
- *
- * `depth` is a scale multiplier and `rise` how far the card climbs across the
- * whole scroll window, so no two travel at the same rate and the group reads
- * layered. `rise` is also a budget, not a free choice: a lane that passes under
- * the framing copy has only `top - headBottom` of room to climb into, so lanes 0
- * and 1 get the shallowest climb and the centre lane — which nothing sits above —
- * gets the deepest. The lanes are 17.6vw wide with 2vw between them;
- * `lint-cluster.mjs` projects every rotated, drifting, risen edge through the
- * perspective at forty-one points in the window to prove none of that closes a
- * gap, crosses the framing copy, or pushes a card off the screen.
- *
- * `dx`/`dy`/`dz`/`dr` are the idle hover: a slow three-axis float, deliberately
- * under a degree and a half so it reads as suspension rather than as wobble. The
- * vertical share is the generous one and the horizontal share is not, because two
- * neighbours drifting at unrelated phases can be at opposite ends of their travel
- * at the same moment — so every horizontal millimetre here is spent twice out of
- * the 2vw between them, while `dy` costs nothing at all.
- */
+// Reuse the original motion profiles; every project gets its own rail position.
 const SLOTS = [
   { i: 0, depth: 0.96, ry: '3deg', rise: '-1.5lvh', fromZ: '-9vw', fromX: '-4rem', fromY: '5rem', dx: '0.18rem', dy: '0.7rem', dz: '0.22rem', dr: '1.1deg' },
   { i: 1, depth: 1, ry: '1.5deg', rise: '-2lvh', fromZ: '-16vw', fromX: '-1rem', fromY: '4rem', dx: '-0.16rem', dy: '0.85rem', dz: '-0.26rem', dr: '-0.95deg' },
@@ -72,7 +21,9 @@ const slotStyle = (index: number) => {
   const slot = SLOTS[index % SLOTS.length]
 
   return [
-    `--i: ${slot.i}`,
+    `--i: ${index}`,
+    `--lane-left: ${2 + index * 19.6}vw`,
+    `--lane-top: ${[23, 23, 21, 22, 23][index % 5]}lvh`,
     `--depth: ${slot.depth}`,
     `--ry: ${slot.ry}`,
     `--rise: ${slot.rise}`,
@@ -104,28 +55,39 @@ const slotStyle = (index: number) => {
 
       <p class="s__lead" data-reveal>
         Consensus and fault tolerance, optimization under hard constraints,
-        safety layers for autonomous agents, and medical image reconstruction —
-        plus the site you're reading. Each one links straight to the code.
+        medical image reconstruction, edge AI and career intelligence —
+        plus research tools, systems simulations and the site you're reading.
+        Each one links straight to the code.
       </p>
     </header><!-- .s__head -->
 
-    <div class="s__slots js-cluster">
-      {
-        ordered.map((project, index) => (
-          <div class={`s__slot s__slot--${index}`} style={slotStyle(index)}>
-            <AProjectCard
-              project={project}
-              index={String(index + 1).padStart(2, '0')}
-              total={total}
-              featured={index === 0}
-              cluster
-            />
-          </div>
-        ))
-      }
-    </div><!-- .s__slots -->
+    <div class="s__viewport js-project-viewport" id="project-viewport" role="region" aria-label="Selected project cards" tabindex="0">
+      <div class="s__slots js-cluster" style={`--track-width: ${ordered.length * 19.6 + 2}vw`}>
+        {
+          ordered.map((project, index) => (
+            <div class={`s__slot s__slot--${index}`} style={slotStyle(index)}>
+              <AProjectCard
+                project={project}
+                index={String(index + 1).padStart(2, '0')}
+                total={total}
+                cluster
+              />
+            </div>
+          ))
+        }
+      </div><!-- .s__slots -->
+    </div><!-- .s__viewport -->
 
     <footer class="s__foot" data-reveal>
+      <nav class="s__browse" aria-label="Browse selected projects">
+        <button class="s__browse__button js-project-prev" type="button" aria-label="Previous projects" aria-controls="project-viewport" disabled>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3m5-5L3 8l5 5" /></svg>
+        </button>
+        <span class="s__browse__count">{total} projects</span>
+        <button class="s__browse__button js-project-next" type="button" aria-label="Next projects" aria-controls="project-viewport">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8 3l5 5-5 5" /></svg>
+        </button>
+      </nav>
       <a class="s__foot__link" href={GITHUB_REPOS} target="_blank" rel="noopener">
         <span>All repositories</span>
         <svg class="s__foot__icon" viewBox="0 0 12 12" aria-hidden="true">
@@ -252,6 +214,13 @@ const slotStyle = (index: number) => {
       ;(event.currentTarget as HTMLElement).classList.add('is-hovered')
     }
 
+    onLeave(event: PointerEvent) {
+      const card = event.currentTarget as HTMLElement
+      this.pending.delete(card)
+      card.classList.remove('is-hovered')
+      this.reset(card)
+    }
+
     onMove(event: PointerEvent) {
       const card = event.currentTarget as HTMLElement
       const rect = card.getBoundingClientRect()
@@ -310,12 +279,46 @@ const slotStyle = (index: number) => {
     }
 
     reset(card: HTMLElement) {
+      card.classList.remove('is-hovered')
       card.style.setProperty('--tilt-x', '0')
       card.style.setProperty('--tilt-y', '0')
     }
   }
 
   new ProjectTilt()
+
+  const viewport = document.querySelector<HTMLElement>('.js-project-viewport')
+  const rail = document.querySelector<HTMLElement>('.js-cluster')
+  const previous = document.querySelector<HTMLButtonElement>('.js-project-prev')
+  const next = document.querySelector<HTMLButtonElement>('.js-project-next')
+  const root = document.querySelector<HTMLElement>('.js-projects')
+
+  if (viewport && rail && previous && next && root) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const syncRail = () => {
+      const maximum = viewport.scrollWidth - viewport.clientWidth
+      previous.disabled = viewport.scrollLeft <= 1
+      next.disabled = viewport.scrollLeft >= maximum - 1
+      rail.style.setProperty('--rail-scroll', `${viewport.scrollLeft}px`)
+    }
+    const browse = (direction: number) => {
+      root.classList.add('is-browsing')
+      viewport.scrollBy({
+        left: direction * viewport.clientWidth * 0.784,
+        behavior: reduced.matches ? 'instant' : 'smooth',
+      })
+    }
+    previous.addEventListener('click', () => browse(-1))
+    next.addEventListener('click', () => browse(1))
+    viewport.addEventListener('scroll', syncRail, { passive: true })
+    viewport.addEventListener('focusin', () => root.classList.add('is-browsing'))
+    viewport.addEventListener('pointerdown', () => root.classList.add('is-browsing'))
+    viewport.addEventListener('wheel', (event) => {
+      if (event.deltaX) root.classList.add('is-browsing')
+    }, { passive: true })
+    new ResizeObserver(syncRail).observe(viewport)
+    syncRail()
+  }
 </script>
 
 <style lang="scss">
@@ -457,7 +460,15 @@ const slotStyle = (index: number) => {
       }
     }
 
+    .s__browse { display: none; }
+
+    .s__viewport:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 4px;
+    }
+
     .s__slot {
+      min-width: 0;
       /* The perspective lives on the slot so the card's own transform stays a
          pure rotation. */
       perspective: 1400px;
@@ -531,22 +542,9 @@ const slotStyle = (index: number) => {
 
     @include mq(desktop) {
       &.is-cluster-js {
-        /*
-         * The block itself is a zero-content anchor: a clip region for the fixed
-         * stage, and the thing `#projects` actually scrolls to. `--scene-lvh` and
-         * `--cluster-lvh` are inherited from the scene, so the two acts can never
-         * disagree about where the section ends.
-         *
-         * `--landing-lvh` is where a deep link should come to rest: far enough in
-         * that the fan has finished arriving and well clear of the closing
-         * stretch. With five cards the last one settles at `--cluster` 0.558 —
-         * about 168lvh into the section — so 135 would have dropped a deep link
-         * mid-entrance, with the fifth card still in flight. It is *not* where the
-         * cluster begins — the cards start appearing during the fly-through, a
-         * whole act earlier — which is why the clip below has to reach back past
-         * the section's own top edge.
-         */
-        --landing-lvh: 180;
+        /* SWork sets the deep-link landing from the last cover's settle time.
+           The section remains the clip region for its viewport-fixed stage. */
+        --landing-lvh: 310;
 
         position: absolute;
         top: calc(var(--landing-lvh) * 1lvh);
@@ -561,25 +559,9 @@ const slotStyle = (index: number) => {
         padding: 0;
 
         background: none;
-        /*
-         * This is what unpins the stage, and it's the same mechanism the scene
-         * above uses on `.s__outer`. A clip path clips fixed descendants without
-         * becoming their containing block, so the stage below stays genuinely
-         * viewport-fixed while only ever painting where this region overlaps the
-         * viewport. Scrolling out of the section therefore slides the cluster
-         * away exactly as it slides the scene away — no scroll-linked fade to
-         * keep in sync, and no chance of a fixed layer stranded over the
-         * sections that follow.
-         *
-         * Only the bottom edge does that work, hence the negative top inset, and
-         * it has to be generous: the region starts at `--landing-lvh` for the
-         * deep link's sake, but the first card fades up a quarter of a viewport
-         * *above* the section's top, so the clip is pulled back far enough to
-         * clear both (180 − 220 = 40lvh of headroom above the section). The top
-         * edge is therefore never the gate; `visibility`, keyed on `.is-cluster`,
-         * is the honest one for that end.
-         */
-        clip-path: inset(-220lvh -1rem 0 -1rem);
+        /* The negative top inset admits the whole entrance sequence. The
+           bottom edge releases the fixed stage at the section boundary. */
+        clip-path: inset(-500lvh -1rem 0 -1rem);
         pointer-events: none;
 
         .s__rule {
@@ -607,25 +589,10 @@ const slotStyle = (index: number) => {
           padding: 0;
 
           overflow: hidden;
-          /*
-           * The entrance, and then a constant 1 for the long middle of the
-           * scroll. Holding it flat lets the compositor drop the opacity layer
-           * instead of repainting a full-viewport group of shadowed cards every
-           * frame — the per-card stagger below is what carries the arrival.
-           *
-           * It cannot start at 0. This layer is lettered for ink, and the ink
-           * only exists once the scene's aperture has opened over the paper: the
-           * mask grows on `power4.in` across the first 0.185 of `--cluster`, so a
-           * fade from zero would put paper-coloured framing copy on a paper
-           * background for most of it. 0.185 is where the aperture finishes and
-           * the first cover starts flying — the same instant the first card
-           * begins to settle — so the frame arrives with it.
-           *
-           * The second term is the capsule shutting again over the last stretch,
-           * for the same reason in reverse.
-           */
+          /* Fade in after the aperture opens; hold until the closing beat.
+             SWork derives the entrance from the actual number of covers. */
           opacity: min(
-            clamp(0, calc((var(--cluster, 0) - 0.185) * 16.6667), 1),
+            clamp(0, calc((var(--cluster, 0) - var(--cluster-entrance, 0.185)) * 16.6667), 1),
             calc(1 - var(--close, 0))
           );
           visibility: hidden;
@@ -653,6 +620,7 @@ const slotStyle = (index: number) => {
           position: absolute;
           top: 4lvh;
           left: 4vw;
+          z-index: 2;
 
           /*
            * Stops well short of the second lane, so the only card it sits above
@@ -691,6 +659,8 @@ const slotStyle = (index: number) => {
           position: absolute;
           top: 4lvh;
           right: 4vw;
+          z-index: 2;
+          gap: 1.25rem;
 
           margin: 0;
 
@@ -730,93 +700,68 @@ const slotStyle = (index: number) => {
 
         /* ── The cluster ──────────────────────────────────────────────── */
 
-        .s__slots {
-          /*
-           * A fit correction, not motion: see the short-viewport rules at the
-           * end of this block. It rides in the same `translate` as the pointer
-           * parallax because an element has only one of those.
-           */
-          --lift: 0px;
+        .s__browse {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          color: $paper;
+          &__count {
+            font: 700 10px / 1 font-family(fraktion);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+          }
+          &__button {
+            display: grid;
+            place-items: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            padding: 0;
+            border: 1px solid rgba($paper, 0.3);
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            transition: background-color 0.35s ease, color 0.35s ease;
+            svg { width: 1rem; fill: none; stroke: currentColor; stroke-width: 1.4; }
+            &:hover:not(:disabled) { background: $paper; color: color(secondary); }
+            &:focus-visible { outline: 2px solid $paper; outline-offset: 3px; }
+            &:disabled { opacity: 0.3; cursor: default; }
+          }
+        }
 
+        .s__viewport {
           position: absolute;
           inset: 0;
+          overflow-x: auto;
+          overflow-y: hidden;
+          overscroll-behavior-x: contain;
+          scrollbar-width: thin;
+          scrollbar-color: rgba($paper, 0.35) transparent;
+          scroll-padding-inline: 2vw;
+          pointer-events: auto;
+          color: $paper;
+          &:focus-visible { outline-offset: -4px; }
+        }
 
+        .s__slots {
+          --lift: 0px;
+          --fit: 1;
+          position: relative;
+          width: max(100%, var(--track-width));
+          height: 100%;
           display: block;
           gap: 0;
-
-          /*
-           * The volume the cards live in.
-           *
-           * The perspective sits here rather than on each slot so all five share
-           * one vanishing point: the fan then curves around a single viewer, the
-           * way the letter field behind it does, and a card arriving out of depth
-           * swings outward from the centre instead of growing in place. Slots
-           * carry their own `perspective` too, but that one is for the pointer
-           * tilt of the card inside — nested, and deliberately so, because a
-           * flattened slot can never intersect its neighbour's plane.
-           *
-           * In `vw`, not `rem`: every distance being projected — lane offsets,
-           * card widths, the entrance depth — is a fraction of the viewport, so a
-           * fixed focal length would make the fan gentle at 1100px and grotesque
-           * at 2560px. Tying it to the same unit holds the projection identical at
-           * every width, which is also what lets one set of angles be verified
-           * once.
-           *
-           * 68vw, not 60: a longer focal length flattens the projection, and with
-           * five lanes the outermost sits 39vw off-axis where every degree of turn
-           * and every millimetre of entrance depth is thrown outward in proportion
-           * to that distance. The shorter lens was what four lanes could afford.
-           *
-           * The origin is dropped to the cards' own band. The group's box is the
-           * whole viewport, so leaving it centred would put the vanishing point up
-           * in the framing copy and read as looking down on the fan.
-           */
           perspective: 68vw;
-          perspective-origin: 50% 40%;
-
-          /*
-           * One transitioned element for the whole group. The pointer offset
-           * eases here; the scroll-driven parallax lives on each slot and is
-           * deliberately not transitioned, because a lag against the scrollbar
-           * reads as jank rather than as weight.
-           *
-           * Kept to a dozen pixels because it is a fixed length competing with
-           * viewport-relative lane margins: at 1100px it is already most of the
-           * clearance the outermost card has.
-           */
-          translate: calc(var(--px, 0) * 12px)
-            calc(var(--py, 0) * 10px + var(--lift));
-          rotate: calc(var(--px, 0) * 0.5deg);
-
-          transition:
-            translate 0.6s ease(out-quad),
-            rotate 0.6s ease(out-quad);
+          perspective-origin: calc(50vw + var(--rail-scroll, 0px)) 40%;
+          translate: calc(var(--px, 0) * 6px) calc(var(--py, 0) * 10px + var(--lift));
+          transition: translate 0.6s ease(out-quad);
+          pointer-events: none;
         }
 
         .s__slot {
-          /*
-           * The arrival, one card at a time, in step with the scene behind it.
-           *
-           * Act one flies the five covers through the aperture one after another,
-           * and the covers are the same five projects as these cards in the same
-           * order — so card N settles exactly while cover N is on screen. In
-           * `--cluster` terms each cover occupies a window of 0.123 starting at
-           * 0.185 and staggered by 0.062, which is what these three constants are:
-           * the offset waits for the aperture, the stagger matches the covers', and
-           * the rate is 1/0.125. The upshot is that a card is what its cover leaves
-           * behind, rather than five cards appearing together once the scene has
-           * finished — which is what this looked like before, and read as the
-           * projects arriving at the end.
-           *
-           * These numbers are derived from act one's GSAP timeline, not chosen:
-           * `lint-timeline.mjs` recomputes them from the tween positions and fails
-           * if the two drift apart.
-           */
-          --settle: clamp(
-            0,
-            calc((var(--cluster, 0) - 0.185 - var(--i) * 0.062) * 8),
-            1
-          );
+          // Derived from the actual flying-cover timeline in SWork.
+          --settle: clamp(0,
+            calc((var(--cluster, 0) - var(--cluster-entrance, 0.185) -
+              var(--i) * var(--card-stagger, 0.062)) * var(--card-settle-rate, 8)), 1);
 
           position: absolute;
 
@@ -854,7 +799,8 @@ const slotStyle = (index: number) => {
               var(--ry) * (0.4 + var(--spread, 0) * 0.6) +
                 (var(--cluster, 0) - 0.5) * -2deg
             );
-          scale: calc(var(--depth) * (0.9 + var(--settle) * 0.1));
+          scale: calc(var(--depth) * (0.9 + var(--settle) * 0.1) * var(--fit));
+          transform-origin: 50% 0;
 
           animation: slot-drift calc(11s + var(--i) * 2.5s) ease-in-out
             calc(var(--i) * -2.3s) infinite alternate;
@@ -873,57 +819,10 @@ const slotStyle = (index: number) => {
 
           pointer-events: auto;
 
-          /*
-           * Five lanes across the middle band, each at a different height so the
-           * row reads as a drifting fan rather than a shelf. Three constraints
-           * hold the numbers down: every card's detail panel opens downward out
-           * of flow, so the clear band below the lowest lane is what it opens
-           * into; the lanes climb as the window scrolls, so a lane that shares a
-           * column with the framing copy has to still clear it once risen — which
-           * is why the two leftmost climb least; and the whole fan has to survive
-           * a 650px-tall laptop viewport, where the group is scaled to 0.85.
-           *
-           * The budget is `2m + 5w + 4g = 100`: margins 2vw, lanes 17.6vw,
-           * gutters 2vw. The gutter is the number this fan is actually built
-           * around — the turn, the entrance depth and two neighbours drifting at
-           * unrelated phases all spend out of it, and at 1081px it is 21.6px
-           * before the group's 0.85 short-viewport scale takes its cut.
-           * `lint-cluster.mjs` measures the projected edges, not these numbers.
-           */
-          &--0 {
-            top: 23lvh;
-            left: 2vw;
-
-            width: 17.6vw;
-          }
-
-          &--1 {
-            top: 23lvh;
-            left: 21.6vw;
-
-            width: 17.6vw;
-          }
-
-          &--2 {
-            top: 21lvh;
-            left: 41.2vw;
-
-            width: 17.6vw;
-          }
-
-          &--3 {
-            top: 22lvh;
-            left: 60.8vw;
-
-            width: 17.6vw;
-          }
-
-          &--4 {
-            top: 23lvh;
-            left: 80.4vw;
-
-            width: 17.6vw;
-          }
+          top: var(--lane-top);
+          left: var(--lane-left);
+          width: 17.6vw;
+          height: calc(17rem + 5.5vw);
 
           /*
            * The card being read comes forward over its neighbours and squares up
@@ -944,44 +843,12 @@ const slotStyle = (index: number) => {
           will-change: translate, rotate, transform;
         }
 
-        /*
-         * Shorter viewports: the cards keep their intrinsic height while the
-         * anchors are all in `lvh`, so past a point the only honest fix is to
-         * make the whole cluster a little smaller and slide it up into the space
-         * the top band isn't using. Scaling alone wouldn't do it — the group's
-         * centre is above the cards, so shrinking pulls their tops down almost
-         * as much as it pulls their bottoms up. The lift is the other half, and
-         * it lands outside the scale: CSS composes `translate` after `scale`, so
-         * these two numbers are independent rather than multiplied.
-         *
-         * Three steps rather than two, because what has to fit under the top
-         * band is the card *plus* its open highlights panel — around 560px of
-         * content at a 1100px-wide window — and the old pair left the last tier
-         * doing all of the work at once.
-         */
-        @media (max-height: 860px) {
-          .s__slots {
-            --lift: -2lvh;
-
-            scale: 0.95;
-          }
-        }
-
-        @media (max-height: 780px) {
-          .s__slots {
-            --lift: -4lvh;
-
-            scale: 0.9;
-          }
-        }
-
         @media (max-height: 700px) {
-          .s__slots {
-            --lift: -6lvh;
-
-            scale: 0.85;
-          }
+          .s__slots { --fit: 0.9; --lift: -2lvh; }
         }
+
+        // Browsing must never focus a transparent card.
+        &.is-browsing .s__slot { --settle: 1; }
       }
     }
   }

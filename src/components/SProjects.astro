@@ -8,26 +8,32 @@ const total = String(projects.length).padStart(2, '0')
 // file, offset by one.
 const ordered = [featuredProject, ...gridProjects]
 
-// Unique, deterministic poses keep the motion data-driven with the cards.
+// Reuse the original motion profiles; every project gets its own rail position.
+const SLOTS = [
+  { i: 0, depth: 0.96, ry: '3deg', rise: '-1.5lvh', fromZ: '-9vw', fromX: '-4rem', fromY: '5rem', dx: '0.18rem', dy: '0.7rem', dz: '0.22rem', dr: '1.1deg' },
+  { i: 1, depth: 1, ry: '1.5deg', rise: '-2lvh', fromZ: '-16vw', fromX: '-1rem', fromY: '4rem', dx: '-0.16rem', dy: '0.85rem', dz: '-0.26rem', dr: '-0.95deg' },
+  { i: 2, depth: 1.02, ry: '0deg', rise: '-5.5lvh', fromZ: '-20vw', fromX: '0rem', fromY: '5.5rem', dx: '0.2rem', dy: '0.6rem', dz: '0.2rem', dr: '-1.15deg' },
+  { i: 3, depth: 0.99, ry: '-1.5deg', rise: '-4.5lvh', fromZ: '-16vw', fromX: '1rem', fromY: '4.5rem', dx: '-0.18rem', dy: '0.8rem', dz: '-0.24rem', dr: '0.9deg' },
+  { i: 4, depth: 0.97, ry: '-3deg', rise: '-3lvh', fromZ: '-9vw', fromX: '4rem', fromY: '5rem', dx: '0.15rem', dy: '0.75rem', dz: '0.26rem', dr: '-1.05deg' },
+]
+
 const slotStyle = (index: number) => {
-  const direction = index % 2 ? -1 : 1
+  const slot = SLOTS[index % SLOTS.length]
+
   return [
     `--i: ${index}`,
     `--lane-left: ${2 + index * 19.6}vw`,
     `--lane-top: ${[23, 23, 21, 22, 23][index % 5]}lvh`,
-    `--depth: ${[0.96, 1, 1.02, 0.99, 0.97][index % 5]}`,
-    `--from-x: ${direction * (4 + index * 0.4)}px`,
-    `--from-y: ${32 + index * 2}px`,
-    `--from-z: ${-36 - index * 4}px`,
-    `--from-rx: ${direction * (8 + index * 0.45)}deg`,
-    `--from-ry: ${-direction * (7 + index * 0.35)}deg`,
-    `--from-rz: ${direction * (1.3 + index * 0.08)}deg`,
-    `--rest-rx: ${direction * (1.2 + index * 0.04)}deg`,
-    `--rest-ry: ${-direction * (1.4 + index * 0.05)}deg`,
-    `--rest-rz: ${direction * 0.2}deg`,
-    `--orbit-duration: ${11.5 + index * 0.85}s`,
-    `--orbit-phase: ${-index * 1.73}s`,
-    `--orbit-direction: ${index % 2 ? 'reverse' : 'normal'}`,
+    `--depth: ${slot.depth}`,
+    `--ry: ${slot.ry}`,
+    `--rise: ${slot.rise}`,
+    `--from-x: ${slot.fromX}`,
+    `--from-y: ${slot.fromY}`,
+    `--from-z: ${slot.fromZ}`,
+    `--dx: ${slot.dx}`,
+    `--dy: ${slot.dy}`,
+    `--dz: ${slot.dz}`,
+    `--dr: ${slot.dr}`,
   ].join('; ')
 }
 ---
@@ -60,16 +66,12 @@ const slotStyle = (index: number) => {
         {
           ordered.map((project, index) => (
             <div class={`s__slot s__slot--${index}`} style={slotStyle(index)}>
-              <div class="s__entrance">
-                <div class="s__float">
-                  <AProjectCard
-                    project={project}
-                    index={String(index + 1).padStart(2, '0')}
-                    total={total}
-                    cluster
-                  />
-                </div>
-              </div>
+              <AProjectCard
+                project={project}
+                index={String(index + 1).padStart(2, '0')}
+                total={total}
+                cluster
+              />
             </div>
           ))
         }
@@ -102,7 +104,6 @@ const slotStyle = (index: number) => {
 
 <script>
   import Emitter from '../utils/Emitter'
-  import { initProjectMotion } from '../utils/projectMotion'
 
   /**
    * Pointer response for the project cards.
@@ -114,8 +115,7 @@ const slotStyle = (index: number) => {
    *
    * Every write is coalesced into one frame, so a pointer sweep across the
    * cluster costs one style flush regardless of how many cards it crosses. The
-   * pointer layer stays neutral if this never runs; the outer wrappers own
-   * the entrance and continuous orbit independently.
+   * cards render flat and centred if this never runs.
    */
   const CLAMP = 1
 
@@ -293,8 +293,6 @@ const slotStyle = (index: number) => {
   const next = document.querySelector<HTMLButtonElement>('.js-project-next')
   const root = document.querySelector<HTMLElement>('.js-projects')
 
-  if (root) initProjectMotion(root)
-
   if (viewport && rail && previous && next && root) {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
     const syncRail = () => {
@@ -304,6 +302,7 @@ const slotStyle = (index: number) => {
       rail.style.setProperty('--rail-scroll', `${viewport.scrollLeft}px`)
     }
     const browse = (direction: number) => {
+      root.classList.add('is-browsing')
       viewport.scrollBy({
         left: direction * viewport.clientWidth * 0.784,
         behavior: reduced.matches ? 'instant' : 'smooth',
@@ -312,6 +311,11 @@ const slotStyle = (index: number) => {
     previous.addEventListener('click', () => browse(-1))
     next.addEventListener('click', () => browse(1))
     viewport.addEventListener('scroll', syncRail, { passive: true })
+    viewport.addEventListener('focusin', () => root.classList.add('is-browsing'))
+    viewport.addEventListener('pointerdown', () => root.classList.add('is-browsing'))
+    viewport.addEventListener('wheel', (event) => {
+      if (event.deltaX) root.classList.add('is-browsing')
+    }, { passive: true })
     new ResizeObserver(syncRail).observe(viewport)
     syncRail()
   }
@@ -464,87 +468,10 @@ const slotStyle = (index: number) => {
     }
 
     .s__slot {
-      --motion-strength: 0.4;
-      --orbit-x: 1px;
-      --orbit-y: 2px;
-      --orbit-z: 1px;
-
-      position: relative;
       min-width: 0;
-      // Each card has a local perspective so an entrance stays inside its lane.
+      /* The perspective lives on the slot so the card's own transform stays a
+         pure rotation. */
       perspective: 1400px;
-
-      &:hover,
-      &:focus-within { z-index: 8; }
-    }
-
-    .s__entrance {
-      --rest-transform:
-        translate3d(0, 0, 0)
-        rotateX(calc(var(--rest-rx) * var(--motion-strength)))
-        rotateY(calc(var(--rest-ry) * var(--motion-strength)))
-        rotateZ(calc(var(--rest-rz) * var(--motion-strength))) scale(1);
-      --entrance-transform:
-        translate3d(
-          calc(var(--from-x) * var(--motion-strength)),
-          calc(var(--from-y) * var(--motion-strength)), var(--from-z))
-        rotateX(calc(var(--from-rx) * var(--motion-strength)))
-        rotateY(calc(var(--from-ry) * var(--motion-strength)))
-        rotateZ(calc(var(--from-rz) * var(--motion-strength))) scale(0.88);
-
-      height: 100%;
-      transform: var(--rest-transform);
-      transform-style: preserve-3d;
-    }
-
-    .s__float {
-      height: 100%;
-      transform-style: preserve-3d;
-    }
-
-    // Hide before the controller starts, including direct #projects visits.
-    // Without JavaScript the existing page has no .js-motion class.
-    :global(.js-motion) &:not(.has-project-motion) .s__slot:not(.is-entered) .s__entrance {
-      opacity: 0;
-      transform: var(--entrance-transform);
-    }
-
-    &.has-project-motion {
-      .s__entrance {
-        opacity: 0;
-        transform: var(--entrance-transform);
-      }
-
-      .is-entered .s__entrance {
-        animation: project-enter 950ms cubic-bezier(0.18, 0.8, 0.2, 1)
-          var(--entrance-delay, 0ms) both paused;
-      }
-
-      .s__float {
-        // This loop starts WITH the entrance, on an independent transform.
-        animation: project-orbit var(--orbit-duration) linear var(--orbit-phase)
-          infinite var(--orbit-direction) both paused;
-      }
-
-      .is-motion-visible {
-        .s__entrance,
-        .s__float { animation-play-state: running; }
-        .s__float { will-change: transform; }
-      }
-
-      .is-settled .s__entrance,
-      .is-focus-revealed .s__entrance {
-        animation: none;
-        opacity: 1;
-        transform: var(--rest-transform);
-      }
-
-      .s__slot:focus-within .s__float { animation-play-state: paused; }
-
-      @media (hover: hover) and (pointer: fine) {
-        // Pausing holds the exact current phase; leaving resumes without a jump.
-        .s__slot:hover .s__float { animation-play-state: paused; }
-      }
     }
 
     /* ── Footer link ─────────────────────────────────────────────────────── */
@@ -831,69 +758,155 @@ const slotStyle = (index: number) => {
         }
 
         .s__slot {
-          --motion-strength: 1;
-          --orbit-x: 2.5px;
-          --orbit-y: 6px;
-          --orbit-z: 3px;
+          // Derived from the actual flying-cover timeline in SWork.
+          --settle: clamp(0,
+            calc((var(--cluster, 0) - var(--cluster-entrance, 0.185) -
+              var(--i) * var(--card-stagger, 0.062)) * var(--card-settle-rate, 8)), 1);
 
           position: absolute;
+
+          opacity: var(--settle);
+
+          /*
+           * Three transform layers that never touch each other: `translate`,
+           * `rotate` and `scale` here carry the settle, the lane's turn and the
+           * scroll parallax, the drift keyframes below own `transform` on this
+           * same element, and the card inside owns its own `transform` for the
+           * pointer tilt.
+           */
+          translate:
+            calc((1 - var(--settle)) * var(--from-x))
+            calc(
+              (1 - var(--settle)) * var(--from-y) + var(--cluster, 0) *
+                var(--rise)
+            )
+            calc((1 - var(--settle)) * var(--from-z));
+          /*
+           * The lane's turn, opening as the card settles and then swinging a
+           * couple of degrees further across the rest of the window — the letter
+           * field behind it is still sweeping, and a fan that froze the instant it
+           * arrived would stop belonging to it. Held at 40% of the angle before
+           * `--spread` starts so an arriving card is already in perspective rather
+           * than snapping into it.
+           *
+           * The swing is uniform, so by the end of the window it has biased every
+           * lane the same way — which lands entirely on the right-hand pair, whose
+           * resting turns are already negative. Two degrees rather than three is
+           * what keeps that end of the fan from closing its own gaps.
+           */
+          rotate: y
+            calc(
+              var(--ry) * (0.4 + var(--spread, 0) * 0.6) +
+                (var(--cluster, 0) - 0.5) * -2deg
+            );
+          scale: calc(var(--depth) * (0.9 + var(--settle) * 0.1) * var(--fit));
+          transform-origin: 50% 0;
+
+          animation: slot-drift calc(11s + var(--i) * 2.5s) ease-in-out
+            calc(var(--i) * -2.3s) infinite alternate;
+          /* Nothing animates while the cluster is off screen. */
+          animation-play-state: paused;
+
+          /*
+           * The only transitioned property on this element, and it exists for the
+           * hover alone: the card being read turns square to the viewer so its
+           * copy — and the panel that opens under it — are flat on. The
+           * scroll-driven terms in the same value move by hundredths of a degree
+           * per frame, so the ease costs them nothing you could see, which is not
+           * true of `translate` and is why that one is left raw.
+           */
+          transition: rotate 0.55s ease(out-quad);
+
+          pointer-events: auto;
+
           top: var(--lane-top);
           left: var(--lane-left);
           width: 17.6vw;
           height: calc(17rem + 5.5vw);
-          scale: calc(var(--depth) * var(--fit));
-          transform-origin: 50% 0;
-          pointer-events: auto;
+
+          /*
+           * The card being read comes forward over its neighbours and squares up
+           * to the viewer — the one moment in the cluster where legibility beats
+           * the composition.
+           */
+          &:hover,
+          &:focus-within {
+            z-index: 8;
+
+            rotate: y 0deg;
+          }
+        }
+
+        &.is-cluster .s__slot {
+          animation-play-state: running;
+
+          will-change: translate, rotate, transform;
         }
 
         @media (max-height: 700px) {
           .s__slots { --fit: 0.9; --lift: -2lvh; }
         }
+
+        // Browsing must never focus a transparent card.
+        &.is-browsing .s__slot { --settle: 1; }
       }
     }
   }
 
-  @keyframes project-enter {
-    from { opacity: 0; transform: var(--entrance-transform); }
-    to { opacity: 1; transform: var(--rest-transform); }
-  }
+  /*
+   * The idle hover. A settled cluster is never completely still: each card drifts
+   * laterally, bobs a few pixels toward and away from the glass, and tips on a
+   * mostly-horizontal axis, so it reads as suspended in the scene's volume rather
+   * than pinned to it. The depth term is what makes it three-dimensional — an
+   * off-centre card moving in Z also slides sideways through the shared vanishing
+   * point, which is a parallax no amount of 2D drift can fake.
+   *
+   * It animates `transform` because the slot's `translate`, `rotate` and `scale`
+   * are already spoken for by the scroll — individual properties compose, a second
+   * `transform` would not. Being last in the composition order, this plays out in
+   * the card's own turned space, which is exactly where a float belongs.
+   */
+  @keyframes slot-drift {
+    from {
+      transform: translate3d(
+          calc(var(--dx) * -1),
+          calc(var(--dy) * -1),
+          calc(var(--dz) * -1)
+        )
+        rotate3d(1, 0.4, 0.25, calc(var(--dr) * -1));
+    }
 
-  // Equally spaced samples keep the ellipse moving through its extrema.
-  // Sass computes these constants at build time; only transforms animate.
-  @keyframes project-orbit {
-    @for $step from 0 through 16 {
-      $angle: $step * 22.5deg;
-      #{math.percentage(math.div($step, 16))} {
-        transform: translate3d(
-          calc(var(--orbit-x) * #{math.cos($angle)}),
-          calc(var(--orbit-y) * #{math.sin($angle)}),
-          calc(var(--orbit-z) * #{math.sin($angle + 45deg)}))
-          rotateX(calc(0.7deg * #{math.sin($angle)} * var(--motion-strength)))
-          rotateY(calc(0.9deg * #{math.cos($angle)} * var(--motion-strength)))
-          rotateZ(calc(0.35deg * #{math.sin($angle + 45deg)} * var(--motion-strength)));
-      }
+    to {
+      transform: translate3d(var(--dx), var(--dy), var(--dz))
+        rotate3d(1, 0.4, 0.25, var(--dr));
     }
   }
 
+  /*
+   * These have to match the cluster rules' specificity to cancel them — the
+   * originals live under `.s-projects.is-cluster-js`, so a plain `.s-projects`
+   * descendant selector would lose. Layout is left alone on purpose: the
+   * short-viewport `scale` and `--lift` on `.s__slots` are fit decisions, not
+   * motion, and removing them would push cards off the screen. Hence the lift is
+   * kept while the pointer offset is dropped.
+   */
   @media (prefers-reduced-motion: reduce) {
     .s-projects.is-cluster-js .s__slots {
       translate: 0 var(--lift, 0px);
+      rotate: none;
+
       transition: none;
     }
 
-    .s-projects .s__slot,
     .s-projects.is-cluster-js .s__slot {
+      /* Settled, placed, and completely still. */
+      --settle: 1;
+
       translate: none;
       rotate: none;
-      transition: none;
-    }
+      animation: none;
 
-    .s-projects .s__entrance,
-    .s-projects .s__float {
-      animation: none !important;
-      transform: none !important;
-      opacity: 1 !important;
-      will-change: auto !important;
+      transition: none;
     }
   }
 </style>

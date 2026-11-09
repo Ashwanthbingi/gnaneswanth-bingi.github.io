@@ -1,0 +1,128 @@
+/**
+ * Motion system
+ *
+ * Shared reveal states + the global reduced-motion killswitch.
+ * Driven by utils/reveal.ts, which adds `.is-revealed` via one shared
+ * IntersectionObserver. Only transform / opacity / filter / clip-path are
+ * animated, so every reveal stays on the compositor.
+ */
+
+@use '../helpers/easing' as *;
+
+:root {
+  --reveal-duration: 0.9s;
+  --reveal-delay: 0ms;
+  --reveal-distance: 2.5rem;
+  --reveal-ease: #{ease(out-expo)};
+
+  /* Shared interaction tokens so hovers feel like one system. */
+  --hover-duration: 0.45s;
+  --hover-ease: #{ease(out-expo)};
+  --press-duration: 0.12s;
+}
+
+/*
+ * Initial hidden states are gated behind `.js-motion` (set before first paint
+ * by an inline script) so content stays visible if JS never runs.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js-motion {
+    [data-reveal] {
+      opacity: 0;
+
+      /*
+       * The independent `translate` / `scale` properties are used rather than
+       * `transform`, so an element can be a reveal target *and* carry its own
+       * transform — the project cards' pointer tilt, for one — without either
+       * side clobbering the other.
+       */
+      translate: 0 var(--reveal-distance);
+
+      transition:
+        opacity var(--reveal-duration) var(--reveal-ease) var(--reveal-delay),
+        translate var(--reveal-duration) var(--reveal-ease) var(--reveal-delay),
+        scale var(--reveal-duration) var(--reveal-ease) var(--reveal-delay),
+        filter var(--reveal-duration) var(--reveal-ease) var(--reveal-delay),
+        clip-path var(--reveal-duration) var(--reveal-ease) var(--reveal-delay);
+
+      /*
+       * Deliberately no `will-change` here. There are ~30 reveal targets on the
+       * page and they are all in their hidden state from the moment it loads, so
+       * declaring it in the stylesheet would promote thirty section-sized
+       * compositor layers before a single one of them animates — which costs
+       * real memory and real compositing time on exactly the machines that can
+       * least afford it. Opacity and the independent transform properties are
+       * already fast paths without the hint.
+       */
+    }
+
+    [data-reveal='down'] {
+      translate: 0 calc(var(--reveal-distance) * -1);
+    }
+
+    [data-reveal='left'] {
+      translate: calc(var(--reveal-distance) * -1) 0;
+    }
+
+    [data-reveal='right'] {
+      translate: var(--reveal-distance) 0;
+    }
+
+    [data-reveal='scale'] {
+      scale: 0.94;
+      translate: none;
+    }
+
+    /* A hairline that draws itself across; pair with a transform-origin. */
+    [data-reveal='rule'] {
+      scale: 0 1;
+      translate: none;
+    }
+
+    [data-reveal='blur'] {
+      filter: blur(10px);
+      translate: 0 calc(var(--reveal-distance) * 0.5);
+    }
+
+    [data-reveal='mask'] {
+      clip-path: inset(0 0 100% 0);
+      translate: none;
+    }
+
+    [data-reveal].is-revealed {
+      opacity: 1;
+      clip-path: inset(0 0 0 0);
+      filter: none;
+      scale: none;
+      translate: none;
+    }
+  }
+}
+
+/*
+ * Reduced motion: strip animation everywhere, including the template's own
+ * CSS keyframes, and make sure nothing stays hidden waiting for a reveal.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-delay: 0ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-delay: 0ms !important;
+    transition-duration: 1ms !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    clip-path: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    scale: none !important;
+    translate: none !important;
+  }
+}

@@ -1,0 +1,624 @@
+---
+const { class: className } = Astro.props
+---
+
+<a-waves class:list={className} data-intersect>
+  <canvas class="a__canvas js-canvas"></canvas>
+  <svg class="js-svg"></svg>
+</a-waves><!-- .a-waves -->
+
+<script>
+  import Emitter from '../utils/Emitter'
+  import Noise from '../utils/Noise'
+  import Quality from '../utils/Quality'
+  import { prefersReducedMotion } from '../utils/reveal'
+
+  /** One decimal is all a 1px stroke can show, and short strings parse faster. */
+  const round = (value: number) => Math.round(value * 10) / 10
+
+  class AWaves extends HTMLElement {
+    svg: HTMLElement
+    canvas: HTMLCanvasElement
+    ctx: CanvasRenderingContext2D
+
+    /*
+     * The field is drawn twice by two different renderers over its lifetime.
+     * The intro tween needs real SVG paths — it animates `drawSVG` across them
+     * with a staggered edges-in reveal — but keeping them afterwards means
+     * rewriting ~200 `d` attributes from ~7,000 points on every single frame,
+     * which is by far the most expensive thing on the page and lands squarely
+     * on the first scroll. So the moment the intro finishes, the paths are
+     * thrown away and the identical geometry is stroked into a canvas: one
+     * path, one `stroke()`, no DOM writes, no string building, no re-parsing.
+     */
+    useCanvas: boolean
+    dpr: number
+
+    bounding: {
+      left: number
+      top: number
+      width: number
+      height: number
+    }
+
+    mouse: {
+      x: number
+      y: number
+      lx: number
+      ly: number
+      sx: number
+      sy: number
+      v: number
+      vs: number
+      a: number
+      set: boolean
+    }
+
+    lines: any[]
+    paths: any[]
+    noise: any
+
+    /** Scratch coordinates written by `moved()` — see the note there. */
+    px: number
+    py: number
+
+    /** Last tick timestamp, so a rebuild can restore the wave state at once. */
+    lastTime: number
+
+    isInteractive: boolean
+    isPaused: boolean
+
+    /**
+     * Init
+     */
+    connectedCallback() {
+      // Elements
+      this.svg = this.querySelector('.js-svg')
+      this.canvas = this.querySelector('.js-canvas')
+      this.ctx = this.canvas.getContext('2d')
+
+      // Properties
+      this.mouse = {
+        x: -10,
+        y: 0,
+        lx: 0,
+        ly: 0,
+        sx: 0,
+        sy: 0,
+        v: 0,
+        vs: 0,
+        a: 0,
+        set: false,
+      }
+
+      this.lines = []
+      this.paths = []
+      this.noise = new Noise(Math.random())
+
+      /*
+       * On a machine the quality monitor has already flagged from its hardware
+       * signals, skip the SVG stage entirely and start on the canvas.
+       *
+       * The staggered `drawSVG` reveal is the most expensive thing this page
+       * ever does — ~200 path elements mutated every frame for three seconds,
+       * across exactly the seconds a visitor first tries to scroll. The hero's
+       * entrance still plays (the whole field rises and fades up); the lines
+       * simply arrive already drawn instead of drawing themselves in.
+       */
+      this.useCanvas = Quality.isLow
+
+      if (this.useCanvas) {
+        this.svg.style.display = 'none'
+        this.canvas.style.display = 'block'
+      }
+
+      this.dpr = 1
+      this.lastTime = 0
+
+      this.isInteractive = false
+      this.isPaused = true
+
+      // Init
+      this.setSize()
+      this.setLines()
+
+      this.bindEvents()
+    }
+
+    /**
+     * Bind events
+     */
+    bindEvents() {
+      Emitter.on('mousemove', this.onMouseMove, this)
+      Emitter.on('resize', this.onResize, this)
+      Emitter.on('contrastchange', this.setCtxStyle, this)
+      Emitter.on('qualitychange', this.onQualityChange, this)
+
+      this.addEventListener('touchmove', this.onTouchMove.bind(this))
+
+      this.addEventListener('intersect', this.onIntersect.bind(this), {
+        passive: true,
+      })
+
+      this.addEventListener('introend', this.onIntroEnd.bind(this))
+    }
+
+    /**
+     * Resize handler
+     */
+    onResize() {
+      this.setSize()
+      this.setLines()
+    }
+
+    /**
+     * Quality handler
+     *
+     * The tier only ever drops, and only after the page has actually missed
+     * frames, so this fires at most once. Mid-intro it has to be deferred:
+     * the `drawSVG` tween holds references to the very path elements a rebuild
+     * would replace, and `onIntroEnd` rebuilds anyway.
+     */
+    onQualityChange() {
+      if (!this.useCanvas) return
+
+      this.setSize()
+      this.setLines()
+    }
+
+    /**
+     * Mouse handler
+     */
+    onMouseMove(x, y) {
+      this.updateMousePosition(x, y)
+    }
+
+    /**
+     * Touch handler
+     */
+    onTouchMove(e) {
+      e.preventDefault()
+
+      const touch = e.touches[0]
+      this.updateMousePosition(touch.clientX, touch.clientY)
+    }
+
+    /**
+     * Update mouse position
+     */
+    updateMousePosition(x, y) {
+      const { mouse } = this
+
+      mouse.x = x - this.bounding.left
+      mouse.y = y - this.bounding.top + window.scrollY
+
+      if (!mouse.set) {
+        mouse.sx = mouse.x
+        mouse.sy = mouse.y
+        mouse.lx = mouse.x
+        mouse.ly = mouse.y
+
+        mouse.set = true
+      }
+    }
+
+    /**
+     * Intersect handler
+     */
+    onIntersect(e) {
+      this.isPaused = !e.detail.isIntersecting
+
+      /*
+       * The waves undulate on their own via perlin noise, so reduced motion
+       * gets the field held still. `setLines()` already draws once while
+       * paused, so the lines are on screen — they just don't breathe, and the
+       * pointer no longer pushes them around.
+       */
+      if (prefersReducedMotion()) return
+
+      if (this.isPaused) {
+        Emitter.off('tick', this.tick, this)
+      } else {
+        Emitter.on('tick', this.tick, this)
+      }
+    }
+
+    /**
+     * Intro end handler
+     *
+     * The staggered `drawSVG` reveal is finished with, so retire the ~200 path
+     * elements it needed and hand the field to the canvas renderer for the
+     * rest of the page's life.
+     */
+    onIntroEnd () {
+      this.isInteractive = true
+
+      if (this.useCanvas) return
+
+      this.useCanvas = true
+
+      this.paths.forEach((path) => {
+        path.remove()
+      })
+      this.paths = []
+
+      this.svg.style.display = 'none'
+      this.canvas.style.display = 'block'
+
+      /*
+       * Rebuild rather than just redraw: if the frame monitor downgraded the
+       * tier while the intro was still running the rebuild was deferred to
+       * here, and `setLines` re-reads the spacing either way.
+       */
+      this.setSize()
+      this.setLines()
+      this.drawLines()
+    }
+
+    /**
+     * Read the stroke colour back out of the stylesheet
+     *
+     * The SVG paths inherited `stroke: color(secondary)` for free; the canvas
+     * has to be told, and told again whenever the theme is toggled.
+     */
+    setCtxStyle() {
+      if (!this.ctx) return
+
+      this.ctx.strokeStyle = getComputedStyle(this).getPropertyValue(
+        '--color-secondary'
+      )
+      this.ctx.lineWidth = 1
+
+      if (this.useCanvas && (this.isPaused || prefersReducedMotion())) {
+        this.drawLines()
+      }
+    }
+
+    /**
+     * Set size
+     */
+    setSize() {
+      const bounding = this.getBoundingClientRect()
+
+      this.svg.style.width = ''
+      this.svg.style.height = ''
+
+      this.bounding = {
+        left: bounding.left,
+        top: bounding.top + window.scrollY,
+        width: this.clientWidth,
+        height: this.clientHeight,
+      }
+
+      this.svg.style.width = `${this.bounding.width}px`
+      this.svg.style.height = `${this.bounding.height}px`
+
+      /*
+       * Hairlines want the extra density, but this is a full-bleed surface, so
+       * the ratio is capped rather than taken at face value — and capped harder
+       * on machines that already told us they're struggling.
+       */
+      const cap = Quality.isLow ? 1.25 : 2
+      this.dpr = Math.min(window.devicePixelRatio || 1, cap)
+
+      this.canvas.width = Math.max(
+        1,
+        Math.round(this.bounding.width * this.dpr)
+      )
+      this.canvas.height = Math.max(
+        1,
+        Math.round(this.bounding.height * this.dpr)
+      )
+
+      this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
+      this.setCtxStyle()
+    }
+
+    /**
+     * Set lines
+     */
+    setLines() {
+      const { width, height } = this.bounding
+
+      this.lines = []
+
+      this.paths.forEach((path) => {
+        path.remove()
+      })
+      this.paths = []
+
+      /*
+       * Density is the one dial that changes the cost of every frame at once:
+       * each point pays for a noise sample, the cursor spring and a segment.
+       * The dense grid is the intended look, so it stays the default and only
+       * a machine that has actually missed its frame budget gets the coarser
+       * one.
+       */
+      const xGap = Quality.isLow ? 16 : 10
+      const yGap = Quality.isLow ? 44 : 32
+
+      const oWidth = width + 200
+      const oHeight = height + 30
+
+      const totalLines = Math.ceil(oWidth / xGap)
+      const totalPoints = Math.ceil(oHeight / yGap)
+
+      const xStart = (width - xGap * totalLines) / 2
+      const yStart = (height - yGap * totalPoints) / 2
+
+      for (let i = 0; i <= totalLines; i++) {
+        const points = []
+
+        for (let j = 0; j <= totalPoints; j++) {
+          const point = {
+            x: xStart + xGap * i,
+            y: yStart + yGap * j,
+            wave: { x: 0, y: 0 },
+            cursor: { x: 0, y: 0, vx: 0, vy: 0 },
+          }
+
+          points.push(point)
+        }
+
+        // Create path — only the intro renderer needs one.
+        if (!this.useCanvas) {
+          const path = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          )
+          path.classList.add('a__line')
+          path.classList.add('js-line')
+
+          this.svg.appendChild(path)
+          this.paths.push(path)
+        }
+
+        // Add points
+        this.lines.push(points)
+      }
+
+      /*
+       * Bring the fresh points up to the current wave state before anything can
+       * see them — a rebuild otherwise flashes one frame of a perfectly flat
+       * grid, which was visible on every resize.
+       */
+      this.movePoints(this.lastTime)
+
+      if (this.isPaused || prefersReducedMotion()) {
+        this.drawLines()
+      }
+    }
+
+    /**
+     * Move points
+     */
+    movePoints(time) {
+      const { lines, mouse, noise } = this
+      const interactive = this.isInteractive
+
+      /*
+       * Indexed loops rather than nested `forEach`: this body runs thousands of
+       * times a frame, so the per-callback overhead is a real slice of the
+       * budget.
+       */
+      for (let i = 0; i < lines.length; i++) {
+        const points = lines[i]
+
+        for (let j = 0; j < points.length; j++) {
+          const p = points[j]
+
+          // Wave movement
+          const move =
+            noise.perlin2(
+              (p.x + time * 0.0125) * 0.002,
+              (p.y + time * 0.005) * 0.0015
+            ) * 12
+          p.wave.x = Math.cos(move) * 32
+          p.wave.y = Math.sin(move) * 16
+
+          // Mouse effect
+          if (interactive) {
+            const dx = p.x - mouse.sx
+            const dy = p.y - mouse.sy
+            const d = Math.hypot(dx, dy)
+            const l = Math.max(175, mouse.vs)
+
+            if (d < l) {
+              const s = 1 - d / l
+              const f = Math.cos(d * 0.001) * s
+
+              p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.00065
+              p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.00065
+            }
+
+            p.cursor.vx += (0 - p.cursor.x) * 0.005 // String tension
+            p.cursor.vy += (0 - p.cursor.y) * 0.005
+
+            p.cursor.vx *= 0.925 // Friction/duration
+            p.cursor.vy *= 0.925
+
+            p.cursor.x += p.cursor.vx * 2 // Strength
+            p.cursor.y += p.cursor.vy * 2
+
+            p.cursor.x = Math.min(100, Math.max(-100, p.cursor.x)) // Clamp movement
+            p.cursor.y = Math.min(100, Math.max(-100, p.cursor.y))
+          }
+        }
+      }
+    }
+
+    /**
+     * Get point coordinates with movement added
+     *
+     * Returns the pair through two scratch fields rather than a fresh object:
+     * this runs once per point per frame, and a few thousand short-lived
+     * objects a frame is enough garbage to show up as periodic hitching.
+     */
+    moved(point, withCursorForce = true) {
+      this.px = point.x + point.wave.x + (withCursorForce ? point.cursor.x : 0)
+      this.py = point.y + point.wave.y + (withCursorForce ? point.cursor.y : 0)
+    }
+
+    /**
+     * Draw lines
+     */
+    drawLines() {
+      if (this.useCanvas) {
+        this.drawCanvas()
+      } else {
+        this.drawSvg()
+      }
+    }
+
+    /**
+     * Draw lines — canvas renderer (used from the end of the intro onwards)
+     *
+     * Every line goes into a single path and a single `stroke()`, so the whole
+     * field costs one rasterisation with no DOM involvement at all.
+     */
+    drawCanvas() {
+      const { lines, ctx, bounding } = this
+
+      ctx.clearRect(0, 0, bounding.width, bounding.height)
+      ctx.beginPath()
+
+      for (let lIndex = 0; lIndex < lines.length; lIndex++) {
+        const points = lines[lIndex]
+        const last = points.length - 1
+
+        this.moved(points[0], false)
+        ctx.moveTo(this.px, this.py)
+
+        for (let pIndex = 0; pIndex <= last; pIndex++) {
+          this.moved(points[pIndex], pIndex !== last)
+          ctx.lineTo(this.px, this.py)
+        }
+      }
+
+      ctx.stroke()
+    }
+
+    /**
+     * Draw lines — SVG renderer (used for the intro's staggered draw-in)
+     */
+    drawSvg() {
+      const { lines, paths } = this
+
+      for (let lIndex = 0; lIndex < lines.length; lIndex++) {
+        const points = lines[lIndex]
+        const last = points.length - 1
+
+        this.moved(points[0], false)
+
+        // One decimal is all a 1px stroke can show, and shorter strings parse
+        // faster.
+        let d = `M ${round(this.px)} ${round(this.py)}`
+
+        for (let pIndex = 0; pIndex <= last; pIndex++) {
+          this.moved(points[pIndex], pIndex !== last)
+          d += `L ${round(this.px)} ${round(this.py)}`
+        }
+
+        paths[lIndex].setAttribute('d', d)
+      }
+    }
+
+    /**
+     * Tick
+     */
+    tick(time) {
+      const { mouse } = this
+
+      this.lastTime = time
+
+      // Smooth mouse movement
+      mouse.sx += (mouse.x - mouse.sx) * 0.1
+      mouse.sy += (mouse.y - mouse.sy) * 0.1
+
+      // Mouse velocity
+      const dx = mouse.x - mouse.lx
+      const dy = mouse.y - mouse.ly
+      const d = Math.hypot(dx, dy)
+
+      mouse.v = d
+      mouse.vs += (d - mouse.vs) * 0.1
+      mouse.vs = Math.min(100, mouse.vs)
+
+      // Mouse last position
+      mouse.lx = mouse.x
+      mouse.ly = mouse.y
+
+      // Mouse angle
+      mouse.a = Math.atan2(dy, dx)
+
+      // Animation
+      this.style.setProperty('--x', `${mouse.sx}px`)
+      this.style.setProperty('--y', `${mouse.sy}px`)
+
+      this.movePoints(time)
+      this.drawLines()
+    }
+  }
+
+  customElements.define('a-waves', AWaves)
+</script>
+
+<style lang="scss">
+  a-waves {
+    --x: -0.5rem;
+    --y: 50%;
+
+    position: relative;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+
+    &:before {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 0.5rem;
+      height: 0.5rem;
+
+      background: color(secondary);
+      border-radius: 50%;
+
+      transform: translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0);
+
+      will-change: transform;
+
+      content: '';
+    }
+
+    svg {
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      :global(.a__line) {
+        fill: none;
+        stroke: color(secondary);
+        stroke-width: 1px;
+      }
+    }
+
+    /*
+     * Absolute so swapping the SVG out for it can't disturb the layout — the
+     * element takes its size from the flex parent either way.
+     */
+    .a__canvas {
+      display: none;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+    }
+  }
+</style>

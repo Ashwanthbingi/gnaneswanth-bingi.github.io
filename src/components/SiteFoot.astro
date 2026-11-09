@@ -1,0 +1,141 @@
+---
+import { withBase } from '../utils/paths'
+---
+
+<footer class="site-foot" data-reveal-group>
+  <div class="site-foot__logo" data-reveal="scale">
+    <a href={withBase('')}>
+      <svg
+        width="280"
+        height="280"
+        viewBox="0 0 280 280"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <text
+          x="140"
+          y="150"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          font-family="sans-serif"
+          font-weight="700"
+          font-size="120"
+          letter-spacing="-4"
+          fill="#160000"
+        >BG</text>
+      </svg>
+
+      <span class="u-sr-only">Gnaneswanth Bingi</span>
+    </a>
+  </div><!-- .site-foot__logo -->
+
+  <div class="site-foot__info" data-reveal>
+    <p class="site-foot__name">Gnaneswanth Bingi</p>
+  </div><!-- .site-foot__info -->
+
+  <ul class="site-foot__socials">
+    <li data-reveal>
+      <a href="https://github.com/Ashwanthbingi" target="_blank" rel="noopener">GitHub</a>
+    </li>
+    <li data-reveal>
+      <a href="https://www.linkedin.com/in/bingi-gnaneswanth-30565b354/" target="_blank" rel="noopener">LinkedIn</a>
+    </li>
+    <li data-reveal>
+      <a href="https://www.instagram.com/ashwanth_bingi/" target="_blank" rel="noopener">Instagram</a>
+    </li>
+    <li data-reveal>
+      <a href="mailto:aswanthbingi@gmail.com">Email</a>
+    </li>
+  </ul><!-- .site-foot__socials -->
+</footer>
+
+<style lang="scss">
+  .site-foot {
+    @include flex(row, center, space-between);
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    position: relative;
+    z-index: 3;
+
+    padding: 1.5rem 2rem;
+
+    border-top: 1px solid color(secondary);
+
+    @include mq(phone) {
+      padding: 1rem;
+      justify-content: center;
+      text-align: center;
+    }
+
+    &__logo {
+      svg {
+        display: block;
+        width: 3rem;
+        height: 3rem;
+
+        @include mq(phone) {
+          width: 1.875rem;
+          height: 1.875rem;
+        }
+      }
+    }
+
+    &__info {
+      @include flex(column, flex-start, center);
+      gap: 0.15rem;
+
+      @include mq(phone) {
+        align-items: center;
+        order: 3;
+        width: 100%;
+      }
+    }
+
+    &__name {
+      color: color(secondary);
+      font: 700 13px / 1.2 font-family(fraktion);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    &__copy {
+      color: color(secondary);
+      font: 400 12px / 1.2 font-family(fraktion);
+      opacity: 0.6;
+    }
+
+    &__socials {
+      @include flex(row, center, flex-end);
+      flex-wrap: wrap;
+
+      margin: 0;
+      padding: 0;
+
+      list-style: none;
+
+      li {
+        margin: 0;
+        padding: 0 0.75rem;
+
+        border-left: 1px solid color(secondary);
+
+        &:first-child {
+          border-left: 0;
+        }
+      }
+
+      a {
+        color: color(secondary);
+        font: 400 13px / 1 font-family(fraktion);
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        text-transform: uppercase;
+
+        &:hover {
+          text-shadow: 0 0 1px currentcolor;
+        }
+      }
+    }
+  }
+</style>

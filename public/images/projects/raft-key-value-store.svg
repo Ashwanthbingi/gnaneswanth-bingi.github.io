@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1082 636" width="1082" height="636" role="img" aria-label="RAFT CONSENSUS diagram">
+  <rect width="1082" height="636" fill="#160000"/>
+  <path d="M 0.0 0 L 0.0 636 M 41.6 0 L 41.6 636 M 83.2 0 L 83.2 636 M 124.8 0 L 124.8 636 M 166.4 0 L 166.4 636 M 208.0 0 L 208.0 636 M 249.6 0 L 249.6 636 M 291.2 0 L 291.2 636 M 332.8 0 L 332.8 636 M 374.4 0 L 374.4 636 M 416.0 0 L 416.0 636 M 457.6 0 L 457.6 636 M 499.2 0 L 499.2 636 M 540.8 0 L 540.8 636 M 582.4 0 L 582.4 636 M 624.0 0 L 624.0 636 M 665.6 0 L 665.6 636 M 707.2 0 L 707.2 636 M 748.8 0 L 748.8 636 M 790.4 0 L 790.4 636 M 832.0 0 L 832.0 636 M 873.6 0 L 873.6 636 M 915.2 0 L 915.2 636 M 956.8 0 L 956.8 636 M 998.4 0 L 998.4 636 M 1040.0 0 L 1040.0 636 M 1081.6 0 L 1081.6 636 M 0 0.0 L 1082 0.0 M 0 42.4 L 1082 42.4 M 0 84.8 L 1082 84.8 M 0 127.2 L 1082 127.2 M 0 169.6 L 1082 169.6 M 0 212.0 L 1082 212.0 M 0 254.4 L 1082 254.4 M 0 296.8 L 1082 296.8 M 0 339.2 L 1082 339.2 M 0 381.6 L 1082 381.6 M 0 424.0 L 1082 424.0 M 0 466.4 L 1082 466.4 M 0 508.8 L 1082 508.8 M 0 551.2 L 1082 551.2 M 0 593.6 L 1082 593.6 M 0 636.0 L 1082 636.0" stroke="#fff2ed" stroke-width="1" opacity="0.06" fill="none"/>
+  <path d="M 28 28 l 26 0 M 28 28 l 0 26 M 1054 28 l -26 0 M 1054 28 l 0 26 M 28 608 l 26 0 M 28 608 l 0 -26 M 1054 608 l -26 0 M 1054 608 l 0 -26"
+        stroke="#fff2ed" stroke-width="2" opacity="0.55" fill="none"/>
+  <text x="52" y="66" fill="#fff2ed" opacity="0.7" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" letter-spacing="2">RAFT CONSENSUS</text>
+  <text x="1030" y="592" fill="#f40c3f" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" letter-spacing="2">REPLICATED LOG</text>
+    <path d="M 276 150 L 276 494" stroke="#f40c3f" stroke-width="2" opacity="0.55"/>
+    <g>
+      <path d="M 276 236 L 292 236" stroke="#f40c3f" stroke-width="2" opacity="0.8"/>
+      <path d="M 292 236 l -11 -6 l 0 12 Z" fill="#f40c3f" opacity="0.8"/>
+      <path d="M 276 322 L 292 322" stroke="#f40c3f" stroke-width="2" opacity="0.8"/>
+      <path d="M 292 322 l -11 -6 l 0 12 Z" fill="#f40c3f" opacity="0.8"/>
+      <path d="M 276 408 L 292 408" stroke="#f40c3f" stroke-width="2" opacity="0.8"/>
+      <path d="M 292 408 l -11 -6 l 0 12 Z" fill="#f40c3f" opacity="0.8"/>
+      <path d="M 276 494 L 292 494" stroke="#f40c3f" stroke-width="2" opacity="0.8"/>
+      <path d="M 292 494 l -11 -6 l 0 12 Z" fill="#f40c3f" opacity="0.8"/>
+    </g>
+    <g>
+      <rect x="300.0" y="126" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="387.5" y="126" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="475.0" y="126" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="562.5" y="126" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="650.0" y="126" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="737.5" y="126" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="825.0" y="126" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="912.5" y="126" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.5"/>
+      <rect x="300.0" y="212" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="387.5" y="212" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="475.0" y="212" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="562.5" y="212" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="650.0" y="212" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="737.5" y="212" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="825.0" y="212" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="912.5" y="212" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.5"/>
+      <rect x="300.0" y="298" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="387.5" y="298" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="475.0" y="298" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="562.5" y="298" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="650.0" y="298" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="737.5" y="298" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="825.0" y="298" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="912.5" y="298" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1" stroke-dasharray="4 6" opacity="0.22"/>
+      <rect x="300.0" y="384" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="387.5" y="384" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="475.0" y="384" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="562.5" y="384" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="650.0" y="384" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="737.5" y="384" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="825.0" y="384" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1" stroke-dasharray="4 6" opacity="0.22"/>
+      <rect x="912.5" y="384" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1" stroke-dasharray="4 6" opacity="0.22"/>
+      <rect x="300.0" y="470" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="387.5" y="470" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="475.0" y="470" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="562.5" y="470" width="81.5" height="48" fill="#fff2ed" opacity="0.88"/>
+      <rect x="650.0" y="470" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1" stroke-dasharray="4 6" opacity="0.22"/>
+      <rect x="737.5" y="470" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1" stroke-dasharray="4 6" opacity="0.22"/>
+      <rect x="825.0" y="470" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1" stroke-dasharray="4 6" opacity="0.22"/>
+      <rect x="912.5" y="470" width="81.5" height="48" fill="none" stroke="#fff2ed" stroke-width="1" stroke-dasharray="4 6" opacity="0.22"/>
+    </g>
+    <g>
+      <rect x="104" y="120" width="148" height="60" fill="none" stroke="#f40c3f" stroke-width="3" opacity="1"/>
+      <text x="178" y="147" fill="#f40c3f" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" letter-spacing="2" opacity="1">S1</text>
+      <text x="178" y="170" fill="#f40c3f" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="1.4" opacity="0.9">LEADER</text>
+      <rect x="104" y="206" width="148" height="60" fill="none" stroke="#fff2ed" stroke-width="2" opacity="0.7"/>
+      <text x="178" y="233" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" letter-spacing="2" opacity="0.85">S2</text>
+      <text x="178" y="256" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="1.4" opacity="0.5">FOLLOWER</text>
+      <rect x="104" y="292" width="148" height="60" fill="none" stroke="#fff2ed" stroke-width="2" opacity="0.7"/>
+      <text x="178" y="319" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" letter-spacing="2" opacity="0.85">S3</text>
+      <text x="178" y="342" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="1.4" opacity="0.5">FOLLOWER</text>
+      <rect x="104" y="378" width="148" height="60" fill="none" stroke="#fff2ed" stroke-width="2" opacity="0.7"/>
+      <text x="178" y="405" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" letter-spacing="2" opacity="0.85">S4</text>
+      <text x="178" y="428" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="1.4" opacity="0.5">FOLLOWER</text>
+      <rect x="104" y="464" width="148" height="60" fill="none" stroke="#fff2ed" stroke-width="2" opacity="0.7"/>
+      <text x="178" y="491" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" letter-spacing="2" opacity="0.85">S5</text>
+      <text x="178" y="514" fill="#fff2ed" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" letter-spacing="1.4" opacity="0.5">FOLLOWER</text>
+    </g>
+    <path d="M 909.5 108 L 909.5 538" stroke="#f40c3f" stroke-width="3" stroke-dasharray="10 8"/>
+    <text x="893.5" y="102" fill="#f40c3f" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" letter-spacing="1.6">COMMITTED &#8804; 7  ·  QUORUM 3/5</text>
+    <text x="104" y="562" fill="#fff2ed" opacity="0.55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" letter-spacing="1.4">LOG INDEX &#8594;</text>
+</svg>

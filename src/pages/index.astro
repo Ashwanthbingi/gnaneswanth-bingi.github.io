@@ -1,0 +1,898 @@
+---
+import SiteHead from '../components/SiteHead.astro'
+import SiteFoot from '../components/SiteFoot.astro'
+import SiteMenu from '../components/SiteMenu.astro'
+import SiteScrollbar from '../components/SiteScrollbar.astro'
+import SHero from '../components/SHero.astro'
+import SAbout from '../components/SAbout.astro'
+import SWork from '../components/SWork.astro'
+import SMyWay from '../components/SMyWay.astro'
+import SResume from '../components/SResume.astro'
+import SGithub from '../components/SGithub.astro'
+import SCTA from '../components/SCTA.astro'
+import SContactLinks from '../components/SContactLinks.astro'
+import ASeparator from '../components/ASeparator.astro'
+import { withBase } from '../utils/paths'
+
+import '../styles/global.scss'
+---
+
+<html lang="en" class="is-scroll-blocked theme-contrasted">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Gnaneswanth Bingi – Portfolio</title>
+
+    <meta
+      name="description"
+      content="Gnaneswanth Bingi is a Computer Science undergraduate at Dayananda Sagar University focused on Software Engineering, Backend Development, AI, and Distributed Systems." />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link
+      rel="icon"
+      type="image/png"
+      href={withBase('icons/favicon-48x48.png')}
+      sizes="48x48"
+    />
+    <link rel="icon" type="image/svg+xml" href={withBase('icons/favicon.svg')} />
+    <link rel="shortcut icon" href={withBase('icons/favicon.ico')} />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href={withBase('icons/apple-touch-icon.png')}
+    />
+    <meta name="apple-mobile-web-app-title" content="Gnaneswanth Bingi Portfolio" />
+
+    <meta name="theme-color" content="#160000" />
+    <meta name="msapplication-navbutton-color" content="#160000" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#160000" />
+
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Gnaneswanth Bingi – Portfolio" />
+    <meta property="og:description" content="Gnaneswanth Bingi is a Computer Science undergraduate at Dayananda Sagar University focused on Software Engineering, Backend Development, AI, and Distributed Systems." />
+    <meta name="twitter:card" content="summary" />
+
+    <link
+      rel="preload"
+      href={withBase('fonts/PPEditorialNew-Regular.woff2')}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href={withBase('fonts/PPEditorialNew-Ultralight.woff2')}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href={withBase('fonts/PPFraktionMono-Regular.woff2')}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href={withBase('fonts/PPFraktionMono-Bold.woff2')}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href={withBase('fonts/Bigger-Display.woff2')}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href={withBase('fonts/bigger-display.css')} />
+    <link rel="stylesheet" href={withBase('fonts/editorial-new.css')} />
+    <link rel="stylesheet" href={withBase('fonts/fraktion-mono.css')} />
+
+    <script is:inline>
+      /*
+       * Set the motion flag before first paint so [data-reveal] elements can
+       * start hidden without ever flashing. Gated on the reduced-motion query,
+       * and backed by a failsafe: if the bundle never boots, the flag is
+       * dropped after 4s so no section can be left permanently invisible.
+       */
+      ;(function () {
+        var root = document.documentElement
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+        root.classList.add('js-motion')
+
+        root.dataset.revealFailsafe = String(
+          setTimeout(function () {
+            root.classList.remove('js-motion')
+          }, 4000)
+        )
+      })()
+    </script>
+  </head>
+
+  <body>
+    <div class="site-wrapper js-site-wrapper" style="opacity: 0;">
+      <SiteHead />
+
+      <SHero />
+
+      <SAbout />
+
+      <ASeparator style="secondary" />
+
+      <!-- The projects showcase lives inside <SWork /> as its second half. -->
+      <SWork />
+
+      <ASeparator style="secondary" />
+
+      <SMyWay />
+
+      <ASeparator style="secondary" />
+
+      <SResume />
+
+      <ASeparator style="secondary" />
+
+      <SGithub />
+
+      <SCTA />
+
+      <SContactLinks />
+
+      <SiteFoot />
+    </div><!-- .site-wrapper -->
+
+    <div
+      class="site-intro js-intro"
+      style="opacity: 1; position: fixed; top: 0; left: 0; z-index: 50; width: 100%; height: 100%; background: #F40C3F;"
+    >
+      <div class="sb-logo js-logo">
+        <div class="sb__path sb__path--v sb__path--v-1 js-logo-line-v"></div>
+        <div class="sb__path sb__path--h sb__path--h-1 js-logo-line-h"></div>
+        <div class="sb__path sb__path--v sb__path--v-2 js-logo-line-v"></div>
+        <div class="sb__path sb__path--v sb__path--v-3 js-logo-line-v"></div>
+        <div class="sb__path sb__path--h sb__path--h-2 js-logo-line-h"></div>
+        <div class="sb__path sb__path--v sb__path--v-4 js-logo-line-v"></div>
+        <div class="sb__path sb__path--h sb__path--h-3 js-logo-line-h"></div>
+        <div class="sb__path sb__path--v sb__path--v-5 js-logo-line-v"></div>
+      </div><!-- .sb-logo -->
+
+      <div class="site-intro__border site-intro__border--top js-border-top">
+      </div>
+      <div class="site-intro__border site-intro__border--left js-border-left">
+      </div>
+      <div class="site-intro__border site-intro__border--right js-border-right">
+      </div>
+    </div><!-- .site-intro -->
+
+    <div class="site-mount js-mount"></div>
+    <div class="site-contrast-mask js-contrast-mask"></div>
+
+    <SiteMenu />
+
+    <SiteScrollbar />
+  </body>
+
+  <script>
+    import Emitter from '../utils/Emitter'
+    import Ticker from '../utils/Ticker'
+    import { initReveal, flushReveals, prefersReducedMotion } from '../utils/reveal'
+
+    import Lenis from 'lenis'
+
+    import { gsap } from 'gsap'
+    import { ScrollTrigger } from 'gsap/ScrollTrigger'
+    gsap.registerPlugin(ScrollTrigger)
+
+    declare global {
+      interface Window {
+        safeWidth: number
+        safeHeight: number
+        maxScrollTop: number
+        scrollProgress: number
+        lenis: any
+      }
+    }
+
+    class Site {
+      timeouts: any = {
+        resizeThrottle: null,
+      }
+
+      windowWidth: number
+      windowHeight: number
+      clientWidth: number
+      clientHeight: number
+
+      isScrolling: boolean = false
+
+      lenis: any
+      lenisRaf: any
+
+      /**
+       * Constructor
+       */
+      constructor() {
+        // OS class
+        let os = 'unknown'
+        if (navigator.userAgent.indexOf('Win') !== -1) {
+          os = 'windows'
+        } else if (navigator.userAgent.indexOf('Android') !== -1) {
+          os = 'android'
+        } else if (navigator.userAgent.indexOf('Mac') !== -1) {
+          os = 'mac'
+        } else if (navigator.userAgent.indexOf('Linux') !== -1) {
+          os = 'linux'
+        }
+        document.documentElement.classList.add(`is-${os}`)
+
+        // Browser class
+        let browser = 'unknown'
+        if (navigator.userAgent.indexOf('Firefox') !== -1) {
+          browser = 'firefox'
+        } else if (navigator.userAgent.indexOf('Chrome') !== -1) {
+          browser = 'chrome'
+        } else if (navigator.userAgent.indexOf('Safari') !== -1) {
+          browser = 'safari'
+        }
+        document.documentElement.classList.add(`is-${browser}`)
+
+        this.bindEvents()
+      }
+
+      /**
+       * Initialization
+       */
+      init() {
+        this.initLenis()
+
+        Ticker.init()
+
+        this.initMotion()
+
+        this.onResize()
+        Ticker.nextTick(this.intro, this)
+      }
+
+      /**
+       * Bind events
+       */
+      bindEvents() {
+        window.addEventListener('resize', this.resizeThrottle.bind(this))
+        window.addEventListener('scroll', this.onScroll.bind(this), {
+          passive: true,
+        })
+        window.addEventListener('mousemove', this.onMouseMove.bind(this), {
+          passive: true,
+        })
+
+        Emitter.on('updateViewport', this.onResize, this, true)
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              entry.target.dispatchEvent(
+                new CustomEvent('intersect', {
+                  detail: { isIntersecting: entry.isIntersecting },
+                })
+              )
+
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-in-view')
+                entry.target.classList.remove(
+                  'is-out-of-view',
+                  'is-out-of-view-top',
+                  'is-out-of-view-bottom'
+                )
+              } else {
+                entry.target.classList.remove('is-in-view')
+                entry.target.classList.add('is-out-of-view')
+
+                entry.target.classList.toggle(
+                  'is-out-of-view-top',
+                  entry.boundingClientRect.top < 0
+                )
+                entry.target.classList.toggle(
+                  'is-out-of-view-bottom',
+                  entry.boundingClientRect.top > 0
+                )
+              }
+            })
+          },
+          {
+            threshold: 0,
+          }
+        )
+
+        document.querySelectorAll('[data-intersect]').forEach((el) => {
+          observer.observe(el)
+        })
+
+        // Site loaded event
+        if (document.readyState === 'complete') {
+          this.siteLoaded()
+        } else {
+          window.addEventListener('load', this.siteLoaded, { once: true })
+        }
+
+        this.onScroll()
+      }
+
+      /**
+       * Init the shared scroll-reveal system
+       *
+       * The inline head script adds `.js-motion` before first paint so
+       * [data-reveal] elements can start hidden without ever flashing, and it
+       * arms a 4s failsafe that strips the flag again in case this bundle never
+       * boots. It has booted, so disarm the failsafe and take over.
+       */
+      initMotion() {
+        const root = document.documentElement
+
+        if (root.dataset.revealFailsafe) {
+          clearTimeout(Number(root.dataset.revealFailsafe))
+          delete root.dataset.revealFailsafe
+        }
+
+        initReveal()
+
+        /*
+         * Every GSAP timeline on the site — the loader, the hero reveal, the
+         * contrast wipe — is built inside its own component, so there is no one
+         * place to shorten them. Collapsing the global timeline is the single
+         * lever that reaches all of them: the end states still land, they just
+         * land at once instead of over five seconds.
+         */
+        if (prefersReducedMotion()) {
+          gsap.globalTimeline.timeScale(100)
+        }
+
+        // If reduced motion is switched on mid-session, show everything rather
+        // than leaving sections stuck in their hidden state.
+        const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+        query.addEventListener('change', () => {
+          if (!query.matches) return
+
+          root.classList.remove('js-motion')
+          gsap.globalTimeline.timeScale(100)
+          this.disableSmoothScroll()
+          flushReveals()
+        })
+      }
+
+      /**
+       * Init lenis
+       */
+      initLenis() {
+        /*
+         * Smooth scroll is itself a motion effect, so reduced-motion visitors
+         * get the browser's native scrolling instead.
+         */
+        if (prefersReducedMotion()) {
+          window.lenis = this.nativeScroll()
+          this.lenis = window.lenis
+
+          return
+        }
+
+        const lenis = new Lenis()
+
+        lenis.on('scroll', ScrollTrigger.update)
+
+        // Kept as a field so the downgrade path below can take it off again.
+        this.lenisRaf = (time: number) => lenis.raf(time * 1000)
+
+        gsap.ticker.add(this.lenisRaf)
+
+        gsap.ticker.lagSmoothing(0)
+
+        window.lenis = lenis
+        this.lenis = lenis
+
+        /*
+         * If the frame monitor decides this machine can't hold the budget, give
+         * the scroll back to the browser. Interpolated scrolling lives on the
+         * main thread, so every frame the page drops is a frame the scroll
+         * position doesn't move — the effect meant to feel smooth is the one
+         * that most visibly isn't. Native scrolling is handled by the
+         * compositor and stays smooth no matter how busy the main thread gets,
+         * and it only happens on hardware that has already proven it needs the
+         * help.
+         */
+        Emitter.on('qualitychange', this.disableSmoothScroll, this, true)
+      }
+
+      /**
+       * A stand-in for Lenis that maps its two used methods onto native
+       * scrolling, so no caller has to branch on whether smooth scroll is on.
+       */
+      nativeScroll() {
+        return {
+          raf: () => {},
+          on: () => {},
+          stop: () => {},
+          start: () => {},
+          destroy: () => {},
+          scrollTo: (target: any) => {
+            /*
+             * A JS `behavior` argument wins over the CSS `scroll-behavior: auto
+             * !important` that reduced motion sets, so the preference has to be
+             * honoured here rather than left to the stylesheet.
+             */
+            const behavior: ScrollBehavior = prefersReducedMotion()
+              ? 'auto'
+              : 'smooth'
+
+            if (typeof target === 'number') {
+              window.scrollTo({ top: target, behavior })
+
+              return
+            }
+
+            const el =
+              typeof target === 'string' ? document.querySelector(target) : target
+
+            el?.scrollIntoView({ block: 'start', behavior })
+          },
+        }
+      }
+
+      /**
+       * Hand the scroll back to the browser, mid-session, without a jump: Lenis
+       * writes real scroll positions, so tearing it down leaves the page exactly
+       * where it was. ScrollTrigger has its own native scroll listener, and only
+       * needs telling that the driver changed.
+       */
+      disableSmoothScroll() {
+        if (!this.lenis?.destroy || !this.lenisRaf) return
+
+        gsap.ticker.remove(this.lenisRaf)
+        this.lenisRaf = null
+
+        this.lenis.destroy()
+
+        window.lenis = this.nativeScroll()
+        this.lenis = window.lenis
+
+        ScrollTrigger.refresh()
+      }
+
+      /**
+       * Set loaded class
+       */
+      siteLoaded() {
+        document.documentElement.classList.add('is-loaded')
+
+        Emitter.emit('siteLoaded')
+      }
+
+      /**
+       * Resize throttle
+       */
+      resizeThrottle() {
+        clearTimeout(this.timeouts.resizeThrottle)
+
+        this.timeouts.resizeThrottle = setTimeout(() => {
+          Ticker.nextTick(this.onResize, this)
+        }, 200)
+      }
+
+      /**
+       * Resize handler
+       */
+      onResize() {
+        const newWidth = window.innerWidth
+        let widthChanged = false
+        if (this.windowWidth !== newWidth) {
+          if (this.windowWidth !== undefined) {
+            widthChanged = true
+          }
+
+          this.windowWidth = newWidth
+          this.clientWidth = document.body.clientWidth
+        }
+
+        const newHeight = window.innerHeight
+        let heightChanged = false
+        if (this.windowHeight !== newHeight) {
+          if (this.windowHeight !== undefined) {
+            heightChanged = true
+          }
+
+          this.windowHeight = newHeight
+          this.clientHeight = document.body.clientHeight
+        }
+
+        window.safeWidth = newWidth
+        window.safeHeight = newHeight
+
+        window.maxScrollTop = document.body.scrollHeight - window.safeHeight
+
+        this.setScrollProgress()
+
+        Emitter.emit('resize', widthChanged, heightChanged)
+      }
+
+      /**
+       * Scroll handler
+       */
+      onScroll() {
+        this.setScrollProgress()
+
+        Ticker.nextTick(() => {
+          Emitter.emit('scroll', window.scrollY)
+        })
+      }
+
+      /**
+       * Set scroll progress
+       */
+      setScrollProgress() {
+        window.scrollProgress = window.scrollY / window.maxScrollTop
+      }
+
+      /**
+       * Mouse move handler
+       */
+      onMouseMove(e) {
+        Emitter.emit('mousemove', e.clientX, e.clientY)
+      }
+
+      /**
+       * Intro
+       */
+      intro() {
+        // Selectors
+        const wrapper: HTMLElement = document.querySelector('.js-site-wrapper')
+        const intro: HTMLElement = document.querySelector('.js-intro')
+        const mount: HTMLElement = document.querySelector('.js-mount')
+        const logoLinesV: NodeList = intro.querySelectorAll('.js-logo-line-v')
+        const logoLinesH: NodeList = intro.querySelectorAll('.js-logo-line-h')
+        const borderTop: HTMLElement = intro.querySelector('.js-border-top')
+        const borderLeft: HTMLElement = intro.querySelector('.js-border-left')
+        const borderRight: HTMLElement = intro.querySelector('.js-border-right')
+
+        // Timeline
+        const tl = gsap.timeline()
+
+        tl.set(wrapper, {
+          opacity: '',
+        })
+
+        tl.set(intro, {
+          background: 'transparent',
+        })
+
+        tl.fromTo(
+          logoLinesV,
+          {
+            scaleY: 0,
+          },
+          {
+            scaleY: 1,
+            duration: 1,
+            ease: 'power4.inOut',
+            stagger: 0.15,
+          },
+          0
+        )
+
+        tl.fromTo(
+          logoLinesH,
+          {
+            scaleX: 0,
+          },
+          {
+            scaleX: 1,
+            duration: 0.4,
+            ease: 'power4.inOut',
+            stagger: 0,
+          },
+          1
+        )
+
+        tl.set(logoLinesV, {
+          transformOrigin: '50% 0',
+        })
+
+        tl.fromTo(
+          logoLinesV,
+          {
+            scaleY: 1,
+          },
+          {
+            scaleY: 0,
+            duration: 1,
+            ease: 'power4.in',
+            immediateRender: false,
+            stagger: 0.1,
+          },
+          2
+        )
+
+        tl.fromTo(
+          logoLinesH,
+          {
+            scaleY: 1,
+          },
+          {
+            scaleY: 0,
+            duration: 0.5,
+            ease: 'power4.in',
+            immediateRender: false,
+            stagger: 0.1,
+          },
+          2.1
+        )
+
+        tl.from(
+          borderTop,
+          {
+            scaleY: 0,
+            duration: 3,
+            ease: 'power3.inOut',
+          },
+          1
+        )
+
+        tl.from(
+          [borderLeft, borderRight],
+          {
+            scaleX: 0,
+            duration: 3,
+            ease: 'power3.inOut',
+          },
+          1
+        )
+
+        tl.call(
+          () => {
+            document.dispatchEvent(new CustomEvent('intro'))
+          },
+          null,
+          '-=1.85'
+          // 0.5
+        )
+
+        tl.call(
+          () => {
+            mount.style.opacity = '1'
+            intro.remove()
+
+            document.documentElement.classList.remove('is-scroll-blocked')
+
+            Ticker.nextTick(() => {
+              Emitter.emit('updateViewport')
+            })
+          },
+          null,
+          /*
+           * The last thing on this timeline is the border draw, which starts at
+           * 1 and runs for 3 — so everything is finished at 4. This used to sit
+           * at 5, holding `is-scroll-blocked` on the document for a full second
+           * after the loader had visibly stopped moving. A visitor who tries to
+           * scroll in that second gets no response at all, which reads as the
+           * page being broken rather than as an intro still playing.
+           */
+          4.05
+        )
+      }
+    }
+
+    const site = new Site()
+
+    // Site init on DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => site.init(), {
+        once: true,
+      })
+    } else {
+      site.init()
+    }
+  </script>
+
+  <style lang="scss">
+    body {
+      position: relative;
+
+      padding: 1rem;
+      min-height: 100vh;
+
+      @include mq(phone) {
+        padding: 0.5rem;
+      }
+    }
+
+    .site-contrast-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 20;
+
+      width: 100%;
+      height: 100%;
+
+      background: map.get($theme-colors, 'default', 'primary');
+      border-color: map.get($theme-colors, 'default', 'secondary');
+      border-style: solid;
+      border-width: 0 1rem 0 0;
+      mix-blend-mode: darken;
+      transform: translate3d(-100%, 0, 0);
+
+      pointer-events: none;
+      will-change: transform;
+
+      @include mq(phone) {
+        border-right-width: 0.5rem;
+      }
+    }
+
+    .site-intro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 50;
+
+      width: 100%;
+      height: 100%;
+
+      background: color(primary);
+
+      .sb-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        width: 3rem;
+        height: 3rem;
+
+        transform: translate3d(-50%, -50%, 0);
+
+        @include mq(phone) {
+          width: 1.875rem;
+          height: 1.875rem;
+        }
+
+        .sb__path {
+          position: absolute;
+
+          background: color(secondary);
+
+          &--v {
+            top: 0;
+
+            width: 14.2857%;
+            height: 100%;
+
+            transform-origin: 50% 100%;
+
+            &-1 {
+              left: 0;
+            }
+
+            &-2 {
+              left: 21.3214%;
+            }
+
+            &-3 {
+              left: 43.2143%;
+            }
+
+            &-4 {
+              left: 64.7857%;
+            }
+
+            &-5 {
+              right: 0;
+            }
+          }
+
+          &--h {
+            width: 7.5%;
+            height: 6%;
+
+            &-1 {
+              top: 0;
+              left: 14.2857%;
+
+              transform-origin: 100% 0;
+            }
+
+            &-2 {
+              left: 57.5%;
+              bottom: 0;
+
+              transform-origin: 0 0;
+            }
+
+            &-3 {
+              right: 14.2857%;
+              bottom: 0;
+
+              transform-origin: 0% 0;
+            }
+          }
+        }
+      }
+
+      &__border {
+        --width: 1rem;
+
+        position: absolute;
+
+        background: color(secondary);
+
+        @include mq(phone) {
+          --width: 0.5rem;
+        }
+
+        &--top {
+          top: 0;
+          left: 0;
+
+          width: 100%;
+          height: var(--width);
+
+          transform-origin: 50% 0;
+        }
+
+        &--left,
+        &--right {
+          top: 0;
+          left: 0;
+
+          width: var(--width);
+          height: 100%;
+        }
+
+        &--left {
+          transform-origin: 0 50%;
+        }
+
+        &--right {
+          left: auto;
+          right: 0;
+
+          transform-origin: 100% 50%;
+        }
+      }
+    }
+
+    .site-wrapper {
+      position: relative;
+      z-index: 2;
+
+      background: color(primary);
+      clip-path: inset(0 -1rem);
+
+      @include mq(phone) {
+        clip-path: inset(0 -0.5rem);
+      }
+    }
+
+    .site-mount {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+
+      width: 100%;
+      height: 100%;
+
+      border: 1rem solid color(secondary);
+
+      opacity: 0;
+      will-change: border-width;
+
+      pointer-events: none;
+    }
+  </style>
+</html>

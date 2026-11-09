@@ -1,0 +1,1469 @@
+---
+import AWork from './AWork.astro'
+import SProjects from './SProjects.astro'
+import { projects, repoUrl } from '../data/projects'
+import { withBase } from '../utils/paths'
+
+// Projects live in a single place: src/data/projects.ts.
+// The flying scene below and the project grid nested inside this section both
+// read from it, so a project only ever needs editing once.
+const works = projects.map((project) => ({
+  caption: project.title,
+  site: project.live ?? repoUrl(project),
+  src: withBase(project.image),
+}))
+---
+
+<section id="work" class="s-work" style={`--scene-lvh: ${works.length * 50}`} data-intersect>
+  <div class="s__outer js-outer">
+    <div class="s__inner js-container">
+      <h2 class="s__title">
+        <span class="s__title__inner js-title">
+          <span class="s__title__letter js-letter">W</span>
+          <span class="s__title__letter js-letter">O</span>
+          <span class="s__title__letter js-letter">R</span>
+          <span class="s__title__letter js-letter">K</span>
+        </span>
+      </h2>
+
+      <div class="s__scene js-scene">
+        {
+          works.map((work, index) => (
+            <AWork
+              cssClass="s__scene__work s__scene__work--video js-work"
+              caption={work.caption}
+              site={work.site}
+              src={work.src}
+              index={String(index).padStart(4, '0')}
+              total={String(works.length).padStart(2, '0')}
+            />
+          ))
+        }
+      </div><!-- .s__scene -->
+
+      <canvas class="s__canvas js-canvas"></canvas>
+    </div><!-- .s__inner -->
+
+    <div class="s__mask-outer">
+      <div class="s__mask js-mask">
+        <svg class="s__mask__svg js-mask-svg">
+          <path class="s__mask__path-inner js-mask-path-inner" d=""></path>
+          <path class="s__mask__path-outer js-mask-path-outer" d=""></path>
+          <path class="s__mask__path-lines js-mask-path-lines" d=""></path>
+        </svg>
+      </div><!-- .s__mask -->
+    </div><!-- .s__mask-outer -->
+
+    <div class="s__ruler js-ruler"></div>
+  </div><!-- .s__outer -->
+
+  <!--
+    The projects showcase is the second half of this section rather than a
+    section of its own: the cinematic scene above is the title card, and the
+    cards below are what it was announcing. It keeps its own `#projects` id so
+    the header menu, the mobile panel and any existing deep link still land on
+    it.
+  -->
+  <SProjects />
+</section>
+
+<script>
+  import Emitter from '../utils/Emitter'
+  import Ticker from '../utils/Ticker'
+
+  import { gsap } from 'gsap'
+  import { SlowMo } from 'gsap/EasePack'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  gsap.registerPlugin(ScrollTrigger, SlowMo)
+
+  // First-paint fallback. setTimeline derives the actual entrance and shares
+  // it with CSS so hidden project links become reachable with the aperture.
+  const CLUSTER_ENTRANCE = 0.185
+
+  class Section {
+    el: HTMLElement
+    outer: HTMLElement
+    container: HTMLElement
+    ruler: HTMLElement
+    scene: HTMLElement
+    canvas: HTMLCanvasElement
+    ctx: CanvasRenderingContext2D
+    title: HTMLElement
+    /** The projects block's root — act two of this same section. */
+    projects: HTMLElement
+
+    mask: {
+      width: number
+      height: number
+      maxScale: number
+      lines: any[]
+      el: HTMLElement
+      svg: HTMLElement
+      pathOuter: HTMLElement
+      pathInner: HTMLElement
+      pathLines: HTMLElement
+    }
+
+    bounding: {
+      left: number
+      top: number
+      width: number
+      height: number
+    }
+
+    /*
+     * The scene's own box in document coordinates, cached on resize.
+     *
+     * This used to come from two `ScrollTrigger.positionInViewport()` calls per
+     * frame, each of which reads a bounding rect — two forced layouts a frame,
+     * interleaved with the custom-property write below, which is the textbook
+     * recipe for layout thrash. The document position of a static box only
+     * changes when the page reflows, so measure it then and derive everything
+     * else from `scrollY`.
+     */
+    sceneBounds: {
+      top: number
+      height: number
+    }
+
+    letters: any[]
+    works: any[]
+    points: any[]
+
+    tl: gsap.core.Timeline
+    animationProgress: number
+    pointsProgress: number
+    last: {
+      animationProgress: number
+      pointsProgress: number
+    }
+    scrollProgress: number
+    smoothScrollProgress: number
+    lastScrollProgress: number
+
+    /** Scroll length of act one — the flying covers — in pixels. */
+    actOneScroll: number
+    /** False below `tablet`, where the cluster runs as normal flow instead. */
+    hasCluster: boolean
+    /** Act two's 0..1 progress, and the last value written for it. */
+    lastCluster: number
+    isClusterActive: boolean
+    clusterEntrance: number
+    /**
+     * How much further the letter field has swept during act two.
+     *
+     * Added to `animationProgress` rather than written into it, so act one's tween
+     * stays the sole owner of that number and scrolling back up hands the field
+     * straight back to GSAP.
+     */
+    clusterSweep: number
+    /** Guards the field's ~30 property writes against an unchanged frame. */
+    lastLetterProgress: number
+
+    state: 0
+    speed: number
+    isPaused: boolean
+
+    /**
+     * Constructor
+     */
+    constructor() {
+      // Elements
+      this.el = document.querySelector('.s-work')
+      this.outer = this.el.querySelector('.js-outer')
+      this.container = this.el.querySelector('.js-container')
+      this.ruler = this.el.querySelector('.js-ruler')
+      this.scene = this.container.querySelector('.js-scene')
+      this.canvas = this.container.querySelector('.js-canvas')
+      this.ctx = this.canvas.getContext('2d')
+      this.title = this.container.querySelector('.js-title')
+      this.projects = this.el.querySelector('.js-projects')
+
+      // Properties
+      this.mask = {
+        width: 0,
+        height: 0,
+        maxScale: 1,
+        lines: [],
+        el: this.el.querySelector('.js-mask'),
+        svg: this.el.querySelector('.js-mask-svg'),
+        pathOuter: this.el.querySelector('.js-mask-path-outer'),
+        pathInner: this.el.querySelector('.js-mask-path-inner'),
+        pathLines: this.el.querySelector('.js-mask-path-lines'),
+      }
+
+      this.letters = []
+      this.title.querySelectorAll('.js-letter').forEach((_letter) => {
+        const letter = {
+          el: _letter,
+          ghosts: [],
+        }
+
+        this.letters.push(letter)
+      })
+
+      this.works = []
+      this.container.querySelectorAll('.js-work').forEach((_work) => {
+        const work = {
+          el: _work,
+        }
+
+        this.works.push(work)
+      })
+
+      this.points = []
+
+      this.sceneBounds = { top: 0, height: 0 }
+
+      this.scrollProgress = 0
+      this.smoothScrollProgress = 0
+      this.lastScrollProgress = null
+
+      this.actOneScroll = 0
+      this.hasCluster = false
+      this.lastCluster = null
+      this.isClusterActive = false
+      this.clusterEntrance = CLUSTER_ENTRANCE
+      this.clusterSweep = 0
+      this.lastLetterProgress = null
+      this.last = {
+        animationProgress: 0,
+        pointsProgress: 0,
+      }
+
+      this.isPaused = true
+
+      // Init
+      if (document.readyState === 'complete') {
+        Ticker.nextTick(this.init, this)
+      } else {
+        Emitter.once('siteLoaded', this.init, this)
+      }
+    }
+
+    /**
+     * Init
+     */
+    init() {
+      /*
+       * Arming the cluster is the first thing that happens, because it changes
+       * the section's height: `--cluster-lvh` is zero until this class lands, so
+       * a visitor without script never scrolls through 170lvh of empty page
+       * waiting for a layer that will never appear. Everything below measures,
+       * so it has to be true before any of it runs.
+       */
+      if (this.projects) this.el.classList.add('is-cluster-armed')
+
+      this.setCtxStyle()
+      this.setSize()
+      this.setMask()
+      this.setPoints()
+      this.setLetters()
+      this.setWorks()
+      /*
+       * Before `setTimeline`, not after: act one's scroll length is now derived
+       * from the measured geometry, and the trigger reads it as it's built.
+       */
+      this.measureScene()
+      this.setTimeline()
+
+      this.bindEvents()
+    }
+
+    /**
+     * Bind events
+     */
+    bindEvents() {
+      Emitter.on('contrastchange', this.setCtxStyle, this)
+      Emitter.on('resize', this.onResize, this)
+
+      this.el.addEventListener('intersect', this.onIntersect.bind(this), {
+        passive: true,
+      })
+    }
+
+    /**
+     * Resize handler
+     */
+    onResize(widthChanged) {
+      if (widthChanged) {
+        this.setCtxStyle()
+        this.setSize()
+        this.setMask()
+        this.setPoints()
+        this.setLetters()
+        this.setWorks()
+      }
+
+      /*
+       * A height-only change (mobile browser chrome collapsing, say) still
+       * moves this section down the document, so the cached geometry has to be
+       * refreshed on every resize, not only on the ones that rebuild the scene.
+       *
+       * It also has to happen before the timeline is rebuilt, which is why this
+       * sits between the two halves: act one's length comes from the split this
+       * computes, and a stale value would mistime the whole fly-through.
+       */
+      const previouslyHadCluster = this.hasCluster
+      this.measureScene()
+
+      if (widthChanged || previouslyHadCluster !== this.hasCluster) {
+        this.setTimeline()
+      }
+    }
+
+    /**
+     * Cache the scene's document position
+     */
+    measureScene() {
+      const bounding = this.outer.getBoundingClientRect()
+
+      this.sceneBounds.top = bounding.top + window.scrollY
+      this.sceneBounds.height = bounding.height
+
+      /*
+       * Split the measured height back into its two acts. `--cluster-lvh` is a
+       * breakpoint decision made in CSS, so it's read here rather than guessed —
+       * once per resize, alongside the rect above, never per frame. Zero means
+       * this viewport doesn't pin the cluster at all and act one owns everything.
+       */
+      const sceneLvh = this.works.length * 50
+      const clusterLvh =
+        parseFloat(
+          getComputedStyle(this.el).getPropertyValue('--cluster-lvh')
+        ) || 0
+
+      this.hasCluster = clusterLvh > 0
+      this.actOneScroll =
+        this.sceneBounds.height * (sceneLvh / (sceneLvh + clusterLvh))
+
+      /*
+       * Hiding the cluster is something JS opts into, never the default: without
+       * this class the stage stays visible and fully settled, so a scripting
+       * failure degrades to a plain readable block rather than an empty screen.
+       */
+      if (this.projects) {
+        this.projects.classList.toggle('is-cluster-js', this.hasCluster)
+
+        if (!this.hasCluster) {
+          this.projects.classList.remove('is-cluster')
+
+          this.isClusterActive = false
+          this.lastCluster = null
+
+          this.el.style.removeProperty('--cluster')
+        }
+      }
+    }
+
+    /**
+     * Intersect handler
+     */
+    onIntersect(e) {
+      this.isPaused = !e.detail.isIntersecting
+
+      if (this.isPaused) {
+        Emitter.off('tick', this.tick, this)
+
+        /*
+         * The cluster stage is a fixed, full-viewport layer, and the tick that
+         * would have stood it down has just stopped running. Clipping already
+         * hides it, but a clipped element is still focusable — so leaving the
+         * class on would put a screenful of invisible project links in the tab
+         * order for the rest of the page. Intersection ending is the exact,
+         * race-free signal for this, which is why it's handled here rather than
+         * as one more threshold inside `moveCluster`.
+         */
+        if (this.isClusterActive) {
+          this.isClusterActive = false
+
+          this.projects.classList.remove('is-cluster')
+        }
+      } else {
+        Emitter.on('tick', this.tick, this)
+      }
+    }
+
+    /**
+     * Set canvas style
+     */
+    setCtxStyle() {
+      const color = getComputedStyle(this.el).getPropertyValue(
+        '--color-primary'
+      )
+
+      Ticker.nextTick(() => {
+        this.ctx.strokeStyle = color
+      })
+    }
+
+    /**
+     * Set size
+     */
+    setSize() {
+      /*
+       * Only act one's share is written from here. The section's total height is
+       * composed in CSS from this plus `--cluster-lvh`, so the breakpoint that
+       * drops the cluster out of the pinned scene stays in the stylesheet.
+       */
+      this.el.style.setProperty('--scene-lvh', String(this.works.length * 50))
+
+      const bounding = this.container.getBoundingClientRect()
+
+      this.bounding = {
+        left: bounding.left,
+        top: bounding.top,
+        width: window.safeWidth,
+        height: window.safeHeight,
+      }
+
+      this.canvas.width = this.bounding.width
+      this.canvas.height = this.bounding.height
+
+      this.speed = Math.hypot(this.bounding.width, this.bounding.height) * 4
+    }
+
+    /**
+     * Set mask
+     */
+    setMask() {
+      const { mask } = this
+
+      const width = mask.el.clientWidth
+      const height = mask.el.clientHeight
+
+      mask.width = width
+      mask.height = height
+
+      mask.svg.style.width = mask.width + 'px'
+      mask.svg.style.height = mask.height + 'px'
+
+      const elBounding = this.el.getBoundingClientRect()
+      const rulerBounding = this.ruler.getBoundingClientRect()
+      const rulerWidth = rulerBounding.width
+      const rulerHeight = rulerBounding.height
+      const offsetX = rulerBounding.left - elBounding.left
+      const offsetY = rulerBounding.top - elBounding.top
+
+      // Shape
+      const dOuter = `M -1 0 L ${width + 2} 0 L ${width + 2} ${height} L -1 ${height} Z`
+
+      // Mask outer
+      const corners = {
+        tl: { x: offsetX, y: offsetY },
+        tr: { x: offsetX + rulerWidth, y: offsetY },
+        br: { x: offsetX + rulerWidth, y: offsetY + rulerHeight },
+        bl: { x: offsetX, y: offsetY + rulerHeight },
+      }
+
+      let size = (corners.tr.x - corners.tl.x) / 2
+
+      mask.maxScale = window.safeWidth / size
+
+      /*
+       * The reciprocal of the open scale, published for CSS.
+       *
+       * With the cluster armed, act one no longer closes the aperture at its own
+       * end — act two happens inside the open one — so the closing beat is driven
+       * from `--close` instead. GSAP leaves its own `transform` parked at
+       * `maxScale`, and the individual `scale` property multiplies on top of that,
+       * so this is the factor that takes it back to exactly 1.
+       */
+      this.el.style.setProperty('--mask-close', String(1 / mask.maxScale))
+
+      let dInner = `M ${corners.tl.x} ${corners.tl.y + size} A ${size} ${size} 0 0 1 ${corners.tr.x} ${corners.tr.y + size} L ${corners.br.x} ${corners.br.y - size} A ${size} ${size} 0 0 1 ${corners.bl.x} ${corners.bl.y - size} Z`
+      const linesClip = `${dOuter} ${dInner}`
+
+      mask.pathOuter.setAttribute('d', `${dOuter} ${dInner}`)
+
+      // Mask inner
+      const thickness = window.safeWidth > 767 ? 16 : 8
+      corners.tl.x += thickness
+      corners.tl.y += thickness
+
+      corners.tr.x -= thickness
+      corners.tr.y += thickness
+
+      corners.br.x -= thickness
+      corners.br.y -= thickness
+
+      corners.bl.x += thickness
+      corners.bl.y -= thickness
+
+      size = (corners.tr.x - corners.tl.x) / 2
+
+      dInner = `M ${corners.tl.x} ${corners.tl.y + size} A ${size} ${size} 0 0 1 ${corners.tr.x} ${corners.tr.y + size} L ${corners.br.x} ${corners.br.y - size} A ${size} ${size} 0 0 1 ${corners.bl.x} ${corners.bl.y - size} Z`
+
+      mask.pathInner.setAttribute('d', `${dOuter} ${dInner}`)
+
+      // Lines
+      mask.lines = []
+
+      const vLines = window.safeWidth > 767 ? 12 : 8
+      const gapX = width / vLines
+      const gapY = height * 0.1
+      const hLines = Math.ceil(height / gapY)
+
+      for (let i = 1; i < vLines; i++) {
+        const x = gapX * i
+
+        mask.lines.push({
+          p1: { x, y: 0 },
+          p2: { x, y: height },
+        })
+      }
+
+      for (let i = 0; i < hLines; i++) {
+        const y = gapY * i
+
+        mask.lines.push({
+          p1: { x: 0, y },
+          p2: { x: width, y },
+        })
+      }
+
+      let dLines = ''
+
+      mask.lines.forEach((line) => {
+        dLines += `M ${line.p1.x} ${line.p1.y} L ${line.p2.x} ${line.p2.y} `
+      })
+
+      mask.pathLines.setAttribute('d', dLines)
+      mask.pathLines.style.clipPath = `path(evenodd, '${linesClip}')`
+    }
+
+    /**
+     * Set letters
+     */
+    setLetters() {
+      const { letters, scene } = this
+
+      letters.forEach((letter, j) => {
+        letter.ghosts.forEach((ghost) => {
+          ghost.el.remove()
+        })
+        letter.ghosts = []
+
+        // Get letter position and size
+        const bounding = letter.el.getBoundingClientRect()
+
+        letter.width = bounding.width
+        letter.height = bounding.height
+        letter.top = bounding.top - this.bounding.top
+        letter.left = bounding.left
+
+        letter.freq = 1 + Math.random()
+
+        const multiplier = window.safeWidth > 767 ? 0.75 : 0.5
+
+        // Create ghost letters
+        letter.total =
+          Math.round((this.bounding.width / letter.width) * multiplier) + 2
+
+        for (let i = 0; i < letter.total; i++) {
+          const el = document.createElement('span')
+          el.classList.add('s__scene__letter')
+          el.classList.add('js-letter')
+
+          el.innerText = letter.el.innerText
+          el.dataset.letter = letter.el.innerText
+
+          scene.appendChild(el)
+
+          const ghost = {
+            el,
+            x: letter.left,
+            y: letter.top,
+            z: Math.random() * 100,
+            i: i - letter.total * 0.5,
+            p: (i / letter.total - 0.5) * 2,
+            ap: Math.abs(i / letter.total - 0.5) * 2,
+            mx: 0,
+            my: 0,
+          }
+
+          el.style.top = ghost.y + 'px'
+          el.style.left = ghost.x + 'px'
+
+          el.style.zIndex = String(j !== 1 && j !== 2 && (j + letters.length + i) % 5 === 0 ? 3 : 1)
+
+          el.style.setProperty('--ix', String(ghost.i))
+          el.style.setProperty(
+            '--iy',
+            String(((j + 1) / (letters.length + 1) - 0.5) * 2)
+          )
+
+          el.style.setProperty('--ap', String(ghost.ap))
+          el.style.setProperty('--p', String(ghost.p))
+
+          letter.ghosts.push(ghost)
+        }
+      })
+
+      // Fresh ghosts have no `--progress` yet, so the next frame has to write.
+      this.lastLetterProgress = null
+    }
+
+    /**
+     * Set works
+     */
+    setWorks() {
+      const { works } = this
+
+      works.forEach((work, i) => {
+        const el = work.el
+
+        el.style.setProperty('--size', String(0.5 + Math.random() * 0.5))
+        el.style.setProperty(
+          '--y',
+          String((0.5 + Math.random() * 0.5) * (i % 2 ? -1 : 1))
+        )
+      })
+    }
+
+    /**
+     * Set timeline
+     */
+    setTimeline() {
+      const { outer, container, works, scene, mask } = this
+
+      const worksEl = works.map((work) => work.el)
+
+      let { tl } = this
+
+      if (tl) {
+        tl.kill()
+      }
+
+      tl = gsap.timeline({
+        scrollTrigger: {
+          /*
+           * The scene, not the whole section: the projects cluster now lives
+           * inside `#work` too, and triggering off the section would stretch
+           * this timeline across it.
+           */
+          trigger: outer,
+          start: 'top 25%',
+          /*
+           * Act one is bounded to its own share of the scroll length instead of
+           * running to `bottom 75%`. The section grew to buy the cluster its
+           * scroll room, and without this the fly-through would simply have been
+           * stretched over the extra distance — the covers would drift past at
+           * roughly half speed. `actOneScroll` is the pre-cluster height, so this
+           * reproduces the original span exactly.
+           */
+          end: () => '+=' + Math.max(1, this.actOneScroll),
+          scrub: 1,
+        },
+        onUpdate: () => {
+          scene.style.setProperty('--state', String(this.state))
+        },
+      })
+
+      tl.fromTo(
+        mask.el,
+        {
+          scale: 1,
+        },
+        {
+          scale: mask.maxScale,
+          duration: 0.75,
+          ease: 'power4.in',
+        },
+        0
+      )
+
+      tl.fromTo(
+        scene,
+        {
+          scale: 0.75,
+        },
+        {
+          scale: 1,
+          duration: 0.75,
+          ease: 'power3.in',
+        },
+        0
+      )
+
+      tl.fromTo(
+        container,
+        {
+          clipPath: 'inset(0 1rem)',
+        },
+        {
+          clipPath: 'inset(0 0rem)',
+          duration: 0.75,
+          ease: 'power3.in',
+        },
+        0
+      )
+
+      tl.fromTo(
+        this,
+        {
+          pointsProgress: 0,
+        },
+        {
+          pointsProgress: 1,
+          duration: 1,
+          ease: 'power4.inOut',
+        },
+        0
+      )
+
+      tl.fromTo(
+        this,
+        {
+          state: 0,
+        },
+        {
+          state: 1,
+          duration: 0.75,
+          ease: 'power4.in',
+        },
+        0
+      )
+
+      tl.fromTo(
+        worksEl,
+        {
+          attr: {
+            progress: 1,
+          },
+        },
+        {
+          attr: {
+            progress: -1,
+          },
+          ease: 'slow(0.15, 0.6)',
+          stagger: 0.25,
+        },
+        0.75
+      )
+
+      tl.fromTo(
+        this,
+        {
+          animationProgress: 0,
+        },
+        {
+          animationProgress: 10000,
+          duration: tl.totalDuration(),
+          ease: 'power1.out',
+        },
+        0.75
+      )
+
+      /*
+       * Act one's closing beats all start together, a second before the end.
+       *
+       * Pinned to a number rather than left as `'-=1'` because the group below is
+       * no longer fixed in size: `'-=1'` resolves against the timeline's duration
+       * at the moment of insertion, so omitting a member would silently retime
+       * whatever followed it.
+       */
+      const closing = tl.duration() - 1
+
+      /*
+       * The capsule closing is only act one's finale when act one is the whole
+       * section. With the cluster armed, act two plays inside that same open
+       * aperture — the letters stay spread and the cards fly in over them — so
+       * these three beats move to the end of act two, driven from `--close` in
+       * CSS. Closing here and reopening a moment later would be a shrug the size
+       * of the viewport, and it would also leave the cluster's dark cards sitting
+       * on paper.
+       */
+      if (!this.hasCluster) {
+        tl.fromTo(
+          this,
+          {
+            state: 1,
+          },
+          {
+            state: 0,
+            duration: 0.75,
+            ease: 'power4.inOut',
+            immediateRender: false,
+          },
+          closing
+        )
+
+        tl.fromTo(
+          mask.el,
+          {
+            scale: mask.maxScale,
+          },
+          {
+            scale: 1,
+            duration: 0.75,
+            ease: 'power4.inOut',
+            immediateRender: false,
+          },
+          closing
+        )
+
+        tl.fromTo(
+          scene,
+          {
+            scale: 1,
+          },
+          {
+            scale: 0.75,
+            duration: 0.75,
+            ease: 'power3.inOut',
+            immediateRender: false,
+          },
+          closing
+        )
+      }
+
+      /*
+       * These two stay put either way. The container's 1rem side inset is the
+       * frame act two is read inside rather than part of the capsule's close, and
+       * the dot field settling is what the letters travel over.
+       */
+      tl.fromTo(
+        container,
+        {
+          clipPath: 'inset(0 0rem)',
+        },
+        {
+          clipPath: 'inset(0 1rem)',
+          duration: 0.75,
+          ease: 'power3.inOut',
+          immediateRender: false,
+        },
+        closing
+      )
+
+      tl.fromTo(
+        this,
+        {
+          pointsProgress: 1,
+        },
+        {
+          pointsProgress: 0,
+          duration: 1,
+          ease: 'power4.inOut',
+        },
+        closing
+      )
+
+      this.tl = tl
+
+      if (this.hasCluster && this.projects) {
+        // Convert GSAP time to the normalized scroll space shared with CSS.
+        const span = Math.max(1, this.sceneBounds.height - window.innerHeight * 0.75)
+        const unit = this.actOneScroll / (tl.duration() * span)
+        this.clusterEntrance = 0.75 * unit
+        this.el.style.setProperty('--cluster-entrance', String(this.clusterEntrance))
+        this.el.style.setProperty('--card-stagger', String(0.25 * unit))
+        this.el.style.setProperty('--card-settle-rate', String(1 / (0.5 * unit)))
+        const lastSettle = (0.75 + (works.length - 1) * 0.25 + 0.5) * unit
+        const landing = (lastSettle * span / window.innerHeight - 0.25) * 100 + 12
+        this.projects.style.setProperty('--landing-lvh', String(landing))
+      }
+    }
+
+    /**
+     * Move letters
+     */
+    moveLetters() {
+      const { speed, letters } = this
+
+      // Act one's tween plus whatever act two has added on top of it.
+      const base = this.animationProgress + this.clusterSweep
+
+      /*
+       * Thirty-odd custom-property writes a frame is worth skipping outright when
+       * none of them would change: act one parks `animationProgress` at its end
+       * value, and act two only advances the field while the page is scrolling.
+       * Rounding to the nearest unit still resolves finer than a pixel of scroll.
+       */
+      const rounded = Math.round(base)
+
+      if (rounded === this.lastLetterProgress) return
+
+      this.lastLetterProgress = rounded
+
+      letters.forEach((letter) => {
+        const letterSpeed = speed * letter.freq
+
+        letter.ghosts.forEach((ghost, index) => {
+          let progress =
+            (((base % letterSpeed) / letterSpeed + index / letter.total) % 1) /
+              0.7 -
+            0.15
+
+          ghost.el.style.setProperty('--progress', String(progress))
+        })
+      })
+    }
+
+    /**
+     * Set points
+     */
+    setPoints() {
+      const { bounding } = this
+
+      this.points = []
+
+      const gap = 24
+      const cols = Math.ceil((bounding.width * 1.2) / gap)
+      const rows = Math.ceil((bounding.height * 1.2) / gap)
+
+      const offsetX = (bounding.width - cols * gap) * 0.5
+      const offsetY = (bounding.height - rows * gap) * 0.5
+
+      const hWidth = bounding.width * 0.5
+      const hHeight = bounding.height * 0.5
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * gap + offsetX
+          const y = j * gap + offsetY
+
+          const dx = hWidth - x
+          const dy = hHeight - y
+
+          this.points.push({
+            x,
+            y,
+            dx,
+            dy,
+            m: Math.random(),
+            flowX: 0,
+          })
+        }
+      }
+    }
+
+    /**
+     * Move points
+     */
+    movePoints() {
+      const { points, animationProgress } = this
+
+      points.forEach((p) => {
+        // Flow
+        p.flowX = (animationProgress * -0.05) % 24
+      })
+    }
+
+    /**
+     * Draw points
+     */
+    drawPoints() {
+      const { bounding, ctx, points, animationProgress, pointsProgress, last } =
+        this
+
+      const rAnimationProgress = Math.round(animationProgress * 100) / 100
+      const rPointsProgress = Math.round(pointsProgress * 100) / 100
+
+      if (
+        rPointsProgress === last.pointsProgress &&
+        rAnimationProgress === last.animationProgress
+      )
+        return
+
+      ctx.clearRect(0, 0, bounding.width, bounding.height)
+
+      ctx.beginPath()
+
+      points.forEach((point) => {
+        const x = point.x + point.dx * (1 - pointsProgress) * 0.2 + point.flowX
+        const y = point.y + point.dy * (1 - pointsProgress) * 0.2
+
+        ctx.rect(x, y, 0.5, 0.5)
+      })
+
+      ctx.stroke()
+
+      last.pointsProgress = rPointsProgress
+      last.animationProgress = rAnimationProgress
+    }
+
+    /**
+     * Tick
+     */
+    tick() {
+      const { sceneBounds } = this
+
+      /*
+       * Read the scroll position first and write styles afterwards, so a frame
+       * never asks the browser to lay out again halfway through.
+       */
+      const scrollY = window.scrollY
+      const viewport = window.safeHeight || window.innerHeight
+
+      const top = (sceneBounds.top - scrollY) / viewport
+      const bottom = (sceneBounds.top + sceneBounds.height - scrollY) / viewport
+
+      this.scrollProgress =
+        Math.max(Math.min(1, top), 0) * -1 + (1 - Math.max(Math.min(1, bottom), 0))
+
+      this.smoothScrollProgress +=
+        (this.scrollProgress - this.smoothScrollProgress) * 0.1
+
+      // Three decimals is finer than a pixel here, and skipping the write keeps
+      // idle frames out of style recalculation entirely.
+      const rounded = Math.round(this.scrollProgress * 1000) / 1000
+
+      if (rounded !== this.lastScrollProgress) {
+        this.lastScrollProgress = rounded
+
+        this.el.style.setProperty('--scroll-progress', String(rounded))
+      }
+
+      // Movement
+      this.movePoints()
+      /*
+       * Act two before the letters, not after: `moveCluster` is what extends the
+       * field's sweep, and reading that a frame late would leave the letters
+       * trailing the cards they're supposed to be travelling with.
+       */
+      this.moveCluster(scrollY, viewport)
+      this.moveLetters()
+
+      // Draw
+      this.drawPoints()
+    }
+
+    /**
+     * Act two — the project cluster.
+     *
+     * Nothing is measured here. The cluster's scroll window is the whole pinned
+     * section: it opens the moment act one's first frame plays and closes as the
+     * pinned viewport starts to leave, all derived from the geometry cached on
+     * resize.
+     *
+     * It used to start where act one ended, which bunched all four cards into the
+     * scroll right after the fly-through — they read as arriving together, at the
+     * end. The cards and the flying covers are the same four projects in the same
+     * order, so the window now spans both acts and each card settles in step with
+     * its own cover: cover N sweeps through, card N is what it leaves behind.
+     */
+    moveCluster(scrollY: number, viewport: number) {
+      if (!this.hasCluster || !this.projects) return
+
+      const { sceneBounds } = this
+
+      /*
+       * `start: 'top 25%'` puts act one's first frame a quarter of a viewport
+       * before the section's top reaches it, so that offset carries through here
+       * — the two acts now share an origin as well as a viewport.
+       */
+      const start = sceneBounds.top - viewport * 0.25
+      const end = sceneBounds.top + sceneBounds.height - viewport
+      const span = Math.max(1, end - start)
+
+      const cluster = Math.max(0, Math.min(1, (scrollY - start) / span))
+
+      const rounded = Math.round(cluster * 1000) / 1000
+
+      if (rounded !== this.lastCluster) {
+        this.lastCluster = rounded
+
+        this.el.style.setProperty('--cluster', String(rounded))
+      }
+
+      /*
+       * The letter field keeps moving after act one hands over, because the cards
+       * are meant to be travelling with it rather than parked in front of a frozen
+       * backdrop. Act one leaves `animationProgress` at its end value, so the
+       * extra distance is carried separately and simply added on in `moveLetters`.
+       *
+       * It has to be measured from act one's end rather than from `--cluster`,
+       * which now starts a whole act earlier — adding this across the fly-through
+       * would quietly double the speed the covers were timed against. The fifth of
+       * a viewport is the overlap, so the sweep picks up while the last cover is
+       * still leaving.
+       */
+      const actTwo = (this.actOneScroll - viewport * 0.2) / span
+      const swept = Math.max(0, (cluster - actTwo) / Math.max(0.001, 1 - actTwo))
+
+      /*
+       * An eighth of a cycle across act two, so the field crawls rather than
+       * churns. Ghosts wrap at `--progress` outside 0..1, which is where this
+       * geometry has already carried them past the viewport edge, so the wrap is
+       * never something you can watch happen.
+       */
+      this.clusterSweep = swept * this.speed * 0.12
+
+      /*
+       * The stage is a fixed, full-viewport layer, so it has to be taken out of
+       * the tab order and off the hit-testing path for as long as it isn't
+       * actually on screen — which is now most of act one, since `--cluster`
+       * starts a whole act before the cards do.
+       */
+      const isActive = cluster > this.clusterEntrance
+
+      if (isActive !== this.isClusterActive) {
+        this.isClusterActive = isActive
+
+        this.projects.classList.toggle('is-cluster', isActive)
+      }
+    }
+  }
+
+  new Section()
+</script>
+
+<style lang="scss">
+  .s-work {
+    /*
+     * The section's scroll length is two acts sharing one pinned viewport.
+     *
+     * Act one is the flying covers: `--scene-lvh` is written from JS as
+     * `works.length * 50`, exactly as it always was. Act two is the project
+     * cluster, which needs its own scroll room to settle into and then dwell in
+     * — that's `--cluster-lvh`. Composing the two here rather than in JS keeps
+     * the breakpoint in one place.
+     *
+     * The cluster's room starts at zero and is only granted once JS has armed
+     * the scene, because the cluster is what fills it. Without script the
+     * projects stay in document flow, and buying 170lvh of scroll for a pinned
+     * layer that will never appear would just be a long empty gap. At or below
+     * `desktop-xs` the cluster runs as flow regardless — a five-card fan needs
+     * width — so it gets nothing there either.
+     *
+     * Markup supplies --scene-lvh from the project count before script runs.
+     */
+    --cluster-lvh: 0;
+    --height: calc((var(--scene-lvh) + var(--cluster-lvh)) * 1lvh);
+
+    /*
+     * The cluster's 0..1 progress across the whole pinned section — both acts, not
+     * just the second one: the cards start arriving during the fly-through, so the
+     * number that places them has to cover it.
+     *
+     * Written here from the tick and inherited by the projects block. Declared on
+     * this element rather than on the block itself so the inline write can
+     * override it, since an element's own declaration always beats an inherited
+     * value. Nothing below `desktop` ever reads it — the cluster is flow layout
+     * there — so the 0 is the whole no-cluster story.
+     */
+    --cluster: 0;
+
+    /*
+     * Two shapes of the section, both derived from `--cluster` so there is only
+     * ever one number coming out of JS.
+     *
+     * `--spread` is the fan opening. It finishes right about where the fly-through
+     * does (`--cluster: 0.69` against act one's 0.68), so the last card turns into
+     * the fan as the last cover leaves and the rest of the section is spent simply
+     * reading them. `--close` is the capsule shutting again over the final stretch
+     * — act one's old finale, relocated to the end of the section it now actually
+     * ends. Both are inert at `--cluster: 0`.
+     *
+     * The two rates look unrelated but they're the same distance measured against
+     * different windows: `--cluster` now spans both acts, so a beat that used to
+     * sit at 0.85 of act two alone sits at 0.94 of the pair. If the split between
+     * `--scene-lvh` and `--cluster-lvh` ever changes, both numbers move —
+     * `lint-timeline.mjs` is what re-derives them.
+     */
+    --spread: clamp(0, calc(var(--cluster) * 1.45), 1);
+    --close: clamp(0, calc((var(--cluster) - 0.94) * 16.6667), 1);
+
+    position: relative;
+    z-index: 2;
+
+    background: color(primary);
+
+    &.is-cluster-armed {
+      --cluster-lvh: 170;
+
+      @include mq(desktop-xs) {
+        --cluster-lvh: 0;
+      }
+
+      @media (max-height: 600px) {
+        --cluster-lvh: 0;
+      }
+    }
+
+    &:before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+
+      width: 100%;
+      height: 1px;
+
+      background: color(secondary);
+
+      content: '';
+    }
+
+    .s__mask-outer {
+      position: sticky;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100lvh;
+
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .s__mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      /*
+       * The aperture's close, when the cluster has taken it off act one's hands.
+       *
+       * GSAP owns this element's `transform` and leaves it parked wide open at
+       * `maxScale`; the individual `scale` property multiplies on top, and
+       * `--mask-close` is the reciprocal measured in `setMask`. So this is 1 — a
+       * no-op — for the whole of act one and for every viewport that runs the
+       * projects in flow, and only bites over act two's last stretch.
+       */
+      scale: calc(1 + var(--close) * (var(--mask-close, 1) - 1));
+
+      will-change: scale, transform;
+
+      &__svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        // transform: translate3d(0, 0, 0);
+      }
+
+      &__path-outer {
+        fill: color(primary);
+        fill-rule: evenodd;
+        stroke: color(secondary);
+        stroke-width: 1px;
+      }
+
+      &__path-inner {
+        fill: color(primary);
+        fill-rule: evenodd;
+        stroke: color(secondary);
+        stroke-width: 1px;
+
+        transform: translate3d(0, calc(var(--scroll-progress) * 48px), 0);
+
+        will-change: transform;
+      }
+
+      &__path-lines {
+        fill: none;
+        stroke: color(secondary);
+        stroke-width: 1px;
+      }
+    }
+
+    .s__outer {
+      position: relative;
+
+      height: var(--height);
+
+      clip-path: inset(0 -1rem);
+    }
+
+    .s__inner {
+      @include flex(column, center, center);
+
+      position: fixed;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      background: color(secondary);
+      transform: translate3d(0, calc(var(--scroll-progress) * -15%), 0);
+
+      color: color(primary);
+
+      will-change: clip-path, transform;
+
+      @include mq(phone) {
+        transform: none;
+      }
+    }
+
+    .s__ruler {
+      --width: min(16.6667%, 19.625rem);
+
+      position: absolute;
+      top: 10lvh;
+      left: calc(50% - var(--width) / 2);
+
+      width: var(--width);
+      height: 80lvh;
+
+      // background: #0f03;
+      pointer-events: none;
+
+      @include mq(tablet) {
+        --width: 33.3333%;
+      }
+
+      @include mq(phone) {
+        --width: 50%;
+      }
+    }
+
+    .s__title,
+    .s__scene {
+      font: 700 min(18.75rem, 25lvh) / 1 font-family(bigger);
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .s__title__inner,
+    :global(.s__scene__letter) {
+      line-height: 0.85;
+    }
+
+    .s__title {
+      width: 0.7em;
+
+      opacity: 0;
+      word-break: break-all;
+
+      &__inner {
+        @include flex(column, center, center);
+
+        margin: 0.075em 0 -0.125em;
+      }
+    }
+
+    .s__scene {
+      --shadow: #{color(shadow)};
+      --progress: 0.5;
+      --state: 0;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+
+      width: 100%;
+      height: 100%;
+
+      perspective: 40rem;
+
+      /* The other half of the relocated close — see `.s__mask` above. */
+      scale: calc(1 - var(--close) * 0.25);
+
+      will-change: scale, transform;
+
+      :global(.s__scene__letter) {
+        /*
+         * How far open the field is. `--state` is act one's, written inline from
+         * the timeline; with the cluster armed it stays at 1 across act two so the
+         * letters keep their spread behind the cards, and this is what finally
+         * folds them back as the capsule shuts.
+         */
+        --field: calc(var(--state) * (1 - var(--close)));
+        --head: calc((var(--progress) - 0.5) * -2);
+        --ahead: calc(var(--head) * var(--head));
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        display: block;
+
+        transform: rotateY(calc(var(--head) * -10deg * var(--field)))
+          translate3d(
+            calc(var(--head) * 50vw * var(--field)),
+            calc(var(--iy) * 50% * var(--ahead) * var(--field)),
+            0
+          );
+
+        pointer-events: none;
+        will-change: transform;
+
+        &:before {
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: -1;
+
+          color: color(shadow);
+
+          opacity: min(calc( var(--field) * 2 ), 1);
+          transform: scale(
+              1.05, 1.02
+            )
+            translate3d(
+              calc(var(--head) * 0.1rem * var(--field) * var(--field)),
+              0,
+              0
+            );
+          transform-origin: calc(50% - var(--head) * 50%) -50%;
+
+          will-change: opacity, transform;
+
+          content: attr(data-letter);
+        }
+      }
+
+      :global(.s__scene__work) {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 2;
+
+        transform: rotateY(calc(var(--progress) * -20deg))
+          translate3d(
+            calc(var(--progress) * (50vw + 100%) - 50%),
+            calc(var(--y) * 50% - 50%),
+            calc(var(--progress) * var(--progress) * -5rem)
+          )
+          scale(var(--size));
+
+        will-change: transform;
+
+        @include mq(tablet) {
+          transform: rotateY(calc(var(--progress) * -20deg))
+            translate3d(
+              calc(var(--progress) * (50vw + 100%) - 50%),
+              calc(var(--y) * 50% - 50%),
+              calc(var(--progress) * var(--progress) * -5rem)
+            );
+        }
+
+        @include mq(phone) {
+          transform: rotateY(calc(var(--progress) * -20deg))
+            translate3d(
+              calc(var(--progress) * (50vw + 100%) - 50%),
+              calc(var(--y) * 100% - 50%),
+              calc(var(--progress) * var(--progress) * -5rem)
+            );
+        }
+      }
+    }
+
+    .s__canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+
+      width: 100%;
+      height: 100%;
+
+      transform: translate3d(0, calc(var(--scroll-progress) * -5%), 0);
+
+      @include mq(phone) {
+        transform: none;
+      }
+    }
+  }
+</style>

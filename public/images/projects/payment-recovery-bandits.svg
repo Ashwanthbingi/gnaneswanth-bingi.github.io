@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1082 636" width="1082" height="636" role="img" aria-label="CONTEXTUAL BANDIT diagram">
+  <rect width="1082" height="636" fill="#160000"/>
+  <path d="M 0.0 0 L 0.0 636 M 41.6 0 L 41.6 636 M 83.2 0 L 83.2 636 M 124.8 0 L 124.8 636 M 166.4 0 L 166.4 636 M 208.0 0 L 208.0 636 M 249.6 0 L 249.6 636 M 291.2 0 L 291.2 636 M 332.8 0 L 332.8 636 M 374.4 0 L 374.4 636 M 416.0 0 L 416.0 636 M 457.6 0 L 457.6 636 M 499.2 0 L 499.2 636 M 540.8 0 L 540.8 636 M 582.4 0 L 582.4 636 M 624.0 0 L 624.0 636 M 665.6 0 L 665.6 636 M 707.2 0 L 707.2 636 M 748.8 0 L 748.8 636 M 790.4 0 L 790.4 636 M 832.0 0 L 832.0 636 M 873.6 0 L 873.6 636 M 915.2 0 L 915.2 636 M 956.8 0 L 956.8 636 M 998.4 0 L 998.4 636 M 1040.0 0 L 1040.0 636 M 1081.6 0 L 1081.6 636 M 0 0.0 L 1082 0.0 M 0 42.4 L 1082 42.4 M 0 84.8 L 1082 84.8 M 0 127.2 L 1082 127.2 M 0 169.6 L 1082 169.6 M 0 212.0 L 1082 212.0 M 0 254.4 L 1082 254.4 M 0 296.8 L 1082 296.8 M 0 339.2 L 1082 339.2 M 0 381.6 L 1082 381.6 M 0 424.0 L 1082 424.0 M 0 466.4 L 1082 466.4 M 0 508.8 L 1082 508.8 M 0 551.2 L 1082 551.2 M 0 593.6 L 1082 593.6 M 0 636.0 L 1082 636.0" stroke="#fff2ed" stroke-width="1" opacity="0.06" fill="none"/>
+  <path d="M 28 28 l 26 0 M 28 28 l 0 26 M 1054 28 l -26 0 M 1054 28 l 0 26 M 28 608 l 26 0 M 28 608 l 0 -26 M 1054 608 l -26 0 M 1054 608 l 0 -26"
+        stroke="#fff2ed" stroke-width="2" opacity="0.55" fill="none"/>
+  <text x="52" y="66" fill="#fff2ed" opacity="0.7" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" letter-spacing="2">CONTEXTUAL BANDIT</text>
+  <text x="1030" y="592" fill="#f40c3f" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" letter-spacing="2">LINUCB / BUDGET</text>
+    <g>
+      <rect x="126.5" y="206.0" width="21.6" height="280.0" fill="#fff2ed" opacity="0.9"/>
+      <rect x="165.1" y="226.1" width="21.6" height="259.9" fill="#fff2ed" opacity="0.9"/>
+      <rect x="203.8" y="245.4" width="21.6" height="240.6" fill="#fff2ed" opacity="0.9"/>
+      <rect x="242.4" y="264.1" width="21.6" height="221.9" fill="#fff2ed" opacity="0.9"/>
+      <rect x="281.0" y="282.0" width="21.6" height="204.0" fill="#fff2ed" opacity="0.9"/>
+      <rect x="319.7" y="299.3" width="21.6" height="186.7" fill="#fff2ed" opacity="0.9"/>
+      <rect x="358.3" y="315.8" width="21.6" height="170.2" fill="#fff2ed" opacity="0.9"/>
+      <rect x="397.0" y="331.5" width="21.6" height="154.5" fill="#fff2ed" opacity="0.9"/>
+      <rect x="435.6" y="346.5" width="21.6" height="139.5" fill="#fff2ed" opacity="0.9"/>
+      <rect x="474.2" y="360.7" width="21.6" height="125.3" fill="#fff2ed" opacity="0.9"/>
+      <rect x="512.9" y="374.1" width="21.6" height="111.9" fill="#fff2ed" opacity="0.9"/>
+      <rect x="551.5" y="386.6" width="21.6" height="99.4" fill="#fff2ed" opacity="0.9"/>
+      <rect x="590.1" y="398.3" width="21.6" height="87.7" fill="#fff2ed" opacity="0.9"/>
+      <rect x="628.8" y="409.1" width="21.6" height="76.9" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="667.4" y="419.1" width="21.6" height="66.9" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="706.0" y="428.0" width="21.6" height="58.0" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="744.7" y="436.0" width="21.6" height="50.0" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="783.3" y="443.0" width="21.6" height="43.0" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="822.0" y="448.8" width="21.6" height="37.2" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="860.6" y="453.4" width="21.6" height="32.6" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="899.2" y="456.6" width="21.6" height="29.4" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+      <rect x="937.9" y="458.0" width="21.6" height="28.0" fill="none" stroke="#fff2ed" stroke-width="1.5" opacity="0.38"/>
+    </g>
+    <path d="M 92 486 L 988 486" stroke="#fff2ed" stroke-width="2" opacity="0.8"/>
+    <path d="M 92 172 L 92 486" stroke="#fff2ed" stroke-width="2" opacity="0.8"/>
+    <path d="M 620.3 150 L 620.3 512" stroke="#f40c3f" stroke-width="3" stroke-dasharray="10 8"/>
+    <text x="638.3" y="176" fill="#f40c3f" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" letter-spacing="2">BUDGET</text>
+    <text x="92" y="536" fill="#fff2ed" opacity="0.55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" letter-spacing="1.4">RANKED BY EXPECTED RECOVERY VALUE</text>
+</svg>

@@ -1,0 +1,1570 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Users\Aswan\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@10.9.0
+2 info using node@v24.14.0
+3 silly config load:file:C:\Users\Aswan\AppData\Roaming\npm\node_modules\npm\npmrc
+4 silly config load:file:E:\gnaneswanth-bingi.github.io-main\.npmrc
+5 silly config load:file:C:\Users\Aswan\.npmrc
+6 silly config load:file:C:\Users\Aswan\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm ci
+8 verbose argv "ci" "--cache" ".cache/npm" "--offline" "--ignore-scripts"
+9 verbose logfile logs-max:10 dir:E:\gnaneswanth-bingi.github.io-main\.cache\npm\_logs\2026-11-09T08_33_49_959Z-
+10 verbose logfile E:\gnaneswanth-bingi.github.io-main\.cache\npm\_logs\2026-11-09T08_33_49_959Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly idealTree buildDeps
+14 http fetch GET https://registry.npmjs.org/npm attempt 1 failed with EACCES
+15 silly reify moves {}
+16 silly audit report null
+17 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fsevents
+18 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fsevents' ]
+19 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-win32-ia32-msvc
+20 silly reify mark deleted [
+20 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-win32-ia32-msvc'
+20 silly reify ]
+21 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-win32-arm64-msvc
+22 silly reify mark deleted [
+22 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-win32-arm64-msvc'
+22 silly reify ]
+23 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-x64-musl
+24 silly reify mark deleted [
+24 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-x64-musl'
+24 silly reify ]
+25 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-x64-gnu
+26 silly reify mark deleted [
+26 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-x64-gnu'
+26 silly reify ]
+27 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-s390x-gnu
+28 silly reify mark deleted [
+28 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-s390x-gnu'
+28 silly reify ]
+29 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-riscv64-musl
+30 silly reify mark deleted [
+30 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-riscv64-musl'
+30 silly reify ]
+31 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-riscv64-gnu
+32 silly reify mark deleted [
+32 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-riscv64-gnu'
+32 silly reify ]
+33 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-powerpc64le-gnu
+34 silly reify mark deleted [
+34 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-powerpc64le-gnu'
+34 silly reify ]
+35 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-loongarch64-gnu
+36 silly reify mark deleted [
+36 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-loongarch64-gnu'
+36 silly reify ]
+37 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-arm64-musl
+38 silly reify mark deleted [
+38 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-arm64-musl'
+38 silly reify ]
+39 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-arm64-gnu
+40 silly reify mark deleted [
+40 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-arm64-gnu'
+40 silly reify ]
+41 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-arm-musleabihf
+42 silly reify mark deleted [
+42 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-arm-musleabihf'
+42 silly reify ]
+43 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-linux-arm-gnueabihf
+44 silly reify mark deleted [
+44 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-linux-arm-gnueabihf'
+44 silly reify ]
+45 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-freebsd-x64
+46 silly reify mark deleted [
+46 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-freebsd-x64'
+46 silly reify ]
+47 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-freebsd-arm64
+48 silly reify mark deleted [
+48 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-freebsd-arm64'
+48 silly reify ]
+49 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-darwin-x64
+50 silly reify mark deleted [
+50 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-darwin-x64'
+50 silly reify ]
+51 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-darwin-arm64
+52 silly reify mark deleted [
+52 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-darwin-arm64'
+52 silly reify ]
+53 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-android-arm64
+54 silly reify mark deleted [
+54 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-android-arm64'
+54 silly reify ]
+55 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-android-arm-eabi
+56 silly reify mark deleted [
+56 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-android-arm-eabi'
+56 silly reify ]
+57 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-win32-ia32
+58 silly reify mark deleted [
+58 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-win32-ia32'
+58 silly reify ]
+59 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-win32-arm64
+60 silly reify mark deleted [
+60 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-win32-arm64'
+60 silly reify ]
+61 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-linux-x64-musl
+62 silly reify mark deleted [
+62 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-linux-x64-musl'
+62 silly reify ]
+63 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-linux-x64-glibc
+64 silly reify mark deleted [
+64 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-linux-x64-glibc'
+64 silly reify ]
+65 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-linux-arm64-musl
+66 silly reify mark deleted [
+66 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-linux-arm64-musl'
+66 silly reify ]
+67 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-linux-arm64-glibc
+68 silly reify mark deleted [
+68 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-linux-arm64-glibc'
+68 silly reify ]
+69 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-linux-arm-musl
+70 silly reify mark deleted [
+70 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-linux-arm-musl'
+70 silly reify ]
+71 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-linux-arm-glibc
+72 silly reify mark deleted [
+72 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-linux-arm-glibc'
+72 silly reify ]
+73 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-freebsd-x64
+74 silly reify mark deleted [
+74 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-freebsd-x64'
+74 silly reify ]
+75 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-darwin-x64
+76 silly reify mark deleted [
+76 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-darwin-x64'
+76 silly reify ]
+77 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-darwin-arm64
+78 silly reify mark deleted [
+78 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-darwin-arm64'
+78 silly reify ]
+79 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-android-arm64
+80 silly reify mark deleted [
+80 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-android-arm64'
+80 silly reify ]
+81 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-win32-ia32
+82 silly reify mark deleted [
+82 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-win32-ia32'
+82 silly reify ]
+83 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-wasm32
+84 silly reify mark deleted [
+84 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-wasm32'
+84 silly reify ]
+85 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@emnapi\runtime
+86 silly reify mark deleted [
+86 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@emnapi\\runtime'
+86 silly reify ]
+87 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-linuxmusl-x64
+88 silly reify mark deleted [
+88 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-linuxmusl-x64'
+88 silly reify ]
+89 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-linuxmusl-arm64
+90 silly reify mark deleted [
+90 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-linuxmusl-arm64'
+90 silly reify ]
+91 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-linux-x64
+92 silly reify mark deleted [
+92 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-linux-x64'
+92 silly reify ]
+93 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-linux-s390x
+94 silly reify mark deleted [
+94 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-linux-s390x'
+94 silly reify ]
+95 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-linux-arm64
+96 silly reify mark deleted [
+96 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-linux-arm64'
+96 silly reify ]
+97 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-linux-arm
+98 silly reify mark deleted [
+98 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-linux-arm'
+98 silly reify ]
+99 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-linuxmusl-x64
+100 silly reify mark deleted [
+100 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-linuxmusl-x64'
+100 silly reify ]
+101 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-linuxmusl-arm64
+102 silly reify mark deleted [
+102 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-linuxmusl-arm64'
+102 silly reify ]
+103 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-linux-x64
+104 silly reify mark deleted [
+104 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-linux-x64'
+104 silly reify ]
+105 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-linux-s390x
+106 silly reify mark deleted [
+106 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-linux-s390x'
+106 silly reify ]
+107 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-linux-arm64
+108 silly reify mark deleted [
+108 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-linux-arm64'
+108 silly reify ]
+109 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-linux-arm
+110 silly reify mark deleted [
+110 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-linux-arm'
+110 silly reify ]
+111 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-darwin-x64
+112 silly reify mark deleted [
+112 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-darwin-x64'
+112 silly reify ]
+113 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-libvips-darwin-arm64
+114 silly reify mark deleted [
+114 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-libvips-darwin-arm64'
+114 silly reify ]
+115 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-darwin-x64
+116 silly reify mark deleted [
+116 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-darwin-x64'
+116 silly reify ]
+117 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-darwin-arm64
+118 silly reify mark deleted [
+118 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-darwin-arm64'
+118 silly reify ]
+119 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\win32-ia32
+120 silly reify mark deleted [
+120 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\win32-ia32'
+120 silly reify ]
+121 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\win32-arm64
+122 silly reify mark deleted [
+122 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\win32-arm64'
+122 silly reify ]
+123 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\sunos-x64
+124 silly reify mark deleted [
+124 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\sunos-x64'
+124 silly reify ]
+125 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\openbsd-x64
+126 silly reify mark deleted [
+126 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\openbsd-x64'
+126 silly reify ]
+127 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\openbsd-arm64
+128 silly reify mark deleted [
+128 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\openbsd-arm64'
+128 silly reify ]
+129 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\netbsd-x64
+130 silly reify mark deleted [
+130 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\netbsd-x64'
+130 silly reify ]
+131 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\netbsd-arm64
+132 silly reify mark deleted [
+132 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\netbsd-arm64'
+132 silly reify ]
+133 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-x64
+134 silly reify mark deleted [
+134 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-x64'
+134 silly reify ]
+135 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-s390x
+136 silly reify mark deleted [
+136 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-s390x'
+136 silly reify ]
+137 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-riscv64
+138 silly reify mark deleted [
+138 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-riscv64'
+138 silly reify ]
+139 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-ppc64
+140 silly reify mark deleted [
+140 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-ppc64'
+140 silly reify ]
+141 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-mips64el
+142 silly reify mark deleted [
+142 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-mips64el'
+142 silly reify ]
+143 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-loong64
+144 silly reify mark deleted [
+144 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-loong64'
+144 silly reify ]
+145 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-ia32
+146 silly reify mark deleted [
+146 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-ia32'
+146 silly reify ]
+147 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-arm64
+148 silly reify mark deleted [
+148 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-arm64'
+148 silly reify ]
+149 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\linux-arm
+150 silly reify mark deleted [
+150 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\linux-arm'
+150 silly reify ]
+151 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\freebsd-x64
+152 silly reify mark deleted [
+152 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\freebsd-x64'
+152 silly reify ]
+153 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\freebsd-arm64
+154 silly reify mark deleted [
+154 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\freebsd-arm64'
+154 silly reify ]
+155 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\darwin-x64
+156 silly reify mark deleted [
+156 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\darwin-x64'
+156 silly reify ]
+157 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\darwin-arm64
+158 silly reify mark deleted [
+158 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\darwin-arm64'
+158 silly reify ]
+159 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\android-x64
+160 silly reify mark deleted [
+160 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\android-x64'
+160 silly reify ]
+161 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\android-arm64
+162 silly reify mark deleted [
+162 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\android-arm64'
+162 silly reify ]
+163 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\android-arm
+164 silly reify mark deleted [
+164 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\android-arm'
+164 silly reify ]
+165 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\aix-ppc64
+166 silly reify mark deleted [
+166 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\aix-ppc64'
+166 silly reify ]
+167 silly tarball no local data for zwitch@https://registry.npmjs.org/zwitch/-/zwitch-2.0.4.tgz. Extracting by manifest.
+168 silly tarball no local data for zod@https://registry.npmjs.org/zod/-/zod-3.24.4.tgz. Extracting by manifest.
+169 silly tarball no local data for zod-to-ts@https://registry.npmjs.org/zod-to-ts/-/zod-to-ts-1.2.0.tgz. Extracting by manifest.
+170 silly tarball no local data for zod-to-json-schema@https://registry.npmjs.org/zod-to-json-schema/-/zod-to-json-schema-3.24.5.tgz. Extracting by manifest.
+171 silly tarball no local data for yocto-spinner@https://registry.npmjs.org/yocto-spinner/-/yocto-spinner-0.2.2.tgz. Extracting by manifest.
+172 silly tarball no local data for yocto-queue@https://registry.npmjs.org/yocto-queue/-/yocto-queue-1.2.1.tgz. Extracting by manifest.
+173 silly tarball no local data for yoctocolors@https://registry.npmjs.org/yoctocolors/-/yoctocolors-2.1.1.tgz. Extracting by manifest.
+174 silly tarball no local data for yargs-parser@https://registry.npmjs.org/yargs-parser/-/yargs-parser-21.1.1.tgz. Extracting by manifest.
+175 silly tarball no local data for wrap-ansi@https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-9.0.0.tgz. Extracting by manifest.
+176 silly tarball no local data for xxhash-wasm@https://registry.npmjs.org/xxhash-wasm/-/xxhash-wasm-1.1.0.tgz. Extracting by manifest.
+177 silly tarball no local data for widest-line@https://registry.npmjs.org/widest-line/-/widest-line-5.0.0.tgz. Extracting by manifest.
+178 silly tarball no local data for whatwg-url@https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz. Extracting by manifest.
+179 silly tarball no local data for which-pm-runs@https://registry.npmjs.org/which-pm-runs/-/which-pm-runs-1.1.0.tgz. Extracting by manifest.
+180 silly tarball no local data for web-namespaces@https://registry.npmjs.org/web-namespaces/-/web-namespaces-2.0.1.tgz. Extracting by manifest.
+181 silly tarball no local data for webidl-conversions@https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz. Extracting by manifest.
+182 silly tarball no local data for vitefu@https://registry.npmjs.org/vitefu/-/vitefu-1.0.6.tgz. Extracting by manifest.
+183 silly tarball no local data for vite@https://registry.npmjs.org/vite/-/vite-6.3.5.tgz. Extracting by manifest.
+184 silly tarball no local data for vfile-message@https://registry.npmjs.org/vfile-message/-/vfile-message-4.0.2.tgz. Extracting by manifest.
+185 silly tarball no local data for vfile-location@https://registry.npmjs.org/vfile-location/-/vfile-location-5.0.3.tgz. Extracting by manifest.
+186 silly tarball no local data for vfile@https://registry.npmjs.org/vfile/-/vfile-6.0.3.tgz. Extracting by manifest.
+187 silly tarball no local data for update-browserslist-db@https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.1.3.tgz. Extracting by manifest.
+188 silly tarball no local data for unist-util-visit-parents@https://registry.npmjs.org/unist-util-visit-parents/-/unist-util-visit-parents-6.0.1.tgz. Extracting by manifest.
+189 silly tarball no local data for unstorage@https://registry.npmjs.org/unstorage/-/unstorage-1.16.0.tgz. Extracting by manifest.
+190 silly tarball no local data for unist-util-visit-children@https://registry.npmjs.org/unist-util-visit-children/-/unist-util-visit-children-3.0.0.tgz. Extracting by manifest.
+191 silly tarball no local data for unist-util-visit@https://registry.npmjs.org/unist-util-visit/-/unist-util-visit-5.0.0.tgz. Extracting by manifest.
+192 silly tarball no local data for unist-util-stringify-position@https://registry.npmjs.org/unist-util-stringify-position/-/unist-util-stringify-position-4.0.0.tgz. Extracting by manifest.
+193 silly tarball no local data for unist-util-remove-position@https://registry.npmjs.org/unist-util-remove-position/-/unist-util-remove-position-5.0.0.tgz. Extracting by manifest.
+194 silly tarball no local data for unist-util-position@https://registry.npmjs.org/unist-util-position/-/unist-util-position-5.0.0.tgz. Extracting by manifest.
+195 silly tarball no local data for unist-util-find-after@https://registry.npmjs.org/unist-util-find-after/-/unist-util-find-after-5.0.0.tgz. Extracting by manifest.
+196 silly tarball no local data for unist-util-modify-children@https://registry.npmjs.org/unist-util-modify-children/-/unist-util-modify-children-4.0.0.tgz. Extracting by manifest.
+197 silly tarball no local data for unist-util-is@https://registry.npmjs.org/unist-util-is/-/unist-util-is-6.0.0.tgz. Extracting by manifest.
+198 silly tarball no local data for unifont@https://registry.npmjs.org/unifont/-/unifont-0.5.0.tgz. Extracting by manifest.
+199 silly tarball no local data for unicode-trie@https://registry.npmjs.org/unicode-trie/-/unicode-trie-2.0.0.tgz. Extracting by manifest.
+200 silly tarball no local data for unified@https://registry.npmjs.org/unified/-/unified-11.0.5.tgz. Extracting by manifest.
+201 silly tarball no local data for undici-types@https://registry.npmjs.org/undici-types/-/undici-types-6.21.0.tgz. Extracting by manifest.
+202 silly tarball no local data for unicode-properties@https://registry.npmjs.org/unicode-properties/-/unicode-properties-1.4.1.tgz. Extracting by manifest.
+203 silly tarball no local data for uncrypto@https://registry.npmjs.org/uncrypto/-/uncrypto-0.1.3.tgz. Extracting by manifest.
+204 silly tarball no local data for ultrahtml@https://registry.npmjs.org/ultrahtml/-/ultrahtml-1.6.0.tgz. Extracting by manifest.
+205 silly tarball no local data for typescript@https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz. Extracting by manifest.
+206 silly tarball no local data for type-fest@https://registry.npmjs.org/type-fest/-/type-fest-4.41.0.tgz. Extracting by manifest.
+207 silly tarball no local data for ufo@https://registry.npmjs.org/ufo/-/ufo-1.6.1.tgz. Extracting by manifest.
+208 silly tarball no local data for tsconfck@https://registry.npmjs.org/tsconfck/-/tsconfck-3.1.5.tgz. Extracting by manifest.
+209 silly tarball no local data for tslib@https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz. Extracting by manifest.
+210 silly tarball no local data for trim-lines@https://registry.npmjs.org/trim-lines/-/trim-lines-3.0.1.tgz. Extracting by manifest.
+211 silly tarball no local data for to-regex-range@https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz. Extracting by manifest.
+212 silly tarball no local data for tr46@https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz. Extracting by manifest.
+213 silly tarball no local data for trough@https://registry.npmjs.org/trough/-/trough-2.2.0.tgz. Extracting by manifest.
+214 silly tarball no local data for to-fast-properties@https://registry.npmjs.org/to-fast-properties/-/to-fast-properties-2.0.0.tgz. Extracting by manifest.
+215 silly tarball no local data for tinyglobby@https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.13.tgz. Extracting by manifest.
+216 silly tarball no local data for tinyexec@https://registry.npmjs.org/tinyexec/-/tinyexec-0.3.2.tgz. Extracting by manifest.
+217 silly tarball no local data for stringify-entities@https://registry.npmjs.org/stringify-entities/-/stringify-entities-4.0.4.tgz. Extracting by manifest.
+218 silly tarball no local data for tiny-inflate@https://registry.npmjs.org/tiny-inflate/-/tiny-inflate-1.0.3.tgz. Extracting by manifest.
+219 silly tarball no local data for strip-ansi@https://registry.npmjs.org/strip-ansi/-/strip-ansi-7.1.0.tgz. Extracting by manifest.
+220 silly tarball no local data for space-separated-tokens@https://registry.npmjs.org/space-separated-tokens/-/space-separated-tokens-2.0.2.tgz. Extracting by manifest.
+221 silly tarball no local data for source-map-js@https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz. Extracting by manifest.
+222 silly tarball no local data for string-width@https://registry.npmjs.org/string-width/-/string-width-7.2.0.tgz. Extracting by manifest.
+223 silly tarball no local data for smol-toml@https://registry.npmjs.org/smol-toml/-/smol-toml-1.3.4.tgz. Extracting by manifest.
+224 silly tarball no local data for sisteransi@https://registry.npmjs.org/sisteransi/-/sisteransi-1.0.5.tgz. Extracting by manifest.
+225 silly tarball no local data for simple-swizzle@https://registry.npmjs.org/simple-swizzle/-/simple-swizzle-0.2.2.tgz. Extracting by manifest.
+226 silly tarball no local data for shiki@https://registry.npmjs.org/shiki/-/shiki-3.4.2.tgz. Extracting by manifest.
+227 silly tarball no local data for semver@https://registry.npmjs.org/semver/-/semver-7.7.2.tgz. Extracting by manifest.
+228 silly tarball no local data for sass@https://registry.npmjs.org/sass/-/sass-1.89.0.tgz. Extracting by manifest.
+229 silly tarball no local data for sharp@https://registry.npmjs.org/sharp/-/sharp-0.33.5.tgz. Extracting by manifest.
+230 silly tarball no local data for retext-smartypants@https://registry.npmjs.org/retext-smartypants/-/retext-smartypants-6.2.0.tgz. Extracting by manifest.
+231 silly tarball no local data for retext-stringify@https://registry.npmjs.org/retext-stringify/-/retext-stringify-4.0.0.tgz. Extracting by manifest.
+232 silly tarball no local data for rollup@https://registry.npmjs.org/rollup/-/rollup-4.41.0.tgz. Extracting by manifest.
+233 silly tarball no local data for retext-latin@https://registry.npmjs.org/retext-latin/-/retext-latin-4.0.0.tgz. Extracting by manifest.
+234 silly tarball no local data for retext@https://registry.npmjs.org/retext/-/retext-9.0.0.tgz. Extracting by manifest.
+235 silly tarball no local data for restructure@https://registry.npmjs.org/restructure/-/restructure-3.0.2.tgz. Extracting by manifest.
+236 silly tarball no local data for remark-stringify@https://registry.npmjs.org/remark-stringify/-/remark-stringify-11.0.0.tgz. Extracting by manifest.
+237 silly tarball no local data for remark-smartypants@https://registry.npmjs.org/remark-smartypants/-/remark-smartypants-3.0.2.tgz. Extracting by manifest.
+238 silly tarball no local data for remark-rehype@https://registry.npmjs.org/remark-rehype/-/remark-rehype-11.1.2.tgz. Extracting by manifest.
+239 silly tarball no local data for remark-parse@https://registry.npmjs.org/remark-parse/-/remark-parse-11.0.0.tgz. Extracting by manifest.
+240 silly tarball no local data for rehype-raw@https://registry.npmjs.org/rehype-raw/-/rehype-raw-7.0.0.tgz. Extracting by manifest.
+241 silly tarball no local data for remark-gfm@https://registry.npmjs.org/remark-gfm/-/remark-gfm-4.0.1.tgz. Extracting by manifest.
+242 silly tarball no local data for rehype-stringify@https://registry.npmjs.org/rehype-stringify/-/rehype-stringify-10.0.1.tgz. Extracting by manifest.
+243 silly tarball no local data for rehype-parse@https://registry.npmjs.org/rehype-parse/-/rehype-parse-9.0.1.tgz. Extracting by manifest.
+244 silly tarball no local data for rehype@https://registry.npmjs.org/rehype/-/rehype-13.0.2.tgz. Extracting by manifest.
+245 silly tarball no local data for regex@https://registry.npmjs.org/regex/-/regex-6.0.1.tgz. Extracting by manifest.
+246 silly tarball no local data for regex-utilities@https://registry.npmjs.org/regex-utilities/-/regex-utilities-2.3.0.tgz. Extracting by manifest.
+247 silly tarball no local data for regex-recursion@https://registry.npmjs.org/regex-recursion/-/regex-recursion-6.0.2.tgz. Extracting by manifest.
+248 silly tarball no local data for property-information@https://registry.npmjs.org/property-information/-/property-information-7.1.0.tgz. Extracting by manifest.
+249 silly tarball no local data for readdirp@https://registry.npmjs.org/readdirp/-/readdirp-4.1.2.tgz. Extracting by manifest.
+250 silly tarball no local data for radix3@https://registry.npmjs.org/radix3/-/radix3-1.1.2.tgz. Extracting by manifest.
+251 silly tarball no local data for prismjs@https://registry.npmjs.org/prismjs/-/prismjs-1.30.0.tgz. Extracting by manifest.
+252 silly tarball no local data for prompts@https://registry.npmjs.org/prompts/-/prompts-2.4.2.tgz. Extracting by manifest.
+253 silly tarball no local data for postcss-value-parser@https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz. Extracting by manifest.
+254 silly tarball no local data for parse5@https://registry.npmjs.org/parse5/-/parse5-7.3.0.tgz. Extracting by manifest.
+255 silly tarball no local data for picomatch@https://registry.npmjs.org/picomatch/-/picomatch-4.0.2.tgz. Extracting by manifest.
+256 silly tarball no local data for postcss@https://registry.npmjs.org/postcss/-/postcss-8.5.3.tgz. Extracting by manifest.
+257 silly tarball no local data for picocolors@https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz. Extracting by manifest.
+258 silly tarball no local data for p-timeout@https://registry.npmjs.org/p-timeout/-/p-timeout-6.1.4.tgz. Extracting by manifest.
+259 silly tarball no local data for pako@https://registry.npmjs.org/pako/-/pako-0.2.9.tgz. Extracting by manifest.
+260 silly tarball no local data for package-manager-detector@https://registry.npmjs.org/package-manager-detector/-/package-manager-detector-1.3.0.tgz. Extracting by manifest.
+261 silly tarball no local data for parse-latin@https://registry.npmjs.org/parse-latin/-/parse-latin-7.0.0.tgz. Extracting by manifest.
+262 silly tarball no local data for p-queue@https://registry.npmjs.org/p-queue/-/p-queue-8.1.0.tgz. Extracting by manifest.
+263 silly tarball no local data for p-limit@https://registry.npmjs.org/p-limit/-/p-limit-6.2.0.tgz. Extracting by manifest.
+264 silly tarball no local data for oniguruma-to-es@https://registry.npmjs.org/oniguruma-to-es/-/oniguruma-to-es-4.3.3.tgz. Extracting by manifest.
+265 silly tarball no local data for oniguruma-parser@https://registry.npmjs.org/oniguruma-parser/-/oniguruma-parser-0.12.1.tgz. Extracting by manifest.
+266 silly tarball no local data for ohash@https://registry.npmjs.org/ohash/-/ohash-2.0.11.tgz. Extracting by manifest.
+267 silly tarball no local data for node-releases@https://registry.npmjs.org/node-releases/-/node-releases-2.0.19.tgz. Extracting by manifest.
+268 silly tarball no local data for normalize-path@https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz. Extracting by manifest.
+269 silly tarball no local data for ofetch@https://registry.npmjs.org/ofetch/-/ofetch-1.4.1.tgz. Extracting by manifest.
+270 silly tarball no local data for normalize-range@https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz. Extracting by manifest.
+271 silly tarball no local data for node-mock-http@https://registry.npmjs.org/node-mock-http/-/node-mock-http-1.0.0.tgz. Extracting by manifest.
+272 silly tarball no local data for node-fetch@https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz. Extracting by manifest.
+273 silly tarball no local data for nlcst-to-string@https://registry.npmjs.org/nlcst-to-string/-/nlcst-to-string-4.0.0.tgz. Extracting by manifest.
+274 silly tarball no local data for neotraverse@https://registry.npmjs.org/neotraverse/-/neotraverse-0.6.18.tgz. Extracting by manifest.
+275 silly tarball no local data for node-fetch-native@https://registry.npmjs.org/node-fetch-native/-/node-fetch-native-1.6.6.tgz. Extracting by manifest.
+276 silly tarball no local data for node-addon-api@https://registry.npmjs.org/node-addon-api/-/node-addon-api-7.1.1.tgz. Extracting by manifest.
+277 silly tarball no local data for ms@https://registry.npmjs.org/ms/-/ms-2.1.3.tgz. Extracting by manifest.
+278 silly tarball no local data for nanoid@https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz. Extracting by manifest.
+279 silly tarball no local data for micromatch@https://registry.npmjs.org/micromatch/-/micromatch-4.0.8.tgz. Extracting by manifest.
+280 silly tarball no local data for mrmime@https://registry.npmjs.org/mrmime/-/mrmime-2.0.1.tgz. Extracting by manifest.
+281 silly tarball no local data for micromark-util-types@https://registry.npmjs.org/micromark-util-types/-/micromark-util-types-2.0.2.tgz. Extracting by manifest.
+282 silly tarball no local data for micromark-util-symbol@https://registry.npmjs.org/micromark-util-symbol/-/micromark-util-symbol-2.0.1.tgz. Extracting by manifest.
+283 silly tarball no local data for micromark-util-sanitize-uri@https://registry.npmjs.org/micromark-util-sanitize-uri/-/micromark-util-sanitize-uri-2.0.1.tgz. Extracting by manifest.
+284 silly tarball no local data for micromark-util-subtokenize@https://registry.npmjs.org/micromark-util-subtokenize/-/micromark-util-subtokenize-2.1.0.tgz. Extracting by manifest.
+285 silly tarball no local data for modern-normalize@https://registry.npmjs.org/modern-normalize/-/modern-normalize-3.0.1.tgz. Extracting by manifest.
+286 silly tarball no local data for micromark-util-resolve-all@https://registry.npmjs.org/micromark-util-resolve-all/-/micromark-util-resolve-all-2.0.1.tgz. Extracting by manifest.
+287 silly tarball no local data for micromark-util-normalize-identifier@https://registry.npmjs.org/micromark-util-normalize-identifier/-/micromark-util-normalize-identifier-2.0.1.tgz. Extracting by manifest.
+288 silly tarball no local data for micromark-util-decode-string@https://registry.npmjs.org/micromark-util-decode-string/-/micromark-util-decode-string-2.0.1.tgz. Extracting by manifest.
+289 silly tarball no local data for micromark-util-html-tag-name@https://registry.npmjs.org/micromark-util-html-tag-name/-/micromark-util-html-tag-name-2.0.1.tgz. Extracting by manifest.
+290 silly tarball no local data for micromark-util-decode-numeric-character-reference@https://registry.npmjs.org/micromark-util-decode-numeric-character-reference/-/micromark-util-decode-numeric-character-reference-2.0.2.tgz. Extracting by manifest.
+291 silly tarball no local data for micromark-util-classify-character@https://registry.npmjs.org/micromark-util-classify-character/-/micromark-util-classify-character-2.0.1.tgz. Extracting by manifest.
+292 silly tarball no local data for micromark-util-combine-extensions@https://registry.npmjs.org/micromark-util-combine-extensions/-/micromark-util-combine-extensions-2.0.1.tgz. Extracting by manifest.
+293 silly tarball no local data for micromark-util-chunked@https://registry.npmjs.org/micromark-util-chunked/-/micromark-util-chunked-2.0.1.tgz. Extracting by manifest.
+294 silly tarball no local data for micromark-util-encode@https://registry.npmjs.org/micromark-util-encode/-/micromark-util-encode-2.0.1.tgz. Extracting by manifest.
+295 silly tarball no local data for micromark-util-character@https://registry.npmjs.org/micromark-util-character/-/micromark-util-character-2.1.1.tgz. Extracting by manifest.
+296 silly tarball no local data for micromark-factory-whitespace@https://registry.npmjs.org/micromark-factory-whitespace/-/micromark-factory-whitespace-2.0.1.tgz. Extracting by manifest.
+297 silly tarball no local data for micromark-factory-title@https://registry.npmjs.org/micromark-factory-title/-/micromark-factory-title-2.0.1.tgz. Extracting by manifest.
+298 silly tarball no local data for micromark-factory-label@https://registry.npmjs.org/micromark-factory-label/-/micromark-factory-label-2.0.1.tgz. Extracting by manifest.
+299 silly tarball no local data for micromark-factory-destination@https://registry.npmjs.org/micromark-factory-destination/-/micromark-factory-destination-2.0.1.tgz. Extracting by manifest.
+300 silly tarball no local data for micromark-factory-space@https://registry.npmjs.org/micromark-factory-space/-/micromark-factory-space-2.0.1.tgz. Extracting by manifest.
+301 silly tarball no local data for micromark-extension-gfm-task-list-item@https://registry.npmjs.org/micromark-extension-gfm-task-list-item/-/micromark-extension-gfm-task-list-item-2.1.0.tgz. Extracting by manifest.
+302 silly tarball no local data for micromark-extension-gfm-tagfilter@https://registry.npmjs.org/micromark-extension-gfm-tagfilter/-/micromark-extension-gfm-tagfilter-2.0.0.tgz. Extracting by manifest.
+303 silly tarball no local data for micromark-extension-gfm-table@https://registry.npmjs.org/micromark-extension-gfm-table/-/micromark-extension-gfm-table-2.1.1.tgz. Extracting by manifest.
+304 silly tarball no local data for micromark-extension-gfm-footnote@https://registry.npmjs.org/micromark-extension-gfm-footnote/-/micromark-extension-gfm-footnote-2.1.0.tgz. Extracting by manifest.
+305 silly tarball no local data for micromark-extension-gfm-autolink-literal@https://registry.npmjs.org/micromark-extension-gfm-autolink-literal/-/micromark-extension-gfm-autolink-literal-2.1.0.tgz. Extracting by manifest.
+306 silly tarball no local data for micromark-extension-gfm@https://registry.npmjs.org/micromark-extension-gfm/-/micromark-extension-gfm-3.0.0.tgz. Extracting by manifest.
+307 silly tarball no local data for micromark-extension-gfm-strikethrough@https://registry.npmjs.org/micromark-extension-gfm-strikethrough/-/micromark-extension-gfm-strikethrough-2.1.0.tgz. Extracting by manifest.
+308 silly tarball no local data for micromark-core-commonmark@https://registry.npmjs.org/micromark-core-commonmark/-/micromark-core-commonmark-2.0.3.tgz. Extracting by manifest.
+309 silly tarball no local data for mdn-data@https://registry.npmjs.org/mdn-data/-/mdn-data-2.12.2.tgz. Extracting by manifest.
+310 silly tarball no local data for mdast-util-to-markdown@https://registry.npmjs.org/mdast-util-to-markdown/-/mdast-util-to-markdown-2.1.2.tgz. Extracting by manifest.
+311 silly tarball no local data for mdast-util-to-string@https://registry.npmjs.org/mdast-util-to-string/-/mdast-util-to-string-4.0.0.tgz. Extracting by manifest.
+312 silly tarball no local data for micromark@https://registry.npmjs.org/micromark/-/micromark-4.0.2.tgz. Extracting by manifest.
+313 silly tarball no local data for mdast-util-to-hast@https://registry.npmjs.org/mdast-util-to-hast/-/mdast-util-to-hast-13.2.0.tgz. Extracting by manifest.
+314 silly tarball no local data for mdast-util-phrasing@https://registry.npmjs.org/mdast-util-phrasing/-/mdast-util-phrasing-4.1.0.tgz. Extracting by manifest.
+315 silly tarball no local data for mdast-util-gfm-table@https://registry.npmjs.org/mdast-util-gfm-table/-/mdast-util-gfm-table-2.0.0.tgz. Extracting by manifest.
+316 silly tarball no local data for mdast-util-gfm-strikethrough@https://registry.npmjs.org/mdast-util-gfm-strikethrough/-/mdast-util-gfm-strikethrough-2.0.0.tgz. Extracting by manifest.
+317 silly tarball no local data for mdast-util-gfm-footnote@https://registry.npmjs.org/mdast-util-gfm-footnote/-/mdast-util-gfm-footnote-2.1.0.tgz. Extracting by manifest.
+318 silly tarball no local data for mdast-util-gfm-task-list-item@https://registry.npmjs.org/mdast-util-gfm-task-list-item/-/mdast-util-gfm-task-list-item-2.0.0.tgz. Extracting by manifest.
+319 silly tarball no local data for mdast-util-gfm@https://registry.npmjs.org/mdast-util-gfm/-/mdast-util-gfm-3.1.0.tgz. Extracting by manifest.
+320 silly tarball no local data for mdast-util-gfm-autolink-literal@https://registry.npmjs.org/mdast-util-gfm-autolink-literal/-/mdast-util-gfm-autolink-literal-2.0.1.tgz. Extracting by manifest.
+321 silly tarball no local data for mdast-util-from-markdown@https://registry.npmjs.org/mdast-util-from-markdown/-/mdast-util-from-markdown-2.0.2.tgz. Extracting by manifest.
+322 silly tarball no local data for mdast-util-find-and-replace@https://registry.npmjs.org/mdast-util-find-and-replace/-/mdast-util-find-and-replace-3.0.2.tgz. Extracting by manifest.
+323 silly tarball no local data for mdast-util-definitions@https://registry.npmjs.org/mdast-util-definitions/-/mdast-util-definitions-6.0.0.tgz. Extracting by manifest.
+324 silly tarball no local data for magicast@https://registry.npmjs.org/magicast/-/magicast-0.3.5.tgz. Extracting by manifest.
+325 silly tarball no local data for markdown-table@https://registry.npmjs.org/markdown-table/-/markdown-table-3.0.4.tgz. Extracting by manifest.
+326 silly tarball no local data for magic-string@https://registry.npmjs.org/magic-string/-/magic-string-0.30.17.tgz. Extracting by manifest.
+327 silly tarball no local data for lru-cache@https://registry.npmjs.org/lru-cache/-/lru-cache-10.4.3.tgz. Extracting by manifest.
+328 silly tarball no local data for longest-streak@https://registry.npmjs.org/longest-streak/-/longest-streak-3.1.0.tgz. Extracting by manifest.
+329 silly tarball no local data for kleur@https://registry.npmjs.org/kleur/-/kleur-4.1.5.tgz. Extracting by manifest.
+330 silly tarball no local data for lenis@https://registry.npmjs.org/lenis/-/lenis-1.3.3.tgz. Extracting by manifest.
+331 silly tarball no local data for js-yaml@https://registry.npmjs.org/js-yaml/-/js-yaml-4.1.0.tgz. Extracting by manifest.
+332 silly tarball no local data for is-wsl@https://registry.npmjs.org/is-wsl/-/is-wsl-3.1.0.tgz. Extracting by manifest.
+333 silly tarball no local data for is-plain-obj@https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-4.1.0.tgz. Extracting by manifest.
+334 silly tarball no local data for is-number@https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz. Extracting by manifest.
+335 silly tarball no local data for is-inside-container@https://registry.npmjs.org/is-inside-container/-/is-inside-container-1.0.0.tgz. Extracting by manifest.
+336 silly tarball no local data for is-glob@https://registry.npmjs.org/is-glob/-/is-glob-4.0.3.tgz. Extracting by manifest.
+337 silly tarball no local data for is-fullwidth-code-point@https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz. Extracting by manifest.
+338 silly tarball no local data for is-docker@https://registry.npmjs.org/is-docker/-/is-docker-3.0.0.tgz. Extracting by manifest.
+339 silly tarball no local data for is-extglob@https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz. Extracting by manifest.
+340 silly tarball no local data for is-arrayish@https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.3.2.tgz. Extracting by manifest.
+341 silly tarball no local data for iron-webcrypto@https://registry.npmjs.org/iron-webcrypto/-/iron-webcrypto-1.2.1.tgz. Extracting by manifest.
+342 silly tarball no local data for import-meta-resolve@https://registry.npmjs.org/import-meta-resolve/-/import-meta-resolve-4.1.0.tgz. Extracting by manifest.
+343 silly tarball no local data for http-cache-semantics@https://registry.npmjs.org/http-cache-semantics/-/http-cache-semantics-4.1.1.tgz. Extracting by manifest.
+344 silly tarball no local data for immutable@https://registry.npmjs.org/immutable/-/immutable-5.1.2.tgz. Extracting by manifest.
+345 silly tarball no local data for html-void-elements@https://registry.npmjs.org/html-void-elements/-/html-void-elements-3.0.0.tgz. Extracting by manifest.
+346 silly tarball no local data for html-escaper@https://registry.npmjs.org/html-escaper/-/html-escaper-3.0.3.tgz. Extracting by manifest.
+347 silly tarball no local data for hastscript@https://registry.npmjs.org/hastscript/-/hastscript-9.0.1.tgz. Extracting by manifest.
+348 silly tarball no local data for hast-util-to-text@https://registry.npmjs.org/hast-util-to-text/-/hast-util-to-text-4.0.2.tgz. Extracting by manifest.
+349 silly tarball no local data for hast-util-whitespace@https://registry.npmjs.org/hast-util-whitespace/-/hast-util-whitespace-3.0.0.tgz. Extracting by manifest.
+350 silly tarball no local data for hast-util-to-parse5@https://registry.npmjs.org/hast-util-to-parse5/-/hast-util-to-parse5-8.0.0.tgz. Extracting by manifest.
+351 silly tarball no local data for hast-util-to-html@https://registry.npmjs.org/hast-util-to-html/-/hast-util-to-html-9.0.5.tgz. Extracting by manifest.
+352 silly tarball no local data for hast-util-raw@https://registry.npmjs.org/hast-util-raw/-/hast-util-raw-9.1.0.tgz. Extracting by manifest.
+353 silly tarball no local data for hast-util-parse-selector@https://registry.npmjs.org/hast-util-parse-selector/-/hast-util-parse-selector-4.0.0.tgz. Extracting by manifest.
+354 silly tarball no local data for hast-util-is-element@https://registry.npmjs.org/hast-util-is-element/-/hast-util-is-element-3.0.0.tgz. Extracting by manifest.
+355 silly tarball no local data for hast-util-from-parse5@https://registry.npmjs.org/hast-util-from-parse5/-/hast-util-from-parse5-8.0.3.tgz. Extracting by manifest.
+356 silly tarball no local data for hast-util-from-html@https://registry.npmjs.org/hast-util-from-html/-/hast-util-from-html-2.0.3.tgz. Extracting by manifest.
+357 silly tarball no local data for gsap@https://registry.npmjs.org/gsap/-/gsap-3.13.0.tgz. Extracting by manifest.
+358 silly tarball no local data for h3@https://registry.npmjs.org/h3/-/h3-1.15.3.tgz. Extracting by manifest.
+359 silly tarball no local data for github-slugger@https://registry.npmjs.org/github-slugger/-/github-slugger-2.0.0.tgz. Extracting by manifest.
+360 silly tarball no local data for get-east-asian-width@https://registry.npmjs.org/get-east-asian-width/-/get-east-asian-width-1.3.0.tgz. Extracting by manifest.
+361 silly tarball no local data for fraction.js@https://registry.npmjs.org/fraction.js/-/fraction.js-4.3.7.tgz. Extracting by manifest.
+362 silly tarball no local data for fontace@https://registry.npmjs.org/fontace/-/fontace-0.3.0.tgz. Extracting by manifest.
+363 silly tarball no local data for fontkit@https://registry.npmjs.org/fontkit/-/fontkit-2.0.4.tgz. Extracting by manifest.
+364 silly tarball no local data for fill-range@https://registry.npmjs.org/fill-range/-/fill-range-7.1.1.tgz. Extracting by manifest.
+365 silly tarball no local data for fdir@https://registry.npmjs.org/fdir/-/fdir-6.4.4.tgz. Extracting by manifest.
+366 silly tarball no local data for flattie@https://registry.npmjs.org/flattie/-/flattie-1.1.1.tgz. Extracting by manifest.
+367 silly tarball no local data for fast-deep-equal@https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz. Extracting by manifest.
+368 silly tarball no local data for extend@https://registry.npmjs.org/extend/-/extend-3.0.2.tgz. Extracting by manifest.
+369 silly tarball no local data for eventemitter3@https://registry.npmjs.org/eventemitter3/-/eventemitter3-5.0.1.tgz. Extracting by manifest.
+370 silly tarball no local data for estree-walker@https://registry.npmjs.org/estree-walker/-/estree-walker-3.0.3.tgz. Extracting by manifest.
+371 silly tarball no local data for escape-string-regexp@https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz. Extracting by manifest.
+372 silly tarball no local data for escalade@https://registry.npmjs.org/escalade/-/escalade-3.2.0.tgz. Extracting by manifest.
+373 silly tarball no local data for esbuild@https://registry.npmjs.org/esbuild/-/esbuild-0.25.4.tgz. Extracting by manifest.
+374 silly tarball no local data for es-module-lexer@https://registry.npmjs.org/es-module-lexer/-/es-module-lexer-1.7.0.tgz. Extracting by manifest.
+375 silly tarball no local data for entities@https://registry.npmjs.org/entities/-/entities-6.0.0.tgz. Extracting by manifest.
+376 silly tarball no local data for electron-to-chromium@https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.155.tgz. Extracting by manifest.
+377 silly tarball no local data for emoji-regex@https://registry.npmjs.org/emoji-regex/-/emoji-regex-10.4.0.tgz. Extracting by manifest.
+378 silly tarball no local data for dset@https://registry.npmjs.org/dset/-/dset-3.1.4.tgz. Extracting by manifest.
+379 silly tarball no local data for dlv@https://registry.npmjs.org/dlv/-/dlv-1.1.3.tgz. Extracting by manifest.
+380 silly tarball no local data for diff@https://registry.npmjs.org/diff/-/diff-5.2.0.tgz. Extracting by manifest.
+381 silly tarball no local data for dfa@https://registry.npmjs.org/dfa/-/dfa-1.2.0.tgz. Extracting by manifest.
+382 silly tarball no local data for devlop@https://registry.npmjs.org/devlop/-/devlop-1.1.0.tgz. Extracting by manifest.
+383 silly tarball no local data for devalue@https://registry.npmjs.org/devalue/-/devalue-5.1.1.tgz. Extracting by manifest.
+384 silly tarball no local data for deterministic-object-hash@https://registry.npmjs.org/deterministic-object-hash/-/deterministic-object-hash-2.0.2.tgz. Extracting by manifest.
+385 silly tarball no local data for detect-libc@https://registry.npmjs.org/detect-libc/-/detect-libc-2.0.3.tgz. Extracting by manifest.
+386 silly tarball no local data for destr@https://registry.npmjs.org/destr/-/destr-2.0.5.tgz. Extracting by manifest.
+387 silly tarball no local data for dequal@https://registry.npmjs.org/dequal/-/dequal-2.0.3.tgz. Extracting by manifest.
+388 silly tarball no local data for defu@https://registry.npmjs.org/defu/-/defu-6.1.4.tgz. Extracting by manifest.
+389 silly tarball no local data for debug@https://registry.npmjs.org/debug/-/debug-4.4.1.tgz. Extracting by manifest.
+390 silly tarball no local data for decode-named-character-reference@https://registry.npmjs.org/decode-named-character-reference/-/decode-named-character-reference-1.1.0.tgz. Extracting by manifest.
+391 silly tarball no local data for cssesc@https://registry.npmjs.org/cssesc/-/cssesc-3.0.0.tgz. Extracting by manifest.
+392 silly tarball no local data for css-tree@https://registry.npmjs.org/css-tree/-/css-tree-3.1.0.tgz. Extracting by manifest.
+393 silly tarball no local data for crossws@https://registry.npmjs.org/crossws/-/crossws-0.3.5.tgz. Extracting by manifest.
+394 silly tarball no local data for cross-fetch@https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.2.0.tgz. Extracting by manifest.
+395 silly tarball no local data for common-ancestor-path@https://registry.npmjs.org/common-ancestor-path/-/common-ancestor-path-1.0.1.tgz. Extracting by manifest.
+396 silly tarball no local data for cookie@https://registry.npmjs.org/cookie/-/cookie-1.0.2.tgz. Extracting by manifest.
+397 silly tarball no local data for comma-separated-tokens@https://registry.npmjs.org/comma-separated-tokens/-/comma-separated-tokens-2.0.3.tgz. Extracting by manifest.
+398 silly tarball no local data for color-name@https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz. Extracting by manifest.
+399 silly tarball no local data for color@https://registry.npmjs.org/color/-/color-4.2.3.tgz. Extracting by manifest.
+400 silly tarball no local data for cookie-es@https://registry.npmjs.org/cookie-es/-/cookie-es-1.2.2.tgz. Extracting by manifest.
+401 silly tarball no local data for color-string@https://registry.npmjs.org/color-string/-/color-string-1.9.1.tgz. Extracting by manifest.
+402 silly tarball no local data for clsx@https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz. Extracting by manifest.
+403 silly tarball no local data for clone@https://registry.npmjs.org/clone/-/clone-2.1.2.tgz. Extracting by manifest.
+404 silly tarball no local data for ci-info@https://registry.npmjs.org/ci-info/-/ci-info-4.2.0.tgz. Extracting by manifest.
+405 silly tarball no local data for chokidar@https://registry.npmjs.org/chokidar/-/chokidar-4.0.3.tgz. Extracting by manifest.
+406 silly tarball no local data for character-entities-legacy@https://registry.npmjs.org/character-entities-legacy/-/character-entities-legacy-3.0.0.tgz. Extracting by manifest.
+407 silly tarball no local data for cli-boxes@https://registry.npmjs.org/cli-boxes/-/cli-boxes-3.0.0.tgz. Extracting by manifest.
+408 silly tarball no local data for character-entities-html4@https://registry.npmjs.org/character-entities-html4/-/character-entities-html4-2.1.0.tgz. Extracting by manifest.
+409 silly tarball no local data for character-entities@https://registry.npmjs.org/character-entities/-/character-entities-2.0.2.tgz. Extracting by manifest.
+410 silly tarball no local data for chalk@https://registry.npmjs.org/chalk/-/chalk-5.4.1.tgz. Extracting by manifest.
+411 silly tarball no local data for camelcase@https://registry.npmjs.org/camelcase/-/camelcase-8.0.0.tgz. Extracting by manifest.
+412 silly tarball no local data for browserslist@https://registry.npmjs.org/browserslist/-/browserslist-4.24.5.tgz. Extracting by manifest.
+413 silly tarball no local data for ccount@https://registry.npmjs.org/ccount/-/ccount-2.0.1.tgz. Extracting by manifest.
+414 silly tarball no local data for brotli@https://registry.npmjs.org/brotli/-/brotli-1.3.3.tgz. Extracting by manifest.
+415 silly tarball no local data for braces@https://registry.npmjs.org/braces/-/braces-3.0.3.tgz. Extracting by manifest.
+416 silly tarball no local data for caniuse-lite@https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001718.tgz. Extracting by manifest.
+417 silly tarball no local data for boxen@https://registry.npmjs.org/boxen/-/boxen-8.0.1.tgz. Extracting by manifest.
+418 silly tarball no local data for blob-to-buffer@https://registry.npmjs.org/blob-to-buffer/-/blob-to-buffer-1.2.9.tgz. Extracting by manifest.
+419 silly tarball no local data for base64-js@https://registry.npmjs.org/base64-js/-/base64-js-1.5.1.tgz. Extracting by manifest.
+420 silly tarball no local data for bail@https://registry.npmjs.org/bail/-/bail-2.0.2.tgz. Extracting by manifest.
+421 silly tarball no local data for axobject-query@https://registry.npmjs.org/axobject-query/-/axobject-query-4.1.0.tgz. Extracting by manifest.
+422 silly tarball no local data for autoprefixer@https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.21.tgz. Extracting by manifest.
+423 silly tarball no local data for base-64@https://registry.npmjs.org/base-64/-/base-64-1.0.0.tgz. Extracting by manifest.
+424 silly tarball no local data for aria-query@https://registry.npmjs.org/aria-query/-/aria-query-5.3.2.tgz. Extracting by manifest.
+425 silly tarball no local data for astro@https://registry.npmjs.org/astro/-/astro-5.7.13.tgz. Extracting by manifest.
+426 silly tarball no local data for argparse@https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz. Extracting by manifest.
+427 silly tarball no local data for anymatch@https://registry.npmjs.org/anymatch/-/anymatch-3.1.3.tgz. Extracting by manifest.
+428 silly tarball no local data for ansi-regex@https://registry.npmjs.org/ansi-regex/-/ansi-regex-6.1.0.tgz. Extracting by manifest.
+429 silly tarball no local data for array-iterate@https://registry.npmjs.org/array-iterate/-/array-iterate-2.0.1.tgz. Extracting by manifest.
+430 silly tarball no local data for ansi-styles@https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.1.tgz. Extracting by manifest.
+431 silly tarball no local data for ansi-align@https://registry.npmjs.org/ansi-align/-/ansi-align-3.0.1.tgz. Extracting by manifest.
+432 silly tarball no local data for acorn@https://registry.npmjs.org/acorn/-/acorn-8.14.1.tgz. Extracting by manifest.
+433 silly tarball no local data for @ungap/structured-clone@https://registry.npmjs.org/@ungap/structured-clone/-/structured-clone-1.3.0.tgz. Extracting by manifest.
+434 silly tarball no local data for @types/unist@https://registry.npmjs.org/@types/unist/-/unist-3.0.3.tgz. Extracting by manifest.
+435 silly tarball no local data for @types/node@https://registry.npmjs.org/@types/node/-/node-22.15.19.tgz. Extracting by manifest.
+436 silly tarball no local data for @types/nlcst@https://registry.npmjs.org/@types/nlcst/-/nlcst-2.0.3.tgz. Extracting by manifest.
+437 silly tarball no local data for @types/mdast@https://registry.npmjs.org/@types/mdast/-/mdast-4.0.4.tgz. Extracting by manifest.
+438 silly tarball no local data for @types/ms@https://registry.npmjs.org/@types/ms/-/ms-2.1.0.tgz. Extracting by manifest.
+439 silly tarball no local data for @types/hast@https://registry.npmjs.org/@types/hast/-/hast-3.0.4.tgz. Extracting by manifest.
+440 silly tarball no local data for @types/fontkit@https://registry.npmjs.org/@types/fontkit/-/fontkit-2.0.8.tgz. Extracting by manifest.
+441 silly tarball no local data for @shikijs/vscode-textmate@https://registry.npmjs.org/@shikijs/vscode-textmate/-/vscode-textmate-10.0.2.tgz. Extracting by manifest.
+442 silly tarball no local data for @types/debug@https://registry.npmjs.org/@types/debug/-/debug-4.1.12.tgz. Extracting by manifest.
+443 silly tarball no local data for @swc/helpers@https://registry.npmjs.org/@swc/helpers/-/helpers-0.5.17.tgz. Extracting by manifest.
+444 silly tarball no local data for @types/estree@https://registry.npmjs.org/@types/estree/-/estree-1.0.7.tgz. Extracting by manifest.
+445 silly tarball no local data for @shikijs/types@https://registry.npmjs.org/@shikijs/types/-/types-3.4.2.tgz. Extracting by manifest.
+446 silly tarball no local data for @shikijs/themes@https://registry.npmjs.org/@shikijs/themes/-/themes-3.4.2.tgz. Extracting by manifest.
+447 silly tarball no local data for @shikijs/langs@https://registry.npmjs.org/@shikijs/langs/-/langs-3.4.2.tgz. Extracting by manifest.
+448 silly tarball no local data for @shikijs/engine-javascript@https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-3.4.2.tgz. Extracting by manifest.
+449 silly tarball no local data for @shikijs/engine-oniguruma@https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-3.4.2.tgz. Extracting by manifest.
+450 silly tarball no local data for @rollup/rollup-win32-x64-msvc@https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.41.0.tgz. Extracting by manifest.
+451 silly tarball no local data for @shikijs/core@https://registry.npmjs.org/@shikijs/core/-/core-3.4.2.tgz. Extracting by manifest.
+452 silly tarball no local data for @rollup/pluginutils@https://registry.npmjs.org/@rollup/pluginutils/-/pluginutils-5.1.4.tgz. Extracting by manifest.
+453 silly tarball no local data for @parcel/watcher-win32-x64@https://registry.npmjs.org/@parcel/watcher-win32-x64/-/watcher-win32-x64-2.5.1.tgz. Extracting by manifest.
+454 silly tarball no local data for @parcel/watcher@https://registry.npmjs.org/@parcel/watcher/-/watcher-2.5.1.tgz. Extracting by manifest.
+455 silly tarball no local data for @oslojs/encoding@https://registry.npmjs.org/@oslojs/encoding/-/encoding-1.1.0.tgz. Extracting by manifest.
+456 silly tarball no local data for @jridgewell/sourcemap-codec@https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.0.tgz. Extracting by manifest.
+457 silly tarball no local data for @img/sharp-win32-x64@https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.33.5.tgz. Extracting by manifest.
+458 silly tarball no local data for @esbuild/win32-x64@https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.4.tgz. Extracting by manifest.
+459 silly tarball no local data for @capsizecss/unpack@https://registry.npmjs.org/@capsizecss/unpack/-/unpack-2.4.0.tgz. Extracting by manifest.
+460 silly tarball no local data for @emnapi/runtime@https://registry.npmjs.org/@emnapi/runtime/-/runtime-1.2.0.tgz. Extracting by manifest.
+461 silly tarball no local data for @babel/parser@https://registry.npmjs.org/@babel/parser/-/parser-7.25.4.tgz. Extracting by manifest.
+462 silly tarball no local data for @babel/types@https://registry.npmjs.org/@babel/types/-/types-7.25.6.tgz. Extracting by manifest.
+463 silly tarball no local data for @babel/helper-validator-identifier@https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.24.7.tgz. Extracting by manifest.
+464 silly tarball no local data for @astrojs/telemetry@https://registry.npmjs.org/@astrojs/telemetry/-/telemetry-3.2.1.tgz. Extracting by manifest.
+465 silly tarball no local data for @astrojs/prism@https://registry.npmjs.org/@astrojs/prism/-/prism-3.2.0.tgz. Extracting by manifest.
+466 silly tarball no local data for @astrojs/markdown-remark@https://registry.npmjs.org/@astrojs/markdown-remark/-/markdown-remark-6.3.1.tgz. Extracting by manifest.
+467 silly tarball no local data for @babel/helper-string-parser@https://registry.npmjs.org/@babel/helper-string-parser/-/helper-string-parser-7.24.8.tgz. Extracting by manifest.
+468 silly tarball no local data for @astrojs/internal-helpers@https://registry.npmjs.org/@astrojs/internal-helpers/-/internal-helpers-0.6.1.tgz. Extracting by manifest.
+469 silly tarball no local data for @astrojs/compiler@https://registry.npmjs.org/@astrojs/compiler/-/compiler-2.12.0.tgz. Extracting by manifest.
+470 silly tarball no local data for kleur@https://registry.npmjs.org/kleur/-/kleur-3.0.3.tgz. Extracting by manifest.
+471 silly tarball no local data for picomatch@https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz. Extracting by manifest.
+472 silly tarball no local data for color-name@https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz. Extracting by manifest.
+473 silly tarball no local data for property-information@https://registry.npmjs.org/property-information/-/property-information-6.5.0.tgz. Extracting by manifest.
+474 silly tarball no local data for color-convert@https://registry.npmjs.org/color-convert/-/color-convert-2.0.1.tgz. Extracting by manifest.
+475 silly tarball no local data for picomatch@https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz. Extracting by manifest.
+476 silly tarball no local data for strip-ansi@https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz. Extracting by manifest.
+477 silly tarball no local data for string-width@https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz. Extracting by manifest.
+478 silly tarball no local data for emoji-regex@https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz. Extracting by manifest.
+479 silly tarball no local data for ansi-regex@https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz. Extracting by manifest.
+480 silly tarball no local data for estree-walker@https://registry.npmjs.org/estree-walker/-/estree-walker-2.0.2.tgz. Extracting by manifest.
+481 silly tarball no local data for detect-libc@https://registry.npmjs.org/detect-libc/-/detect-libc-1.0.3.tgz. Extracting by manifest.
+482 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+483 silly reify mark deleted [
+483 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+483 silly reify ]
+484 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+485 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+486 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+487 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+488 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+489 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+490 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+491 silly reify mark deleted [
+491 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+491 silly reify ]
+492 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+493 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+494 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+495 silly reify mark deleted [
+495 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+495 silly reify ]
+496 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+497 silly reify mark deleted [
+497 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+497 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+497 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+497 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+497 silly reify ]
+498 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+499 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+500 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+501 silly reify mark deleted [
+501 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+501 silly reify ]
+502 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+503 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+504 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+505 silly reify mark deleted [
+505 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+505 silly reify ]
+506 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+507 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+508 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+509 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+510 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+511 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+512 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+513 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+514 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+515 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+516 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+517 silly reify mark deleted [
+517 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+517 silly reify ]
+518 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+519 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+520 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+521 silly reify mark deleted [
+521 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+521 silly reify ]
+522 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+523 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+524 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+525 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+526 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+527 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+528 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+529 silly reify mark deleted [
+529 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+529 silly reify ]
+530 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+531 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+532 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+533 silly reify mark deleted [
+533 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+533 silly reify ]
+534 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+535 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+536 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+537 silly reify mark deleted [
+537 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+537 silly reify ]
+538 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+539 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+540 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+541 silly reify mark deleted [
+541 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+541 silly reify ]
+542 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+543 silly reify mark deleted [
+543 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+543 silly reify ]
+544 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+545 silly reify mark deleted [
+545 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+545 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+545 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+545 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+545 silly reify ]
+546 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+547 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+548 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+549 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+550 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+551 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+552 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+553 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+554 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+555 silly reify mark deleted [
+555 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+555 silly reify ]
+556 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+557 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+558 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+559 silly reify mark deleted [
+559 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+559 silly reify ]
+560 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+561 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+562 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+563 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+564 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+565 silly reify mark deleted [
+565 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+565 silly reify ]
+566 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+567 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+568 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+569 silly reify mark deleted [
+569 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+569 silly reify ]
+570 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+571 silly reify mark deleted [
+571 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+571 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+571 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+571 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+571 silly reify ]
+572 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+573 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+574 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+575 silly reify mark deleted [
+575 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+575 silly reify ]
+576 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+577 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+578 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+579 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+580 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+581 silly reify mark deleted [
+581 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+581 silly reify ]
+582 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+583 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+584 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+585 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+586 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+587 silly reify mark deleted [
+587 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+587 silly reify ]
+588 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+589 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+590 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+591 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+592 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+593 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+594 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+595 silly reify mark deleted [
+595 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+595 silly reify ]
+596 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+597 silly reify mark deleted [
+597 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+597 silly reify ]
+598 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+599 silly reify mark deleted [
+599 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+599 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+599 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+599 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+599 silly reify ]
+600 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+601 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+602 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+603 silly reify mark deleted [
+603 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+603 silly reify ]
+604 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+605 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+606 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+607 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+608 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+609 silly reify mark deleted [
+609 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+609 silly reify ]
+610 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+611 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+612 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+613 silly reify mark deleted [
+613 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+613 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+613 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+613 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+613 silly reify ]
+614 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+615 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+616 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+617 silly reify mark deleted [
+617 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+617 silly reify ]
+618 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+619 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+620 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+621 silly reify mark deleted [
+621 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+621 silly reify ]
+622 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+623 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+624 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+625 silly reify mark deleted [
+625 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+625 silly reify ]
+626 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+627 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+628 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+629 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+630 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+631 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+632 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+633 silly reify mark deleted [
+633 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+633 silly reify ]
+634 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+635 silly reify mark deleted [
+635 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+635 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+635 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+635 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+635 silly reify ]
+636 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+637 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+638 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+639 silly reify mark deleted [
+639 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+639 silly reify ]
+640 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+641 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+642 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+643 silly reify mark deleted [
+643 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+643 silly reify ]
+644 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+645 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+646 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+647 silly reify mark deleted [
+647 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+647 silly reify ]
+648 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+649 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+650 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+651 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+652 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+653 silly reify mark deleted [
+653 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+653 silly reify ]
+654 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+655 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+656 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+657 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+658 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+659 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+660 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+661 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+662 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+663 silly reify mark deleted [
+663 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+663 silly reify ]
+664 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+665 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+666 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+667 silly reify mark deleted [
+667 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+667 silly reify ]
+668 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+669 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+670 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+671 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+672 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+673 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+674 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+675 silly reify mark deleted [
+675 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+675 silly reify ]
+676 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+677 silly reify mark deleted [
+677 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+677 silly reify ]
+678 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+679 silly reify mark deleted [
+679 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+679 silly reify ]
+680 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+681 silly reify mark deleted [
+681 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+681 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+681 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+681 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+681 silly reify ]
+682 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+683 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+684 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+685 silly reify mark deleted [
+685 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+685 silly reify ]
+686 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+687 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+688 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+689 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+690 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+691 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+692 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+693 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+694 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+695 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+696 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+697 silly reify mark deleted [
+697 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+697 silly reify ]
+698 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+699 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+700 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+701 silly reify mark deleted [
+701 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+701 silly reify ]
+702 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+703 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+704 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+705 silly reify mark deleted [
+705 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+705 silly reify ]
+706 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+707 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+708 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+709 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+710 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+711 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+712 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+713 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+714 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+715 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+716 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+717 silly reify mark deleted [
+717 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+717 silly reify ]
+718 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+719 silly reify mark deleted [
+719 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+719 silly reify ]
+720 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+721 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+722 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+723 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+724 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+725 silly reify mark deleted [
+725 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+725 silly reify ]
+726 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+727 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+728 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+729 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+730 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+731 silly reify mark deleted [
+731 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+731 silly reify ]
+732 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+733 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+734 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+735 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+736 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+737 silly reify mark deleted [
+737 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+737 silly reify ]
+738 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+739 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+740 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+741 silly reify mark deleted [
+741 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+741 silly reify ]
+742 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+743 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+744 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+745 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+746 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+747 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+748 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+749 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+750 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+751 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+752 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+753 silly reify mark deleted [
+753 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+753 silly reify ]
+754 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+755 silly reify mark deleted [
+755 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+755 silly reify ]
+756 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+757 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+758 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+759 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+760 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+761 silly reify mark deleted [
+761 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+761 silly reify ]
+762 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+763 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+764 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+765 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+766 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+767 silly reify mark deleted [
+767 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+767 silly reify ]
+768 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+769 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+770 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+771 silly reify mark deleted [
+771 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+771 silly reify ]
+772 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+773 silly reify mark deleted [
+773 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+773 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+773 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+773 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+773 silly reify ]
+774 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+775 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+776 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+777 silly reify mark deleted [
+777 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+777 silly reify ]
+778 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+779 silly reify mark deleted [
+779 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+779 silly reify ]
+780 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+781 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+782 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+783 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+784 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@rollup\rollup-win32-x64-msvc
+785 silly reify mark deleted [
+785 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@rollup\\rollup-win32-x64-msvc'
+785 silly reify ]
+786 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher-win32-x64
+787 silly reify mark deleted [
+787 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher-win32-x64'
+787 silly reify ]
+788 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+789 silly reify mark deleted [
+789 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+789 silly reify ]
+790 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+791 silly reify mark deleted [
+791 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+791 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+791 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+791 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+791 silly reify ]
+792 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+793 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+794 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+795 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+796 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+797 silly reify mark deleted [
+797 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+797 silly reify ]
+798 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+799 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+800 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+801 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+802 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+803 silly reify mark deleted [
+803 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+803 silly reify ]
+804 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+805 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+806 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+807 silly reify mark deleted [
+807 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+807 silly reify ]
+808 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+809 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+810 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-win32-x64
+811 silly reify mark deleted [
+811 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-win32-x64'
+811 silly reify ]
+812 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@esbuild\win32-x64
+813 silly reify mark deleted [
+813 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@esbuild\\win32-x64'
+813 silly reify ]
+814 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@emnapi\runtime
+815 silly reify mark deleted [
+815 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@emnapi\\runtime'
+815 silly reify ]
+816 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@img\sharp-wasm32
+817 silly reify mark deleted [
+817 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@img\\sharp-wasm32'
+817 silly reify ]
+818 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+819 silly reify mark deleted [
+819 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+819 silly reify ]
+820 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+821 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+822 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+823 silly reify mark deleted [
+823 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+823 silly reify ]
+824 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+825 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+826 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+827 silly reify mark deleted [
+827 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+827 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+827 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+827 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+827 silly reify ]
+828 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+829 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+830 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+831 silly reify mark deleted [
+831 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+831 silly reify ]
+832 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+833 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+834 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+835 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+836 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+837 silly reify mark deleted [
+837 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+837 silly reify ]
+838 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+839 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+840 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+841 silly reify mark deleted [
+841 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+841 silly reify ]
+842 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+843 silly reify mark deleted [
+843 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+843 silly reify ]
+844 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+845 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+846 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+847 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+848 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+849 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+850 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+851 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+852 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+853 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+854 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+855 silly reify mark deleted [
+855 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+855 silly reify ]
+856 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+857 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+858 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-convert
+859 silly reify mark deleted [
+859 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-convert'
+859 silly reify ]
+860 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color
+861 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color' ]
+862 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\sharp
+863 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\sharp' ]
+864 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color\node_modules\color-name
+865 silly reify mark deleted [
+865 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color\\node_modules\\color-name'
+865 silly reify ]
+866 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-string
+867 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-string' ]
+868 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\detect-libc
+869 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\detect-libc' ]
+870 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\color-name
+871 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\color-name' ]
+872 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\simple-swizzle
+873 silly reify mark deleted [
+873 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\simple-swizzle'
+873 silly reify ]
+874 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-arrayish
+875 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-arrayish' ]
+876 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher\node_modules\detect-libc
+877 silly reify mark deleted [
+877 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\detect-libc',
+877 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc',
+877 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.cmd',
+877 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher\\node_modules\\.bin\\detect-libc.ps1'
+877 silly reify ]
+878 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\@parcel\watcher
+879 silly reify mark deleted [
+879 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\@parcel\\watcher'
+879 silly reify ]
+880 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-glob
+881 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-glob' ]
+882 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch
+883 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch' ]
+884 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\node-addon-api
+885 silly reify mark deleted [
+885 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\node-addon-api'
+885 silly reify ]
+886 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-extglob
+887 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-extglob' ]
+888 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\braces
+889 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\braces' ]
+890 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\micromatch\node_modules\picomatch
+891 silly reify mark deleted [
+891 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\micromatch\\node_modules\\picomatch'
+891 silly reify ]
+892 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\fill-range
+893 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\fill-range' ]
+894 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\to-regex-range
+895 silly reify mark deleted [
+895 silly reify   'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\to-regex-range'
+895 silly reify ]
+896 verbose reify failed optional dependency E:\gnaneswanth-bingi.github.io-main\node_modules\is-number
+897 silly reify mark deleted [ 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\is-number' ]
+898 warn cleanup Failed to remove some directories [
+898 warn cleanup   [
+898 warn cleanup     '\\\\?\\E:\\gnaneswanth-bingi.github.io-main\\node_modules\\prompts',
+898 warn cleanup     [Error: EPERM: operation not permitted, rmdir 'E:\gnaneswanth-bingi.github.io-main\node_modules\prompts'] {
+898 warn cleanup       errno: -4048,
+898 warn cleanup       code: 'EPERM',
+898 warn cleanup       syscall: 'rmdir',
+898 warn cleanup       path: 'E:\\gnaneswanth-bingi.github.io-main\\node_modules\\prompts'
+898 warn cleanup     }
+898 warn cleanup   ]
+898 warn cleanup ]
+899 verbose stack Error: request to https://registry.npmjs.org/zwitch/-/zwitch-2.0.4.tgz failed: cache mode is 'only-if-cached' but no cached response is available.
+899 verbose stack     at cacheFetch (C:\Users\Aswan\AppData\Roaming\npm\node_modules\npm\node_modules\make-fetch-happen\lib\cache\index.js:12:13)
+899 verbose stack     at async fetch (C:\Users\Aswan\AppData\Roaming\npm\node_modules\npm\node_modules\make-fetch-happen\lib\fetch.js:98:7)
+900 error code ENOTCACHED
+901 error request to https://registry.npmjs.org/zwitch/-/zwitch-2.0.4.tgz failed: cache mode is 'only-if-cached' but no cached response is available.
+902 silly unfinished npm timer reify 1794213231546
+903 silly unfinished npm timer reify:unpack 1794213231613
+904 silly unfinished npm timer reifyNode:node_modules/zwitch 1794213231613
+905 silly unfinished npm timer reifyNode:node_modules/zod-to-ts 1794213231613
+906 silly unfinished npm timer reifyNode:node_modules/zod-to-json-schema 1794213231613
+907 silly unfinished npm timer reifyNode:node_modules/zod 1794213231613
+908 silly unfinished npm timer reifyNode:node_modules/yoctocolors 1794213231613
+909 silly unfinished npm timer reifyNode:node_modules/yocto-spinner 1794213231613
+910 silly unfinished npm timer reifyNode:node_modules/yocto-queue 1794213231613
+911 silly unfinished npm timer reifyNode:node_modules/yargs-parser 1794213231613
+912 silly unfinished npm timer reifyNode:node_modules/xxhash-wasm 1794213231613
+913 silly unfinished npm timer reifyNode:node_modules/wrap-ansi 1794213231613
+914 silly unfinished npm timer reifyNode:node_modules/widest-line 1794213231613
+915 silly unfinished npm timer reifyNode:node_modules/which-pm-runs 1794213231613
+916 silly unfinished npm timer reifyNode:node_modules/whatwg-url 1794213231613
+917 silly unfinished npm timer reifyNode:node_modules/webidl-conversions 1794213231613
+918 silly unfinished npm timer reifyNode:node_modules/web-namespaces 1794213231613
+919 silly unfinished npm timer reifyNode:node_modules/vitefu 1794213231613
+920 silly unfinished npm timer reifyNode:node_modules/vite 1794213231613
+921 silly unfinished npm timer reifyNode:node_modules/vfile-message 1794213231613
+922 silly unfinished npm timer reifyNode:node_modules/vfile-location 1794213231613
+923 silly unfinished npm timer reifyNode:node_modules/vfile 1794213231613
+924 silly unfinished npm timer reifyNode:node_modules/update-browserslist-db 1794213231613
+925 silly unfinished npm timer reifyNode:node_modules/unstorage 1794213231613
+926 silly unfinished npm timer reifyNode:node_modules/unist-util-visit-parents 1794213231613
+927 silly unfinished npm timer reifyNode:node_modules/unist-util-visit-children 1794213231613
+928 silly unfinished npm timer reifyNode:node_modules/unist-util-visit 1794213231613
+929 silly unfinished npm timer reifyNode:node_modules/unist-util-stringify-position 1794213231614
+930 silly unfinished npm timer reifyNode:node_modules/unist-util-remove-position 1794213231614
+931 silly unfinished npm timer reifyNode:node_modules/unist-util-position 1794213231614
+932 silly unfinished npm timer reifyNode:node_modules/unist-util-modify-children 1794213231614
+933 silly unfinished npm timer reifyNode:node_modules/unist-util-is 1794213231614
+934 silly unfinished npm timer reifyNode:node_modules/unist-util-find-after 1794213231614
+935 silly unfinished npm timer reifyNode:node_modules/unifont 1794213231614
+936 silly unfinished npm timer reifyNode:node_modules/unified 1794213231614
+937 silly unfinished npm timer reifyNode:node_modules/unicode-trie 1794213231614
+938 silly unfinished npm timer reifyNode:node_modules/unicode-properties 1794213231614
+939 silly unfinished npm timer reifyNode:node_modules/undici-types 1794213231614
+940 silly unfinished npm timer reifyNode:node_modules/uncrypto 1794213231614
+941 silly unfinished npm timer reifyNode:node_modules/ultrahtml 1794213231614
+942 silly unfinished npm timer reifyNode:node_modules/ufo 1794213231614
+943 silly unfinished npm timer reifyNode:node_modules/typescript 1794213231614
+944 silly unfinished npm timer reifyNode:node_modules/type-fest 1794213231614
+945 silly unfinished npm timer reifyNode:node_modules/tslib 1794213231614
+946 silly unfinished npm timer reifyNode:node_modules/tsconfck 1794213231614
+947 silly unfinished npm timer reifyNode:node_modules/trough 1794213231614
+948 silly unfinished npm timer reifyNode:node_modules/trim-lines 1794213231614
+949 silly unfinished npm timer reifyNode:node_modules/tr46 1794213231614
+950 silly unfinished npm timer reifyNode:node_modules/to-fast-properties 1794213231614
+951 silly unfinished npm timer reifyNode:node_modules/tinyglobby 1794213231614
+952 silly unfinished npm timer reifyNode:node_modules/tinyexec 1794213231614
+953 silly unfinished npm timer reifyNode:node_modules/tiny-inflate 1794213231614
+954 silly unfinished npm timer reifyNode:node_modules/strip-ansi 1794213231614
+955 silly unfinished npm timer reifyNode:node_modules/stringify-entities 1794213231614
+956 silly unfinished npm timer reifyNode:node_modules/string-width 1794213231614
+957 silly unfinished npm timer reifyNode:node_modules/space-separated-tokens 1794213231614
+958 silly unfinished npm timer reifyNode:node_modules/source-map-js 1794213231614
+959 silly unfinished npm timer reifyNode:node_modules/smol-toml 1794213231614
+960 silly unfinished npm timer reifyNode:node_modules/sisteransi 1794213231614
+961 silly unfinished npm timer reifyNode:node_modules/shiki 1794213231614
+962 silly unfinished npm timer reifyNode:node_modules/semver 1794213231614
+963 silly unfinished npm timer reifyNode:node_modules/sass 1794213231614
+964 silly unfinished npm timer reifyNode:node_modules/rollup 1794213231614
+965 silly unfinished npm timer reifyNode:node_modules/retext-stringify 1794213231614
+966 silly unfinished npm timer reifyNode:node_modules/retext-smartypants 1794213231614
+967 silly unfinished npm timer reifyNode:node_modules/retext-latin 1794213231614
+968 silly unfinished npm timer reifyNode:node_modules/retext 1794213231614
+969 silly unfinished npm timer reifyNode:node_modules/restructure 1794213231614
+970 silly unfinished npm timer reifyNode:node_modules/remark-stringify 1794213231614
+971 silly unfinished npm timer reifyNode:node_modules/remark-smartypants 1794213231614
+972 silly unfinished npm timer reifyNode:node_modules/remark-rehype 1794213231614
+973 silly unfinished npm timer reifyNode:node_modules/remark-parse 1794213231614
+974 silly unfinished npm timer reifyNode:node_modules/remark-gfm 1794213231614
+975 silly unfinished npm timer reifyNode:node_modules/rehype-stringify 1794213231614
+976 silly unfinished npm timer reifyNode:node_modules/rehype-raw 1794213231614
+977 silly unfinished npm timer reifyNode:node_modules/rehype-parse 1794213231614
+978 silly unfinished npm timer reifyNode:node_modules/rehype 1794213231614
+979 silly unfinished npm timer reifyNode:node_modules/regex-utilities 1794213231614
+980 silly unfinished npm timer reifyNode:node_modules/regex-recursion 1794213231614
+981 silly unfinished npm timer reifyNode:node_modules/regex 1794213231614
+982 silly unfinished npm timer reifyNode:node_modules/readdirp 1794213231614
+983 silly unfinished npm timer reifyNode:node_modules/radix3 1794213231614
+984 silly unfinished npm timer reifyNode:node_modules/property-information 1794213231614
+985 silly unfinished npm timer reifyNode:node_modules/prompts 1794213231614
+986 silly unfinished npm timer reifyNode:node_modules/prompts/node_modules/kleur 1794213231614
+987 silly unfinished npm timer reifyNode:node_modules/prismjs 1794213231614
+988 silly unfinished npm timer reifyNode:node_modules/postcss-value-parser 1794213231614
+989 silly unfinished npm timer reifyNode:node_modules/postcss 1794213231614
+990 silly unfinished npm timer reifyNode:node_modules/picomatch 1794213231614
+991 silly unfinished npm timer reifyNode:node_modules/picocolors 1794213231614
+992 silly unfinished npm timer reifyNode:node_modules/parse5 1794213231614
+993 silly unfinished npm timer reifyNode:node_modules/parse-latin 1794213231614
+994 silly unfinished npm timer reifyNode:node_modules/pako 1794213231614
+995 silly unfinished npm timer reifyNode:node_modules/package-manager-detector 1794213231614
+996 silly unfinished npm timer reifyNode:node_modules/p-timeout 1794213231614
+997 silly unfinished npm timer reifyNode:node_modules/p-queue 1794213231614
+998 silly unfinished npm timer reifyNode:node_modules/p-limit 1794213231614
+999 silly unfinished npm timer reifyNode:node_modules/oniguruma-to-es 1794213231614
+1000 silly unfinished npm timer reifyNode:node_modules/oniguruma-parser 1794213231614
+1001 silly unfinished npm timer reifyNode:node_modules/ohash 1794213231614
+1002 silly unfinished npm timer reifyNode:node_modules/ofetch 1794213231614
+1003 silly unfinished npm timer reifyNode:node_modules/normalize-range 1794213231614
+1004 silly unfinished npm timer reifyNode:node_modules/normalize-path 1794213231614
+1005 silly unfinished npm timer reifyNode:node_modules/node-releases 1794213231614
+1006 silly unfinished npm timer reifyNode:node_modules/node-mock-http 1794213231614
+1007 silly unfinished npm timer reifyNode:node_modules/node-fetch-native 1794213231614
+1008 silly unfinished npm timer reifyNode:node_modules/node-fetch 1794213231614
+1009 silly unfinished npm timer reifyNode:node_modules/nlcst-to-string 1794213231614
+1010 silly unfinished npm timer reifyNode:node_modules/neotraverse 1794213231614
+1011 silly unfinished npm timer reifyNode:node_modules/nanoid 1794213231614
+1012 silly unfinished npm timer reifyNode:node_modules/ms 1794213231614
+1013 silly unfinished npm timer reifyNode:node_modules/mrmime 1794213231614
+1014 silly unfinished npm timer reifyNode:node_modules/modern-normalize 1794213231614
+1015 silly unfinished npm timer reifyNode:node_modules/micromark-util-types 1794213231614
+1016 silly unfinished npm timer reifyNode:node_modules/micromark-util-symbol 1794213231614
+1017 silly unfinished npm timer reifyNode:node_modules/micromark-util-subtokenize 1794213231614
+1018 silly unfinished npm timer reifyNode:node_modules/micromark-util-sanitize-uri 1794213231614
+1019 silly unfinished npm timer reifyNode:node_modules/micromark-util-resolve-all 1794213231614
+1020 silly unfinished npm timer reifyNode:node_modules/micromark-util-normalize-identifier 1794213231614
+1021 silly unfinished npm timer reifyNode:node_modules/micromark-util-html-tag-name 1794213231614
+1022 silly unfinished npm timer reifyNode:node_modules/micromark-util-encode 1794213231614
+1023 silly unfinished npm timer reifyNode:node_modules/micromark-util-decode-string 1794213231614
+1024 silly unfinished npm timer reifyNode:node_modules/micromark-util-decode-numeric-character-reference 1794213231614
+1025 silly unfinished npm timer reifyNode:node_modules/micromark-util-combine-extensions 1794213231614
+1026 silly unfinished npm timer reifyNode:node_modules/micromark-util-classify-character 1794213231614
+1027 silly unfinished npm timer reifyNode:node_modules/micromark-util-chunked 1794213231614
+1028 silly unfinished npm timer reifyNode:node_modules/micromark-util-character 1794213231614
+1029 silly unfinished npm timer reifyNode:node_modules/micromark-factory-whitespace 1794213231614
+1030 silly unfinished npm timer reifyNode:node_modules/micromark-factory-title 1794213231614
+1031 silly unfinished npm timer reifyNode:node_modules/micromark-factory-space 1794213231614
+1032 silly unfinished npm timer reifyNode:node_modules/micromark-factory-label 1794213231614
+1033 silly unfinished npm timer reifyNode:node_modules/micromark-factory-destination 1794213231614
+1034 silly unfinished npm timer reifyNode:node_modules/micromark-extension-gfm-task-list-item 1794213231614
+1035 silly unfinished npm timer reifyNode:node_modules/micromark-extension-gfm-tagfilter 1794213231614
+1036 silly unfinished npm timer reifyNode:node_modules/micromark-extension-gfm-table 1794213231614
+1037 silly unfinished npm timer reifyNode:node_modules/micromark-extension-gfm-strikethrough 1794213231614
+1038 silly unfinished npm timer reifyNode:node_modules/micromark-extension-gfm-footnote 1794213231614
+1039 silly unfinished npm timer reifyNode:node_modules/micromark-extension-gfm-autolink-literal 1794213231614
+1040 silly unfinished npm timer reifyNode:node_modules/micromark-extension-gfm 1794213231614
+1041 silly unfinished npm timer reifyNode:node_modules/micromark-core-commonmark 1794213231614
+1042 silly unfinished npm timer reifyNode:node_modules/micromark 1794213231614
+1043 silly unfinished npm timer reifyNode:node_modules/mdn-data 1794213231614
+1044 silly unfinished npm timer reifyNode:node_modules/mdast-util-to-string 1794213231614
+1045 silly unfinished npm timer reifyNode:node_modules/mdast-util-to-markdown 1794213231614
+1046 silly unfinished npm timer reifyNode:node_modules/mdast-util-to-hast 1794213231614
+1047 silly unfinished npm timer reifyNode:node_modules/mdast-util-phrasing 1794213231614
+1048 silly unfinished npm timer reifyNode:node_modules/mdast-util-gfm-task-list-item 1794213231614
+1049 silly unfinished npm timer reifyNode:node_modules/mdast-util-gfm-table 1794213231614
+1050 silly unfinished npm timer reifyNode:node_modules/mdast-util-gfm-strikethrough 1794213231614
+1051 silly unfinished npm timer reifyNode:node_modules/mdast-util-gfm-footnote 1794213231614
+1052 silly unfinished npm timer reifyNode:node_modules/mdast-util-gfm-autolink-literal 1794213231614
+1053 silly unfinished npm timer reifyNode:node_modules/mdast-util-gfm 1794213231614
+1054 silly unfinished npm timer reifyNode:node_modules/mdast-util-from-markdown 1794213231614
+1055 silly unfinished npm timer reifyNode:node_modules/mdast-util-find-and-replace 1794213231614
+1056 silly unfinished npm timer reifyNode:node_modules/mdast-util-definitions 1794213231614
+1057 silly unfinished npm timer reifyNode:node_modules/markdown-table 1794213231614
+1058 silly unfinished npm timer reifyNode:node_modules/magicast 1794213231614
+1059 silly unfinished npm timer reifyNode:node_modules/magic-string 1794213231614
+1060 silly unfinished npm timer reifyNode:node_modules/lru-cache 1794213231614
+1061 silly unfinished npm timer reifyNode:node_modules/longest-streak 1794213231614
+1062 silly unfinished npm timer reifyNode:node_modules/lenis 1794213231614
+1063 silly unfinished npm timer reifyNode:node_modules/kleur 1794213231614
+1064 silly unfinished npm timer reifyNode:node_modules/js-yaml 1794213231614
+1065 silly unfinished npm timer reifyNode:node_modules/is-wsl 1794213231614
+1066 silly unfinished npm timer reifyNode:node_modules/is-plain-obj 1794213231614
+1067 silly unfinished npm timer reifyNode:node_modules/is-inside-container 1794213231614
+1068 silly unfinished npm timer reifyNode:node_modules/is-fullwidth-code-point 1794213231614
+1069 silly unfinished npm timer reifyNode:node_modules/is-docker 1794213231614
+1070 silly unfinished npm timer reifyNode:node_modules/iron-webcrypto 1794213231614
+1071 silly unfinished npm timer reifyNode:node_modules/import-meta-resolve 1794213231614
+1072 silly unfinished npm timer reifyNode:node_modules/immutable 1794213231614
+1073 silly unfinished npm timer reifyNode:node_modules/http-cache-semantics 1794213231614
+1074 silly unfinished npm timer reifyNode:node_modules/html-void-elements 1794213231614
+1075 silly unfinished npm timer reifyNode:node_modules/html-escaper 1794213231614
+1076 silly unfinished npm timer reifyNode:node_modules/hastscript 1794213231614
+1077 silly unfinished npm timer reifyNode:node_modules/hast-util-whitespace 1794213231614
+1078 silly unfinished npm timer reifyNode:node_modules/hast-util-to-text 1794213231614
+1079 silly unfinished npm timer reifyNode:node_modules/hast-util-to-parse5 1794213231614
+1080 silly unfinished npm timer reifyNode:node_modules/hast-util-to-parse5/node_modules/property-information 1794213231614
+1081 silly unfinished npm timer reifyNode:node_modules/hast-util-to-html 1794213231614
+1082 silly unfinished npm timer reifyNode:node_modules/hast-util-raw 1794213231614
+1083 silly unfinished npm timer reifyNode:node_modules/hast-util-parse-selector 1794213231614
+1084 silly unfinished npm timer reifyNode:node_modules/hast-util-is-element 1794213231614
+1085 silly unfinished npm timer reifyNode:node_modules/hast-util-from-parse5 1794213231614
+1086 silly unfinished npm timer reifyNode:node_modules/hast-util-from-html 1794213231614
+1087 silly unfinished npm timer reifyNode:node_modules/h3 1794213231614
+1088 silly unfinished npm timer reifyNode:node_modules/gsap 1794213231614
+1089 silly unfinished npm timer reifyNode:node_modules/github-slugger 1794213231614
+1090 silly unfinished npm timer reifyNode:node_modules/get-east-asian-width 1794213231614
+1091 silly unfinished npm timer reifyNode:node_modules/fraction.js 1794213231614
+1092 silly unfinished npm timer reifyNode:node_modules/fontkit 1794213231614
+1093 silly unfinished npm timer reifyNode:node_modules/fontace 1794213231614
+1094 silly unfinished npm timer reifyNode:node_modules/flattie 1794213231614
+1095 silly unfinished npm timer reifyNode:node_modules/fdir 1794213231614
+1096 silly unfinished npm timer reifyNode:node_modules/fast-deep-equal 1794213231614
+1097 silly unfinished npm timer reifyNode:node_modules/extend 1794213231614
+1098 silly unfinished npm timer reifyNode:node_modules/eventemitter3 1794213231614
+1099 silly unfinished npm timer reifyNode:node_modules/estree-walker 1794213231614
+1100 silly unfinished npm timer reifyNode:node_modules/escape-string-regexp 1794213231614
+1101 silly unfinished npm timer reifyNode:node_modules/escalade 1794213231614
+1102 silly unfinished npm timer reifyNode:node_modules/esbuild 1794213231614
+1103 silly unfinished npm timer reifyNode:node_modules/es-module-lexer 1794213231614
+1104 silly unfinished npm timer reifyNode:node_modules/entities 1794213231614
+1105 silly unfinished npm timer reifyNode:node_modules/emoji-regex 1794213231614
+1106 silly unfinished npm timer reifyNode:node_modules/electron-to-chromium 1794213231614
+1107 silly unfinished npm timer reifyNode:node_modules/dset 1794213231614
+1108 silly unfinished npm timer reifyNode:node_modules/dlv 1794213231614
+1109 silly unfinished npm timer reifyNode:node_modules/diff 1794213231614
+1110 silly unfinished npm timer reifyNode:node_modules/dfa 1794213231614
+1111 silly unfinished npm timer reifyNode:node_modules/devlop 1794213231614
+1112 silly unfinished npm timer reifyNode:node_modules/devalue 1794213231614
+1113 silly unfinished npm timer reifyNode:node_modules/deterministic-object-hash 1794213231614
+1114 silly unfinished npm timer reifyNode:node_modules/destr 1794213231614
+1115 silly unfinished npm timer reifyNode:node_modules/dequal 1794213231614
+1116 silly unfinished npm timer reifyNode:node_modules/defu 1794213231614
+1117 silly unfinished npm timer reifyNode:node_modules/decode-named-character-reference 1794213231614
+1118 silly unfinished npm timer reifyNode:node_modules/debug 1794213231614
+1119 silly unfinished npm timer reifyNode:node_modules/cssesc 1794213231614
+1120 silly unfinished npm timer reifyNode:node_modules/css-tree 1794213231614
+1121 silly unfinished npm timer reifyNode:node_modules/crossws 1794213231614
+1122 silly unfinished npm timer reifyNode:node_modules/cross-fetch 1794213231614
+1123 silly unfinished npm timer reifyNode:node_modules/cookie-es 1794213231614
+1124 silly unfinished npm timer reifyNode:node_modules/cookie 1794213231614
+1125 silly unfinished npm timer reifyNode:node_modules/common-ancestor-path 1794213231614
+1126 silly unfinished npm timer reifyNode:node_modules/comma-separated-tokens 1794213231614
+1127 silly unfinished npm timer reifyNode:node_modules/clsx 1794213231614
+1128 silly unfinished npm timer reifyNode:node_modules/clone 1794213231614
+1129 silly unfinished npm timer reifyNode:node_modules/cli-boxes 1794213231614
+1130 silly unfinished npm timer reifyNode:node_modules/ci-info 1794213231614
+1131 silly unfinished npm timer reifyNode:node_modules/chokidar 1794213231614
+1132 silly unfinished npm timer reifyNode:node_modules/character-entities-legacy 1794213231614
+1133 silly unfinished npm timer reifyNode:node_modules/character-entities-html4 1794213231614
+1134 silly unfinished npm timer reifyNode:node_modules/character-entities 1794213231614
+1135 silly unfinished npm timer reifyNode:node_modules/chalk 1794213231614
+1136 silly unfinished npm timer reifyNode:node_modules/ccount 1794213231614
+1137 silly unfinished npm timer reifyNode:node_modules/caniuse-lite 1794213231614
+1138 silly unfinished npm timer reifyNode:node_modules/camelcase 1794213231614
+1139 silly unfinished npm timer reifyNode:node_modules/browserslist 1794213231614
+1140 silly unfinished npm timer reifyNode:node_modules/brotli 1794213231614
+1141 silly unfinished npm timer reifyNode:node_modules/boxen 1794213231614
+1142 silly unfinished npm timer reifyNode:node_modules/blob-to-buffer 1794213231614
+1143 silly unfinished npm timer reifyNode:node_modules/base64-js 1794213231614
+1144 silly unfinished npm timer reifyNode:node_modules/base-64 1794213231614
+1145 silly unfinished npm timer reifyNode:node_modules/bail 1794213231614
+1146 silly unfinished npm timer reifyNode:node_modules/axobject-query 1794213231614
+1147 silly unfinished npm timer reifyNode:node_modules/autoprefixer 1794213231614
+1148 silly unfinished npm timer reifyNode:node_modules/astro 1794213231614
+1149 silly unfinished npm timer reifyNode:node_modules/array-iterate 1794213231614
+1150 silly unfinished npm timer reifyNode:node_modules/aria-query 1794213231614
+1151 silly unfinished npm timer reifyNode:node_modules/argparse 1794213231614
+1152 silly unfinished npm timer reifyNode:node_modules/anymatch 1794213231614
+1153 silly unfinished npm timer reifyNode:node_modules/anymatch/node_modules/picomatch 1794213231614
+1154 silly unfinished npm timer reifyNode:node_modules/ansi-styles 1794213231614
+1155 silly unfinished npm timer reifyNode:node_modules/ansi-regex 1794213231614
+1156 silly unfinished npm timer reifyNode:node_modules/ansi-align 1794213231614
+1157 silly unfinished npm timer reifyNode:node_modules/ansi-align/node_modules/strip-ansi 1794213231615
+1158 silly unfinished npm timer reifyNode:node_modules/ansi-align/node_modules/string-width 1794213231615
+1159 silly unfinished npm timer reifyNode:node_modules/ansi-align/node_modules/emoji-regex 1794213231615
+1160 silly unfinished npm timer reifyNode:node_modules/ansi-align/node_modules/ansi-regex 1794213231615
+1161 silly unfinished npm timer reifyNode:node_modules/acorn 1794213231615
+1162 silly unfinished npm timer reifyNode:node_modules/@ungap/structured-clone 1794213231615
+1163 silly unfinished npm timer reifyNode:node_modules/@types/unist 1794213231615
+1164 silly unfinished npm timer reifyNode:node_modules/@types/node 1794213231615
+1165 silly unfinished npm timer reifyNode:node_modules/@types/nlcst 1794213231615
+1166 silly unfinished npm timer reifyNode:node_modules/@types/ms 1794213231615
+1167 silly unfinished npm timer reifyNode:node_modules/@types/mdast 1794213231615
+1168 silly unfinished npm timer reifyNode:node_modules/@types/hast 1794213231615
+1169 silly unfinished npm timer reifyNode:node_modules/@types/fontkit 1794213231615
+1170 silly unfinished npm timer reifyNode:node_modules/@types/estree 1794213231615
+1171 silly unfinished npm timer reifyNode:node_modules/@types/debug 1794213231615
+1172 silly unfinished npm timer reifyNode:node_modules/@swc/helpers 1794213231615
+1173 silly unfinished npm timer reifyNode:node_modules/@shikijs/vscode-textmate 1794213231615
+1174 silly unfinished npm timer reifyNode:node_modules/@shikijs/types 1794213231615
+1175 silly unfinished npm timer reifyNode:node_modules/@shikijs/themes 1794213231615
+1176 silly unfinished npm timer reifyNode:node_modules/@shikijs/langs 1794213231615
+1177 silly unfinished npm timer reifyNode:node_modules/@shikijs/engine-oniguruma 1794213231615
+1178 silly unfinished npm timer reifyNode:node_modules/@shikijs/engine-javascript 1794213231615
+1179 silly unfinished npm timer reifyNode:node_modules/@shikijs/core 1794213231615
+1180 silly unfinished npm timer reifyNode:node_modules/@rollup/pluginutils 1794213231615
+1181 silly unfinished npm timer reifyNode:node_modules/@rollup/pluginutils/node_modules/estree-walker 1794213231615
+1182 silly unfinished npm timer reifyNode:node_modules/@oslojs/encoding 1794213231615
+1183 silly unfinished npm timer reifyNode:node_modules/@jridgewell/sourcemap-codec 1794213231615
+1184 silly unfinished npm timer reifyNode:node_modules/@capsizecss/unpack 1794213231615
+1185 silly unfinished npm timer reifyNode:node_modules/@babel/types 1794213231615
+1186 silly unfinished npm timer reifyNode:node_modules/@babel/parser 1794213231615
+1187 silly unfinished npm timer reifyNode:node_modules/@babel/helper-validator-identifier 1794213231615
+1188 silly unfinished npm timer reifyNode:node_modules/@babel/helper-string-parser 1794213231615
+1189 silly unfinished npm timer reifyNode:node_modules/@astrojs/telemetry 1794213231615
+1190 silly unfinished npm timer reifyNode:node_modules/@astrojs/prism 1794213231615
+1191 silly unfinished npm timer reifyNode:node_modules/@astrojs/markdown-remark 1794213231615
+1192 silly unfinished npm timer reifyNode:node_modules/@astrojs/internal-helpers 1794213231615
+1193 silly unfinished npm timer reifyNode:node_modules/@astrojs/compiler 1794213231615
+1194 verbose cwd E:\gnaneswanth-bingi.github.io-main
+1195 verbose os Windows_NT 10.0.26200
+1196 verbose node v24.14.0
+1197 verbose npm  v10.9.0
+1198 verbose exit 1
+1199 verbose code 1
+1200 error A complete log of this run can be found in: E:\gnaneswanth-bingi.github.io-main\.cache\npm\_logs\2026-11-09T08_33_49_959Z-debug-0.log

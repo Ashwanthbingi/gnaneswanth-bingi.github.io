@@ -1,0 +1,79 @@
+<section class="s-contact-links" data-intersect>
+  <div class="s__inner" data-reveal-group>
+    <h2 class="s__title" data-reveal="mask">Get In Touch</h2>
+
+    <ul class="s__links">
+      <li data-reveal>
+        <a href="mailto:aswanthbingi@gmail.com">Email</a>
+      </li>
+      <li data-reveal>
+        <a href="https://github.com/Ashwanthbingi" target="_blank" rel="noopener">GitHub</a>
+      </li>
+      <li data-reveal>
+        <a href="https://www.linkedin.com/in/bingi-gnaneswanth-30565b354/" target="_blank" rel="noopener">LinkedIn</a>
+      </li>
+      <li data-reveal>
+        <a href="https://www.instagram.com/ashwanth_bingi/" target="_blank" rel="noopener">Instagram</a>
+      </li>
+    </ul>
+  </div><!-- .s__inner -->
+</section>
+
+<style lang="scss">
+  .s-contact-links {
+    @include flex(column, center, center);
+
+    position: relative;
+
+    padding: 3rem 2rem 4rem;
+    text-align: center;
+
+    @include mq(phone) {
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .s__inner {
+      @include flex(column, center, center);
+      gap: 1.5rem;
+    }
+
+    .s__title {
+      font: 400 14px / 1 font-family(fraktion);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .s__links {
+      @include flex(row, center, center);
+      flex-wrap: wrap;
+
+      margin: 0;
+      padding: 0;
+
+      list-style: none;
+
+      li {
+        padding: 0 1.25rem;
+
+        border-left: 1px solid color(secondary);
+
+        &:first-child {
+          border-left: 0;
+        }
+      }
+
+      a {
+        color: color(secondary);
+        font: 700 16px / 1 font-family(fraktion);
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        text-transform: uppercase;
+
+        &:hover {
+          text-shadow: 0 0 1px currentcolor;
+        }
+      }
+    }
+  }
+</style>
